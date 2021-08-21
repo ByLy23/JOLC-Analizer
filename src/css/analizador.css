@@ -69,4 +69,5 @@
 .analizar:hover {
   background: rgba(36, 59, 85, 0.9);
   transition: ease 0.5s;
+  cursor: pointer;
 }

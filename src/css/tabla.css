@@ -11,6 +11,8 @@
   border-radius: 1em;
   margin: auto;
   color: white;
+  margin-top: 2em;
+  margin-bottom: 2em;
 }
 .table {
   margin: auto;
@@ -24,4 +26,14 @@
 .table td {
   padding-left: 0.5em;
   word-wrap: break-word;
+}
+.table .second {
+  width: 8%;
+  font-size: 0.72em;
+}
+.table .first {
+  width: 60%;
+}
+.table td {
+  font-size: 0.8em;
 }

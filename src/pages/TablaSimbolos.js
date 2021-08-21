@@ -5,20 +5,26 @@ export const TablaSimbolos = () => {
   return (
     <div className="table-container animate__animated animate__fadeInUp">
       <table className="table">
-        <tr>
-          <th>Header1</th>
-          <th>Header2</th>
-          <th>Header3</th>
-          <th>Header4</th>
-        </tr>
-        {tableData.map(({ header1, header2, header3, header4 }) => {
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Tipo</th>
+            <th>Ambito</th>
+            <th className="second">Fila</th>
+            <th className="second">Columna</th>
+          </tr>
+        </thead>
+        {tableData.map(({ nombre, tipo, ambito, fila, columna }, index) => {
           return (
-            <tr>
-              <td>{header1}</td>
-              <td>{header2}</td>
-              <td>{header3}</td>
-              <td>{header4}</td>
-            </tr>
+            <tbody key={index}>
+              <tr>
+                <td>{nombre}</td>
+                <td>{tipo}</td>
+                <td>{ambito}</td>
+                <td>{fila}</td>
+                <td>{columna}</td>
+              </tr>
+            </tbody>
           );
         })}
       </table>
