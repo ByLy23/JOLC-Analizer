@@ -3,25 +3,34 @@ import { tableData } from '../components/tableData';
 import '../css/tabla.css';
 
 export const TablaErrores = () => {
+  let contador = 0;
   return (
     <div className="table-container animate__animated animate__fadeInUp">
       <table className="table">
-        <tr>
-          <th>Header1</th>
-          <th>Header2</th>
-          <th>Header3</th>
-          <th>Header4</th>
-        </tr>
-        {tableData.map(({ header1, header2, header3, header4 }) => {
-          return (
-            <tr>
-              <td>{header1}</td>
-              <td>{header2}</td>
-              <td>{header3}</td>
-              <td>{header4}</td>
-            </tr>
-          );
-        })}
+        <thead>
+          <tr>
+            <th className="second">No.</th>
+            <th className="first">Descripcion</th>
+            <th className="second">Linea</th>
+            <th className="second">Columna</th>
+            <th>fecha</th>
+          </tr>
+        </thead>
+        {tableData.map(
+          ({ columnaError, lineaError, descErrores, fechaError }, index) => {
+            return (
+              <tbody key={index}>
+                <tr>
+                  <td>{contador++}</td>
+                  <td>{descErrores}</td>
+                  <td>{lineaError}</td>
+                  <td>{columnaError}</td>
+                  <td>{fechaError}</td>
+                </tr>
+              </tbody>
+            );
+          }
+        )}
       </table>
     </div>
   );

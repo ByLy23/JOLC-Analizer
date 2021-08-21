@@ -8,6 +8,7 @@
   border-style: solid;
   border-radius: 1em;
   color: #fff;
+  cursor: pointer;
 }
 .popup {
   top: 0;
