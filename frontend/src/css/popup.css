@@ -9,6 +9,7 @@
   border-radius: 1em;
   color: #fff;
   cursor: pointer;
+  z-index: 4;
 }
 .popup {
   top: 0;
@@ -20,4 +21,5 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 4;
 }

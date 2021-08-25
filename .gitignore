@@ -2,6 +2,10 @@
 
 # dependencies
 /frontend/node_modules
+#install py -3 -m venv venv
+__pycache__
+/backend/.vscode
+/backend/venv
 /.pnp
 .pnp.js
 

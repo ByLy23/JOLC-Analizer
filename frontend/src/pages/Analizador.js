@@ -60,7 +60,7 @@ export const Analizador = () => {
           </div>
         </div>
       </div>
-      {popUp && <PopupAn setpopUp={setpopUp} />}
+      {popUp && <PopupAn setpopUp={setpopUp} valor={'Analizado'} />}
     </div>
   );
 };
