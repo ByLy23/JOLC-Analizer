@@ -14,7 +14,7 @@
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
   border-radius: 1em;
   margin-top: 2em;
-  margin-bottom: 2em;
+  margin-bottom: 1em;
   padding-bottom: 3em;
   padding-top: 1em;
   color: white;
@@ -31,7 +31,6 @@
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
   border-radius: 1em;
   margin: auto;
-  margin-top: 2em;
   margin-bottom: 2em;
   padding-bottom: 3em;
   padding-top: 1em;
@@ -40,7 +39,7 @@
 .editor {
   width: 90%;
   margin: auto;
-  height: 80em;
+  height: 70vh;
   margin-top: 1em;
 }
 .console {

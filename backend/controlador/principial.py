@@ -6,7 +6,7 @@ from .analizador.simbolos.TablaSimbolos import TablaSimbolos
 def metodoPrincipal(EntradaAnalizar):
     listaErrores = []
     entrada = EntradaAnalizar
-    ast = Arbol([])
+    ast = Arbol([])  # entrada con parser
     tabla = TablaSimbolos([])
     ast.setGlobal(tabla)
     return jsonify(
