@@ -3,6 +3,8 @@
 # dependencies
 /frontend/node_modules
 #install py -3 -m venv venv
+parser.out
+parsetab.py
 __pycache__
 /backend/.vscode
 /backend/venv
