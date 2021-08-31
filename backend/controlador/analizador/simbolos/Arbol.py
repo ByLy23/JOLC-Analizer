@@ -1,7 +1,7 @@
 class Arbol:
     def __init__(self, instrucciones):
         self.instrucciones = instrucciones
-        self.consola = None
+        self.consola = ""
         self.funciones = []
         self.tablaGlobal = None
         self.errores = []
@@ -44,7 +44,7 @@ class Arbol:
 
     # actualizarConsola
     def actualizaConsola(self, actualizar):
-        self.consola = "{}{}\n".format(self.consola, actualizar)
+        self.consola = "{}{}".format(self.consola, actualizar)
 
     # def actualizarTabla(self,identificadr, valor, linea, entorno, columna):
     #     for item in self.listaSimbolos.keys():
