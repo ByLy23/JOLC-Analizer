@@ -7,27 +7,33 @@ Segundo semestre 2021
 # librerias
 import ply.yacc as yacc
 import ply.lex as lex
-from .analizador.simbolos.Tipo import TipoDato
+# clases propias
+from .analizador.expresiones.Aritmetica import Aritmetica
+from .analizador.simbolos.Tipo import TipoDato, opAritmetico
 from .analizador.expresiones.Nativo import Nativo
 from .analizador.instrucciones.Print import Print
 from .analizador.instrucciones.Println import Println
 from .analizador.excepciones.Error import Error
 import re
-import os
 import sys
 sys.setrecursionlimit(3000)
 
 listaErrores = []
 input = ''
-reservadas = {'print': 'RESPRINT', 'println': 'RESPRINTLN'}
+reservadas = {'print': 'RESPRINT', 'println': 'RESPRINTLN',
+              'false': 'RESFALSE', 'true': 'RESTRUE'}
 tokens = [
-    'PTCOMA',
+    'PTCOMA', 'MAS', 'MENOS', 'POR', 'DIVI',
     'PARABRE', 'PARCIERRA', 'ENTERO', 'DECIMAL',
-    'CHAR', 'BOOLEANO', 'CADENA', 'IDENTIFICADOR'
+    'CARACTER', 'BOOLEANO', 'CADENA', 'IDENTIFICADOR'
 ] + list(reservadas.values())
 
 # tokens
 t_PTCOMA = r';'
+t_MAS = r'\+'
+t_MENOS = r'-'
+t_POR = r'\*'
+t_DIVI = r'/'
 t_PARABRE = r"\("
 t_PARCIERRA = r"\)"
 t_ignore = ' \t'
@@ -49,22 +55,22 @@ def t_error(t):
                   t.lexer.lineno, columnas(input, t)))
 
 
+def t_DECIMAL(t):
+    r'\d+\.\d+'
+    try:
+        t.value = float(t.value)
+    except ValueError:
+        print("Float value too large %d", t.value)
+        t.value = 0
+    return t
+
+
 def t_ENTERO(t):
     r'\d+'
     try:
         t.value = int(t.value)
     except ValueError:
         print("Integer value too large %d", t.value)
-        t.value = 0
-    return t
-
-
-def t_DECIMAL(t):
-    r'\d+\.\d+'
-    try:
-        t.value = int(t.value)
-    except ValueError:
-        print("Float value too large %d", t.value)
         t.value = 0
     return t
 
@@ -76,7 +82,13 @@ def t_IDENTIFICADOR(t):
 
 
 def t_CADENA(t):
-    r'(\".*?\"|\'.*?\')'
+    r'\".*?\"'
+    t.value = t.value[1:-1]
+    return t
+
+
+def t_CARACTER(t):
+    r'\'.?\''
     t.value = t.value[1:-1]
     return t
 
@@ -95,7 +107,13 @@ def t_COMEN_MULTI(t):
 lexer = lex.lex()
 
 # Precedencia de operadores desde el menor hasta el mayor
-
+precedence = (
+    # precedencia mas baja
+    ('left', 'MAS', 'MENOS'),
+    ('left', 'POR', 'DIVI'),
+    ('right', 'UMENOS')
+    # precedencia mas alta
+)
 
 # IMPORTACIONES
 # Definicion de la gramatica
@@ -153,6 +171,21 @@ def p_inst_imprmln(t):
 
 # Valores nativos
 
+def p_expresion_lista(t):
+    '''
+    expresion : expresion MAS expresion
+    '''
+    if t[2] == '+':
+        t[0] = Aritmetica(opAritmetico.MAS, t.lineno(
+            1), columnas(input, t.slice[2]), t[1], t[3])
+
+
+def p_primitivo_menosU(t):
+    '''expresion : MENOS expresion %prec UMENOS'''
+    if t[1] == '-':
+        t[0] = Aritmetica(opAritmetico.UMENOS, t.lineno(
+            1), columnas(input, t.slice[1]), t[2], None)
+
 
 def p_primitivo_cadena(t):
     '''expresion : CADENA'''
@@ -162,11 +195,19 @@ def p_primitivo_cadena(t):
     )
 
 
-def p_primitivo_booleano(t):
-    '''expresion : BOOLEANO'''
+def p_primitivo_booleanoF(t):
+    '''expresion : RESFALSE'''
     t[0] = Nativo(
         TipoDato.BOOLEANO,
-        t[1], t.lineno(1), columnas(input, t.slice[1])
+        False, t.lineno(1), columnas(input, t.slice[1])
+    )
+
+
+def p_primitivo_booleanoT(t):
+    '''expresion : RESTRUE'''
+    t[0] = Nativo(
+        TipoDato.BOOLEANO,
+        True, t.lineno(1), columnas(input, t.slice[1])
     )
 
 
@@ -187,7 +228,7 @@ def p_primitivo_decimal(t):
 
 
 def p_primitivo_carecter(t):
-    '''expresion : CHAR'''
+    '''expresion : CARACTER'''
     t[0] = Nativo(
         TipoDato.CARACTER,
         t[1], t.lineno(1), columnas(input, t.slice[1])

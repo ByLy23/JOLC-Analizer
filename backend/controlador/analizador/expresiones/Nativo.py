@@ -8,6 +8,4 @@ class Nativo(Instruccion):
         self.valor = valor
 
     def interpretar(self, arbol, tablaSimbolo):
-        if self.tipo == TipoDato.BOOLEANO:
-            return self.valor == 'true'
         return self.valor
