@@ -5,6 +5,7 @@ Segundo semestre 2021
 '''
 # IMPORTACIONES
 # librerias
+from controlador.analizador.simbolos.Arbol import Arbol
 import ply.yacc as yacc
 import ply.lex as lex
 # clases propias
@@ -161,12 +162,12 @@ def p_error(t):
 
 def p_inst_imprm(t):
     'inst_imp :      RESPRINT PARABRE expresion PARCIERRA'
-    t[0] = Print(t[3], t.lineno(1), columnas(input, t.slice[1]))
+    t[0] = Print(t.lineno(1), columnas(input, t.slice[1]), t[3])
 
 
 def p_inst_imprmln(t):
     'inst_impln :      RESPRINTLN PARABRE expresion PARCIERRA'
-    t[0] = Println(t[3], t.lineno(1), columnas(input, t.slice[1]))
+    t[0] = Println(t.lineno(1), columnas(input, t.slice[1]), t[3])
 
 
 # Valores nativos
@@ -174,9 +175,17 @@ def p_inst_imprmln(t):
 def p_expresion_lista(t):
     '''
     expresion : expresion MAS expresion
+              | expresion MENOS expresion
+              | expresion POR expresion
     '''
     if t[2] == '+':
         t[0] = Aritmetica(opAritmetico.MAS, t.lineno(
+            1), columnas(input, t.slice[2]), t[1], t[3])
+    elif t[2] == '-':
+        t[0] = Aritmetica(opAritmetico.MENOS, t.lineno(
+            1), columnas(input, t.slice[2]), t[1], t[3])
+    elif t[2] == '*':
+        t[0] = Aritmetica(opAritmetico.POR, t.lineno(
             1), columnas(input, t.slice[2]), t[1], t[3])
 
 

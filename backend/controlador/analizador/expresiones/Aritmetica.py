@@ -2,12 +2,14 @@
 from controlador.analizador.excepciones.Error import Error
 from controlador.analizador.simbolos.Tipo import TipoDato, opAritmetico
 from controlador.analizador.abstracto.Instruccion import Instruccion
+import math
 
 
 class Aritmetica(Instruccion):
     def __init__(self, operador,  linea, columna, op1, op2=None):
         super().__init__(TipoDato.ENTERO, linea, columna)
         self.operador = operador
+        self.operadorUnico = None
         if operador == opAritmetico.UMENOS:
             self.operadorUnico = op1
         else:
@@ -32,19 +34,14 @@ class Aritmetica(Instruccion):
         elif self.operador == opAritmetico.MENOS:
             return self.operador1Resta(izq, der)
         elif self.operador == opAritmetico.POR:
-            print(izq)
-            # return self.operador1Multi(izq,der)
+            return self.operador1Multi(izq, der)
         elif self.operador == opAritmetico.DIVI:
-            print(izq)
-            # return self.operador1Division(izq,der)
+            return self.operador1Division(izq, der) if (der != 0) or (der != 'false') else Error("Error Sintactico", "No se puede dividir sobre 0", self.linea, self.columna)
         elif self.operador == opAritmetico.POTENCIA:
-            print(izq)
-            # return self.operador1Potencia(izq,der)
+            return self.operador1Potencia(izq, der)
         elif self.operador == opAritmetico.MODULO:
-            print(izq)
-            # return self.operador1Mod(izq,der)
+            return self.operador1Mod(izq, der)if (der != 0) or (der != 'false') else Error("Error Sintactico", "Error de division", self.linea, self.columna)
         elif self.operador == opAritmetico.UMENOS:
-            print(uno)
             return self.opMenosUnario(uno)
         else:
             return Error('Error Semantico', 'Operador Invalido', self.linea, self.columna)
@@ -205,5 +202,236 @@ class Aritmetica(Instruccion):
         #         return chr(nuevoIzq+1 if str(der).lower() == 'true' else nuevoIzq)
         #     else:
         #         return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        else:
+            return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+
+     # ------------------------ MULTIPLICACION ------------------------
+
+    def operador1Multi(self, izq, der):
+        op2 = self.op2.tipo
+        if self.op1.tipo == TipoDato.ENTERO:
+            return self.op2Multi(1, op2, izq, der)
+        elif self.op1.tipo == TipoDato.DECIMAL:
+            return self.op2Multi(2, op2, izq, der)
+        elif self.op1.tipo == TipoDato.BOOLEANO:
+            return self.op2Multi(3, op2, izq, der)
+        elif self.op1.tipo == TipoDato.CADENA:
+            return self.op2Multi(4, op2, izq, der)
+        else:
+            return Error("Error Sintactico", "Operador invalido", self.linea, self.columna)
+
+    def op2Multi(self, numero, op2, izq, der):
+        if numero == 1:
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.ENTERO
+                return izq * der
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return float(izq)*float(der)
+            elif op2 == TipoDato.BOOLEANO:
+                self.tipo = TipoDato.ENTERO
+                return int(izq)*1 if str(der).lower() == 'true' else int(izq)
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        elif numero == 2:
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.DECIMAL
+                return float(izq) * float(der)
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return float(izq)*float(der)
+            elif op2 == TipoDato.BOOLEANO:
+                self.tipo = TipoDato.DECIMAL
+                return float(izq)*1 if str(der).lower() == 'true' else float(izq)*0
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        elif numero == 3:
+            nuevoIzq = 1 if str(izq).lower() == 'true' else 0
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.ENTERO
+                return nuevoIzq * der
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return float(nuevoIzq)*float(der)
+            elif op2 == TipoDato.BOOLEANO:
+                self.tipo = TipoDato.ENTERO
+                return nuevoIzq*1 if str(der).lower() == 'true' else nuevoIzq*0
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        elif numero == 4:
+            if op2 == TipoDato.CADENA:
+                self.tipo = TipoDato.CARACTER
+                return "{}{}".format(izq, der)
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        else:
+            return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+    # -------------------------- DIVISION -----------------------------------
+
+    def operador1Division(self, izq, der):
+        op2 = self.op2.tipo
+        if self.op1.tipo == TipoDato.ENTERO:
+            return self.op2Division(1, op2, izq, der)
+        elif self.op1.tipo == TipoDato.DECIMAL:
+            return self.op2Division(2, op2, izq, der)
+        elif self.op1.tipo == TipoDato.BOOLEANO:
+            return self.op2Division(3, op2, izq, der)
+        else:
+            return Error("Error Sintactico", "Operador invalido", self.linea, self.columna)
+
+    def op2Division(self, numero, op2, izq, der):
+        if numero == 1:
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.DECIMAL
+                return float(izq) / float(der)
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return float(izq)/float(der)
+            elif op2 == TipoDato.BOOLEANO:
+                self.tipo = TipoDato.DECIMAL
+                if str(der).lower() == 'true':
+                    return float(izq)
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        elif numero == 2:
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.DECIMAL
+                return float(izq) / float(der)
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return float(izq)/float(der)
+            elif op2 == TipoDato.BOOLEANO:
+                self.tipo = TipoDato.DECIMAL
+                if str(der).lower() == 'true':
+                    return float(izq)
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        elif numero == 3:
+            nuevoIzq = 1 if str(izq).lower() == 'true' else 0
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.DECIMAL
+                return float(nuevoIzq) / float(der)
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return float(nuevoIzq)/float(der)
+            elif op2 == TipoDato.BOOLEANO:
+                self.tipo = TipoDato.DECIMAL
+                if str(der).lower() == 'true':
+                    return float(nuevoIzq)
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        else:
+            return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+
+     # -------------------------- POTENCIA -----------------------------------
+
+    def operador1Potencia(self, izq, der):
+        op2 = self.op2.tipo
+        if self.op1.tipo == TipoDato.ENTERO:
+            return self.op2Potencia(1, op2, izq, der)
+        elif self.op1.tipo == TipoDato.DECIMAL:
+            return self.op2Potencia(2, op2, izq, der)
+        elif self.op1.tipo == TipoDato.BOOLEANO:
+            return self.op2Potencia(3, op2, izq, der)
+        elif self.op1.tipo == TipoDato.CADENA:
+            return self.op2Potencia(4, op2, izq, der)
+        else:
+            return Error("Error Sintactico", "Operador invalido", self.linea, self.columna)
+
+    def op2Potencia(self, numero, op2, izq, der):
+        if numero == 1:
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.ENTERO
+                return math.pow(int(izq), int(der))
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return math.pow(float(izq), float(der))
+            elif op2 == TipoDato.BOOLEANO:
+                self.tipo = TipoDato.ENTERO
+                return math.pow(int(izq), 1) if str(der).lower() == 'true' else math.pow(int(izq), 0)
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        elif numero == 2:
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.DECIMAL
+                return math.pow(float(izq), float(der))
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return math.pow(float(izq), float(der))
+            elif op2 == TipoDato.BOOLEANO:
+                self.tipo = TipoDato.DECIMAL
+                return math.pow(float(izq), 1) if str(der).lower() == 'true' else math.pow(float(izq), 0)
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        elif numero == 3:
+            nuevoIzq = 1 if str(izq).lower() == 'true' else 0
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.ENTERO
+                return math.pow(nuevoIzq, int(der))
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return math.pow(float(nuevoIzq), float(der))
+            elif op2 == TipoDato.BOOLEANO:
+                self.tipo = TipoDato.ENTERO
+                return math.pow(nuevoIzq, 1) if str(der).lower() == 'true' else math.pow(nuevoIzq, 0)
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        else:
+            return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+
+     # -------------------------- MODULADOR -----------------------------------
+
+    def operador1Mod(self, izq, der):
+        op2 = self.op2.tipo
+        if self.op1.tipo == TipoDato.ENTERO:
+            return self.op2Mod(1, op2, izq, der)
+        elif self.op1.tipo == TipoDato.DECIMAL:
+            return self.op2Mod(2, op2, izq, der)
+        elif self.op1.tipo == TipoDato.BOOLEANO:
+            return self.op2Mod(3, op2, izq, der)
+        else:
+            return Error("Error Sintactico", "Operador invalido", self.linea, self.columna)
+
+    def op2Mod(self, numero, op2, izq, der):
+        if numero == 1:
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.ENTERO
+                return izq % der
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return float(izq) % float(der)
+            elif op2 == TipoDato.BOOLEANO:
+                self.tipo = TipoDato.ENTERO
+                if str(der).lower() == 'true':
+                    return int(izq) % 1
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        elif numero == 2:
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.DECIMAL
+                return float(izq) % float(der)
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return float(izq) % float(der)
+            elif op2 == TipoDato.BOOLEANO:
+                self.tipo = TipoDato.DECIMAL
+                if str(der).lower() == 'true':
+                    return float(izq) % 1
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        elif numero == 3:
+            nuevoIzq = 1 if str(izq).lower() == 'true' else 0
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.ENTERO
+                return nuevoIzq % der
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return float(nuevoIzq) % float(der)
+            elif op2 == TipoDato.BOOLEANO:
+                self.tipo = TipoDato.ENTERO
+                if str(der).lower() == 'true':
+                    return float(izq) % 1
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
         else:
             return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)

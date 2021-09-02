@@ -5,7 +5,7 @@ from ..simbolos.Tipo import TipoDato
 
 
 class Print(Instruccion):
-    def __init__(self, expresion, linea, columna):
+    def __init__(self,  linea, columna, expresion=""):
         super().__init__(TipoDato.CADENA, linea, columna)
         self.expresion = expresion
         self.linea = linea

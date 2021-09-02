@@ -3,7 +3,6 @@ from flask import jsonify
 from .analizador.simbolos.Arbol import Arbol
 from .analizador.simbolos.TablaSimbolos import TablaSimbolos
 from .gramatica import parse
-import json
 
 
 def metodoPrincipal(EntradaAnalizar):
@@ -14,7 +13,6 @@ def metodoPrincipal(EntradaAnalizar):
     for ins in ast.getInstrucciones():
         resultado = ins.interpretar(ast, tabla)
         if isinstance(resultado, Error):
-            listaErrores.append(resultado)
             ast.getErrores().append(resultado)
             ast.actualizaConsola(resultado.retornaError())
     return jsonify(
