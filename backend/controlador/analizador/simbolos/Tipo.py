@@ -18,3 +18,9 @@ class opAritmetico(Enum):
     UMENOS = 5
     MODULO = 6
     POTENCIA = 7
+
+
+class opLogico(Enum):
+    AND = 1
+    OR = 2
+    NOT = 3

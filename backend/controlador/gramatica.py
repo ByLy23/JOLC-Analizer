@@ -24,7 +24,7 @@ input = ''
 reservadas = {'print': 'RESPRINT', 'println': 'RESPRINTLN',
               'false': 'RESFALSE', 'true': 'RESTRUE'}
 tokens = [
-    'PTCOMA', 'MAS', 'MENOS', 'POR', 'DIVI',
+    'PTCOMA', 'MAS', 'MENOS', 'POR', 'DIVI', 'POTENCIA', 'MOD',
     'PARABRE', 'PARCIERRA', 'ENTERO', 'DECIMAL',
     'CARACTER', 'BOOLEANO', 'CADENA', 'IDENTIFICADOR'
 ] + list(reservadas.values())
@@ -35,6 +35,8 @@ t_MAS = r'\+'
 t_MENOS = r'-'
 t_POR = r'\*'
 t_DIVI = r'/'
+t_POTENCIA = r'\^'
+t_MOD = r'%'
 t_PARABRE = r"\("
 t_PARCIERRA = r"\)"
 t_ignore = ' \t'
@@ -111,7 +113,8 @@ lexer = lex.lex()
 precedence = (
     # precedencia mas baja
     ('left', 'MAS', 'MENOS'),
-    ('left', 'POR', 'DIVI'),
+    ('left', 'POR', 'DIVI', 'MOD'),
+    ('right', 'POTENCIA'),
     ('right', 'UMENOS')
     # precedencia mas alta
 )
@@ -177,6 +180,9 @@ def p_expresion_lista(t):
     expresion : expresion MAS expresion
               | expresion MENOS expresion
               | expresion POR expresion
+              | expresion DIVI expresion
+              | expresion POTENCIA expresion
+              | expresion MOD expresion
     '''
     if t[2] == '+':
         t[0] = Aritmetica(opAritmetico.MAS, t.lineno(
@@ -186,6 +192,15 @@ def p_expresion_lista(t):
             1), columnas(input, t.slice[2]), t[1], t[3])
     elif t[2] == '*':
         t[0] = Aritmetica(opAritmetico.POR, t.lineno(
+            1), columnas(input, t.slice[2]), t[1], t[3])
+    elif t[2] == '/':
+        t[0] = Aritmetica(opAritmetico.DIVI, t.lineno(
+            1), columnas(input, t.slice[2]), t[1], t[3])
+    elif t[2] == '%':
+        t[0] = Aritmetica(opAritmetico.MODULO, t.lineno(
+            1), columnas(input, t.slice[2]), t[1], t[3])
+    elif t[2] == '^':
+        t[0] = Aritmetica(opAritmetico.POTENCIA, t.lineno(
             1), columnas(input, t.slice[2]), t[1], t[3])
 
 
