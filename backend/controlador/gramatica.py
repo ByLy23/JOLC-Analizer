@@ -5,12 +5,13 @@ Segundo semestre 2021
 '''
 # IMPORTACIONES
 # librerias
-from controlador.analizador.simbolos.Arbol import Arbol
+from controlador.analizador.expresiones.Relacional import Relacional
 import ply.yacc as yacc
 import ply.lex as lex
 # clases propias
+from .analizador.expresiones.Logica import Logica
 from .analizador.expresiones.Aritmetica import Aritmetica
-from .analizador.simbolos.Tipo import TipoDato, opAritmetico
+from .analizador.simbolos.Tipo import TipoDato, opAritmetico, opLogico, opRelacional
 from .analizador.expresiones.Nativo import Nativo
 from .analizador.instrucciones.Print import Print
 from .analizador.instrucciones.Println import Println
@@ -25,8 +26,10 @@ reservadas = {'print': 'RESPRINT', 'println': 'RESPRINTLN',
               'false': 'RESFALSE', 'true': 'RESTRUE'}
 tokens = [
     'PTCOMA', 'MAS', 'MENOS', 'POR', 'DIVI', 'POTENCIA', 'MOD',
+    'AND', 'OR', 'NOT',
+    'IGUAL', 'COMPARACION', 'DIFERENTE', 'MAYOR', 'MENOR', 'MAYRIGL1', 'MAYRIGL2', 'MENRIGL1', 'MENRIGL2',
     'PARABRE', 'PARCIERRA', 'ENTERO', 'DECIMAL',
-    'CARACTER', 'BOOLEANO', 'CADENA', 'IDENTIFICADOR'
+    'CARACTER', 'CADENA', 'IDENTIFICADOR'
 ] + list(reservadas.values())
 
 # tokens
@@ -35,7 +38,19 @@ t_MAS = r'\+'
 t_MENOS = r'-'
 t_POR = r'\*'
 t_DIVI = r'/'
+t_NOT = r'!'
+t_IGUAL = r'='
+t_MAYOR = r'>'
+t_MENOR = r'<'
+t_COMPARACION = r'=='
+t_DIFERENTE = r'!='
+t_MAYRIGL1 = r'>='
+t_MAYRIGL2 = r'=>'
+t_MENRIGL1 = r'<='
+t_MENRIGL2 = r'=<'
 t_POTENCIA = r'\^'
+t_AND = r'&&'
+t_OR = r'\|\|'
 t_MOD = r'%'
 t_PARABRE = r"\("
 t_PARCIERRA = r"\)"
@@ -112,6 +127,11 @@ lexer = lex.lex()
 # Precedencia de operadores desde el menor hasta el mayor
 precedence = (
     # precedencia mas baja
+    ('left', 'OR'),
+    ('left', 'AND'),
+    ('right', 'UNOT'),
+    ('left', 'MAYOR', 'MENOR', 'MAYRIGL1', 'MAYRIGL2',
+     'MENRIGL1', 'MENRIGL2', 'COMPARACION', 'DIFERENTE'),
     ('left', 'MAS', 'MENOS'),
     ('left', 'POR', 'DIVI', 'MOD'),
     ('right', 'POTENCIA'),
@@ -183,6 +203,16 @@ def p_expresion_lista(t):
               | expresion DIVI expresion
               | expresion POTENCIA expresion
               | expresion MOD expresion
+              | expresion AND expresion
+              | expresion OR expresion
+              | expresion MAYOR expresion
+              | expresion MENOR expresion
+              | expresion MAYRIGL1 expresion
+              | expresion MAYRIGL2 expresion
+              | expresion MENRIGL1 expresion
+              | expresion MENRIGL2 expresion
+              | expresion COMPARACION expresion
+              | expresion DIFERENTE expresion            
     '''
     if t[2] == '+':
         t[0] = Aritmetica(opAritmetico.MAS, t.lineno(
@@ -202,12 +232,54 @@ def p_expresion_lista(t):
     elif t[2] == '^':
         t[0] = Aritmetica(opAritmetico.POTENCIA, t.lineno(
             1), columnas(input, t.slice[2]), t[1], t[3])
+    elif t[2] == '&&':
+        t[0] = Logica(opLogico.AND, t.lineno(
+            1), columnas(input, t.slice[2]), t[1], t[3])
+    elif t[2] == '||':
+        t[0] = Logica(opLogico.OR, t.lineno(
+            1), columnas(input, t.slice[2]), t[1], t[3])
+    elif t[2] == '==':
+        t[0] = Relacional(opRelacional.IGUAL, t[1], t[3], t.lineno(
+            1), columnas(input, t.slice[2]))
+    elif t[2] == '!=':
+        t[0] = Relacional(opRelacional.DIFERENTE, t[1], t[3], t.lineno(
+            1), columnas(input, t.slice[2]))
+    elif t[2] == '>':
+        t[0] = Relacional(opRelacional.MAYOR, t[1], t[3], t.lineno(
+            1), columnas(input, t.slice[2]))
+    elif t[2] == '<':
+        t[0] = Relacional(opRelacional.MENOR, t[1], t[3], t.lineno(
+            1), columnas(input, t.slice[2]))
+    elif t[2] == '>=':
+        t[0] = Relacional(opRelacional.MAYORIGUAL, t[1], t[3], t.lineno(
+            1), columnas(input, t.slice[2]))
+    elif t[2] == '=>':
+        t[0] = Relacional(opRelacional.MAYORIGUAL, t[1], t[3], t.lineno(
+            1), columnas(input, t.slice[2]))
+    elif t[2] == '<=':
+        t[0] = Relacional(opRelacional.MENORIGUAL, t[1], t[3], t.lineno(
+            1), columnas(input, t.slice[2]))
+    elif t[2] == '=<':
+        t[0] = Relacional(opRelacional.MENORIGUAL, t[1], t[3], t.lineno(
+            1), columnas(input, t.slice[2]))
 
 
 def p_primitivo_menosU(t):
     '''expresion : MENOS expresion %prec UMENOS'''
     if t[1] == '-':
         t[0] = Aritmetica(opAritmetico.UMENOS, t.lineno(
+            1), columnas(input, t.slice[1]), t[2], None)
+
+
+def p_primitivo_parentesis(t):
+    '''expresion : PARABRE expresion PARCIERRA'''
+    t[0] = t[2]
+
+
+def p_primitivo_negadoU(t):
+    '''expresion : NOT expresion %prec UNOT'''
+    if t[1] == '!':
+        t[0] = Logica(opLogico.NOT, t.lineno(
             1), columnas(input, t.slice[1]), t[2], None)
 
 

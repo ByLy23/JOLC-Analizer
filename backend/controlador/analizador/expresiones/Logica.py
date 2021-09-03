@@ -8,7 +8,6 @@ class Logica(Instruccion):
         super().__init__(TipoDato.ENTERO, linea, columna)
         self.relacion = relacion
         self.cond1 = cond1
-        self.condExcep = None
         if cond2 == None:
             self.condExcep = cond1
         else:
@@ -29,12 +28,10 @@ class Logica(Instruccion):
             if isinstance(der, Error):
                 return der
 
+        self.tipo = TipoDato.BOOLEANO
         if self.relacion == opLogico.AND:
-            self.tipo = TipoDato.BOOLEANO
             return True if izq and der else False
         elif self.relacion == opLogico.OR:
-            self.tipo = TipoDato.BOOLEANO
             return True if izq or der else False
         elif self.relacion == opLogico.NOT:
-            self.tipo = TipoDato.BOOLEANO
             return not uno

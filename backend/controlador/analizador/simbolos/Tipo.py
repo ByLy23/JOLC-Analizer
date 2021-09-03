@@ -24,3 +24,12 @@ class opLogico(Enum):
     AND = 1
     OR = 2
     NOT = 3
+
+
+class opRelacional(Enum):
+    IGUAL = 1
+    DIFERENTE = 2
+    MAYOR = 3
+    MENOR = 4
+    MAYORIGUAL = 5
+    MENORIGUAL = 6
