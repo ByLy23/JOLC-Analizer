@@ -1,3 +1,4 @@
+from controlador.analizador.instrucciones.transferencia.Return import Return
 from controlador.analizador.excepciones.Error import Error
 from controlador.analizador.simbolos.TablaSimbolos import TablaSimbolos
 from controlador.analizador.simbolos.Tipo import TipoDato
@@ -32,6 +33,12 @@ class CondFor(Instruccion):
                     arbol.getErrores().append(a)
                     arbol.actualizaConsola(a.retornaError())
                 # if return, break, continue
+                if isinstance(a, Return):
+                    return a
+                if a == 'ByLyContinue':
+                    break
+                if a == 'ByLy23':
+                    return
             valActualizacion = self.actualizacion.interpretar(
                 arbol, nuevaTabla)
             if isinstance(valActualizacion, Error):

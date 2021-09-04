@@ -1,3 +1,4 @@
+from controlador.analizador.instrucciones.transferencia.Return import Return
 from controlador.analizador.simbolos.TablaSimbolos import TablaSimbolos
 from controlador.analizador.excepciones.Error import Error
 from controlador.analizador.simbolos.Tipo import TipoDato
@@ -25,6 +26,12 @@ class CondIf(Instruccion):
                     arbol.getErrores().append(a)
                     arbol.actualizaConsola(a.retornaError())
                 # If return, continue y break
+                if isinstance(a, Return):
+                    return a
+                if a == 'ByLyContinue':
+                    return a
+                if a == 'ByLy23':
+                    return a
         else:
             if self.condElse != None:
                 nuevaTabla = TablaSimbolos(tablaSimbolo)
@@ -35,8 +42,20 @@ class CondIf(Instruccion):
                         arbol.getErrores().append(a)
                         arbol.actualizaConsola(a.retornaError())
                     # If return, continue y break
+                    if isinstance(a, Return):
+                        return a
+                    if a == 'ByLyContinue':
+                        return a
+                    if a == 'ByLy23':
+                        return a
             elif self.condElseIf != None:
                 b = self.condElseIf.interpretar(arbol, tablaSimbolo)
                 if isinstance(b, Error):
                     return b
                 # If return,continue,break
+                if isinstance(b, Return):
+                    return b
+                if b == 'ByLyContinue':
+                    return b
+                if b == 'ByLy23':
+                    return b
