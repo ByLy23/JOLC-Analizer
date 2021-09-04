@@ -19,7 +19,7 @@ class CondIf(Instruccion):
         if val:
             nuevaTabla = TablaSimbolos(tablaSimbolo)
             nuevaTabla.setNombre('If')
-            for i in range(0, self.condIf.length):
+            for i in range(0, len(self.condIf)):
                 a = self.condIf[i].interpretar(arbol, nuevaTabla)
                 if isinstance(a, Error):
                     arbol.getErrores().append(a)
@@ -29,7 +29,7 @@ class CondIf(Instruccion):
             if self.condElse != None:
                 nuevaTabla = TablaSimbolos(tablaSimbolo)
                 nuevaTabla.setNombre('else')
-                for i in range(0, self.condElse.length):
+                for i in range(0, len(self.condElse)):
                     a = self.condElse[i].interpretar(arbol, nuevaTabla)
                     if isinstance(a, Error):
                         arbol.getErrores().append(a)
