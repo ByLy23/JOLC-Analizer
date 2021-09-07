@@ -17,6 +17,8 @@ class Relacional(Instruccion):
         der = self.obtieneValor(self.cond2, arbol, tablaSimbolo)
         if isinstance(der, Error):
             return der
+        if izq == None or der == None:
+            return Error("Error Semantico", "Variable con dato nulo no puede ser ejecutada", self.linea, self.columna)
         self.tipo = TipoDato.BOOLEANO
         if self.relacion == opRelacional.IGUAL:
             return izq == der

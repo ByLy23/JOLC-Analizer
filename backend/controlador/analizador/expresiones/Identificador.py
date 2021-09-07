@@ -11,5 +11,5 @@ class Identificador(Instruccion):
     def interpretar(self, arbol, tablaSimbolo):
         variable = tablaSimbolo.getVariable(self.identificador)
         if variable == None:
-            return Error("Error Semantico", "la variable {} no exite".format(self.identificador), self.linea, self.columna)
+            return Error("Error Semantico", "la variable {} no existe".format(self.identificador), self.linea, self.columna)
         return variable.getValor()

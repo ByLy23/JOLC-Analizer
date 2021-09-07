@@ -22,6 +22,8 @@ class Aritmetica(Instruccion):
             uno = self.operadorUnico.interpretar(arbol, tablaSimbolo)
             if isinstance(uno, Error):
                 return uno
+            if self.operadorUnico.tipo == TipoDato.NOTHING:
+                return Error("Error Semantico", "Variable con dato nulo no puede ser ejecutada", self.linea, self.columna)
         else:
             izq = self.op1.interpretar(arbol, tablaSimbolo)
             if isinstance(izq, Error):
@@ -29,6 +31,8 @@ class Aritmetica(Instruccion):
             der = self.op2.interpretar(arbol, tablaSimbolo)
             if isinstance(der, Error):
                 return der
+            if self.op1.tipo == TipoDato.NOTHING or self.op2.tipo == TipoDato.NOTHING:
+                return Error("Error Semantico", "Variable con dato nulo no puede ser ejecutada", self.linea, self.columna)
         if self.operador == opAritmetico.MAS:
             return self.operador1Suma(izq, der)
         elif self.operador == opAritmetico.MENOS:

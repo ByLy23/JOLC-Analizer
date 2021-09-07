@@ -46,5 +46,11 @@ class Arbol:
     def actualizaConsola(self, actualizar):
         self.consola = "{}{}".format(self.consola, str(actualizar))
 
-    # def actualizarTabla(self,identificadr, valor, linea, entorno, columna):
-    #     for item in self.listaSimbolos.keys():
+    def actualizarTabla(self, identificadr, valor, linea, entorno, columna):
+        for item in self.listaSimbolos.keys():
+            if item.getIdentificador() == identificadr:
+                item.setValor(valor)
+                item.setLinea(linea)
+                item.setColumna(columna)
+                return True
+        return False

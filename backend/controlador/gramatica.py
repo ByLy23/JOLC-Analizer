@@ -5,6 +5,9 @@ Segundo semestre 2021
 '''
 # IMPORTACIONES
 # librerias
+from controlador.analizador.instrucciones.AsigDeclaracion.Asignacion import Asignacion
+from controlador.analizador.expresiones.Identificador import Identificador
+from controlador.analizador.instrucciones.AsigDeclaracion.Declaracion import Declaracion
 from controlador.analizador.expresiones.Relacional import Relacional
 import ply.yacc as yacc
 import ply.lex as lex
@@ -22,18 +25,51 @@ sys.setrecursionlimit(3000)
 
 listaErrores = []
 input = ''
-reservadas = {'print': 'RESPRINT', 'println': 'RESPRINTLN',
-              'false': 'RESFALSE', 'true': 'RESTRUE'}
+reservadas = {
+    'print': 'RESPRINT',
+    'println': 'RESPRINTLN',
+    'false': 'RESFALSE',
+    'true': 'RESTRUE',
+    'nothing': 'RESNOTHING',
+    'Int64': 'RESINT',
+    'Float64': 'RESFLOAT',
+    'Bool': 'RESBOOL',
+    'Char': 'RESCHAR',
+    'String': 'RESTRING'
+}
 tokens = [
-    'PTCOMA', 'MAS', 'MENOS', 'POR', 'DIVI', 'POTENCIA', 'MOD',
-    'AND', 'OR', 'NOT',
-    'IGUAL', 'COMPARACION', 'DIFERENTE', 'MAYOR', 'MENOR', 'MAYRIGL1', 'MAYRIGL2', 'MENRIGL1', 'MENRIGL2',
-    'PARABRE', 'PARCIERRA', 'ENTERO', 'DECIMAL',
-    'CARACTER', 'CADENA', 'IDENTIFICADOR'
+    'PTCOMA',
+    'DOSPUNTOS',
+    'MAS',
+    'MENOS',
+    'POR',
+    'DIVI',
+    'POTENCIA',
+    'MOD',
+    'AND',
+    'OR',
+    'NOT',
+    'IGUAL',
+    'COMPARACION',
+    'DIFERENTE',
+    'MAYOR',
+    'MENOR',
+    'MAYRIGL1',
+    'MAYRIGL2',
+    'MENRIGL1',
+    'MENRIGL2',
+    'PARABRE',
+    'PARCIERRA',
+    'ENTERO',
+    'DECIMAL',
+    'CARACTER',
+    'CADENA',
+    'IDENTIFICADOR'
 ] + list(reservadas.values())
 
 # tokens
 t_PTCOMA = r';'
+t_DOSPUNTOS = r':'
 t_MAS = r'\+'
 t_MENOS = r'-'
 t_POR = r'\*'
@@ -95,12 +131,12 @@ def t_ENTERO(t):
 
 def t_IDENTIFICADOR(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
-    t.type = reservadas.get(t.value.lower(), 'IDENTIFICADOR')
+    t.type = reservadas.get(t.value, 'IDENTIFICADOR')
     return t
 
 
 def t_CADENA(t):
-    r'\".*?\"'
+    r'(\".*?\")'
     t.value = t.value[1:-1]
     return t
 
@@ -169,6 +205,8 @@ def p_instrucciones_instruccion(t):
 def p_instruccion(t):
     '''instruccion      : inst_imp PTCOMA
                         | inst_impln PTCOMA 
+                        | inst_decla PTCOMA
+                        | inst_asig PTCOMA
     '''
     t[0] = t[1]
 
@@ -181,6 +219,44 @@ def p_error(t):
                               str(t[1].value), t.lineno(1), columnas(input, t.slice[1])))
     t[0] = ""
 # RESULTANTES
+
+
+def p_tipo_dato(t):
+    '''
+    tipodato :           RESINT
+                       | RESNOTHING
+                       | RESFLOAT
+                       | RESTRING
+                       | RESCHAR
+                       | RESBOOL
+    '''
+    if t[1].lower() == 'int64':
+        t[0] = TipoDato.ENTERO
+    elif t[1].lower() == 'nothing':
+        t[0] = TipoDato.NOTHING
+    elif t[1].lower() == 'float64':
+        t[0] = TipoDato.DECIMAL
+    elif t[1].lower() == 'string':
+        t[0] = TipoDato.CADENA
+    elif t[1].lower() == 'char':
+        t[0] = TipoDato.CARACTER
+
+
+def p_inst_asig(t):
+    'inst_asig : IDENTIFICADOR IGUAL expresion'
+    t[0] = Asignacion(t[1], t[3], t.lineno(1), columnas(input, t.slice[1]))
+
+
+def p_inst_dec(t):
+    '''inst_decla :   IDENTIFICADOR IGUAL expresion DOSPUNTOS DOSPUNTOS tipodato'''
+    t[0] = Declaracion(t[6], t.lineno(1), columnas(
+        input, t.slice[1]), t[1], t[3])
+
+
+def p_inst_decN(t):
+    '''inst_decla :   IDENTIFICADOR DOSPUNTOS DOSPUNTOS tipodato'''
+    t[0] = Declaracion(t[4], t.lineno(1), columnas(
+        input, t.slice[1]), t[1], None)
 
 
 def p_inst_imprm(t):
@@ -291,6 +367,12 @@ def p_primitivo_cadena(t):
     )
 
 
+def p_primitivo_identificador(t):
+    '''expresion : IDENTIFICADOR'''
+    t[0] = Identificador(t[1], t.lineno(1), columnas(input, t.slice[1])
+                         )
+
+
 def p_primitivo_booleanoF(t):
     '''expresion : RESFALSE'''
     t[0] = Nativo(
@@ -329,10 +411,6 @@ def p_primitivo_carecter(t):
         TipoDato.CARACTER,
         t[1], t.lineno(1), columnas(input, t.slice[1])
     )
-
-
-def inst_imprmln(t):
-    'inst_imp:      RESPRINTLN'
 
 
 parser = yacc.yacc()

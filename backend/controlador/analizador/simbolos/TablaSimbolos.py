@@ -1,3 +1,4 @@
+from controlador.analizador.excepciones.Error import Error
 from .Tipo import TipoDato
 from .Simbolo import Simbolo
 
@@ -22,23 +23,25 @@ class TablaSimbolos:
         self.tablaActual = tabla
 
     def setVariable(self, simbolo):
-        aux = self
-        while aux != None:
-            found = aux.getTabla().get(simbolo.getIdentificador())
-            if found != None:
-                return 'La variable existe'
-            aux = aux.getAnterior()
-        self.tablaActual.setdefault(simbolo.getIdentificador(), simbolo)
-        return 'creada con exito'
+        if simbolo.getIdentificador() in self.tablaActual:
+            return "La variable {} existe ya".format(simbolo.getIdentificador())
+        else:
+            self.tablaActual[simbolo.getIdentificador()] = simbolo
+        return 'La variable existe'
+        # aux = self
+        # while aux != None:
+        #     if simbolo.getIdentificador() in aux.tablaActual:
+        #         return aux.tablaActual[simbolo.getIdentificador()]
+        #     else:
+        #         aux = aux.tablaAnterior
+        # return 'La variable existe'
 
     def getVariable(self, id):
         aux = self
         while aux != None:
-            found = aux.getTabla().get(id)
-            if found != None:
-                return found
+            if aux.getTabla().get(id):
+                return aux.tablaActual[id]
             aux = aux.getAnterior()
-        return None
 
     def getNombre(self):
         return self.nombreDato

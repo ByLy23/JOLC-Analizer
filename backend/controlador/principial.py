@@ -8,7 +8,7 @@ from .gramatica import parse
 def metodoPrincipal(EntradaAnalizar):
     listaErrores = []
     ast = Arbol(parse(EntradaAnalizar))  # entrada con parser
-    tabla = TablaSimbolos([])
+    tabla = TablaSimbolos({})
     ast.setGlobal(tabla)
     for ins in ast.getInstrucciones():
         resultado = ins.interpretar(ast, tabla)
