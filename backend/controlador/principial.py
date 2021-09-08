@@ -7,6 +7,7 @@ from .gramatica import parse
 
 def metodoPrincipal(EntradaAnalizar):
     listaErrores = []
+    # try:
     ast = Arbol(parse(EntradaAnalizar))  # entrada con parser
     tabla = TablaSimbolos({})
     ast.setGlobal(tabla)
@@ -22,3 +23,9 @@ def metodoPrincipal(EntradaAnalizar):
             "errores": listaErrores,
         }
     )
+    # except:
+    #     return jsonify(
+    #         {
+    #             "consola": "Excepciones ocurridas"
+    #         }
+    #     )

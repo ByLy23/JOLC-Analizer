@@ -5,6 +5,7 @@ Segundo semestre 2021
 '''
 # IMPORTACIONES
 # librerias
+from controlador.analizador.instrucciones.condicional.CondIf import CondIf
 from controlador.analizador.instrucciones.AsigDeclaracion.Asignacion import Asignacion
 from controlador.analizador.expresiones.Identificador import Identificador
 from controlador.analizador.instrucciones.AsigDeclaracion.Declaracion import Declaracion
@@ -35,7 +36,11 @@ reservadas = {
     'Float64': 'RESFLOAT',
     'Bool': 'RESBOOL',
     'Char': 'RESCHAR',
-    'String': 'RESTRING'
+    'String': 'RESTRING',
+    'if': 'RESIF',
+    'else': 'RESELSE',
+    'elseif': 'RESELSEIF',
+    'end': 'RESEND'
 }
 tokens = [
     'PTCOMA',
@@ -207,6 +212,7 @@ def p_instruccion(t):
                         | inst_impln PTCOMA 
                         | inst_decla PTCOMA
                         | inst_asig PTCOMA
+                        | inst_if RESEND PTCOMA
     '''
     t[0] = t[1]
 
@@ -240,6 +246,52 @@ def p_tipo_dato(t):
         t[0] = TipoDato.CADENA
     elif t[1].lower() == 'char':
         t[0] = TipoDato.CARACTER
+
+
+def p_inst_if1(t):
+    '''inst_if : RESIF expresion instrucciones '''
+
+    t[0] = CondIf(t[2], t[3], [], t.lineno(1), columnas(input, t.slice[1]))
+    # fila,columna,cond1,condif,condels,condelseif
+
+
+def p_inst_if2(t):
+    '''inst_if : RESIF expresion instrucciones inst_elif'''
+
+    t[0] = CondIf(t[2], t[3], t[4], t.lineno(1),
+                  columnas(input, t.slice[1]))
+    # fila,columna,cond1,condif,condels,condelseif
+
+
+def p_inst_if3(t):
+    '''inst_if : RESIF expresion instrucciones RESELSE instrucciones'''
+
+    t[0] = CondIf(t[2], t[3], [{"expresion": None, "instrucciones": t[5]}], t.lineno(1),
+                  columnas(input, t.slice[1]))
+    # fila,columna,cond1,condif,condels,condelseif
+
+
+def p_inst_elif(t):
+    '''inst_elif : inst_elif elifes'''
+    if t[2] != "":
+        t[1].append(t[2])
+    t[0] = t[1]
+
+
+def p_inst_elif3(t):
+    '''inst_elif : inst_elif RESELSE instrucciones'''
+    t[1].append({"expresion": None, "instrucciones": t[3]})
+    t[0] = t[1]
+
+
+def p_inst_elif2(t):
+    '''inst_elif : elifes'''
+    t[0] = [t[1]]
+
+
+def p_elifes(t):
+    '''elifes : RESELSEIF expresion instrucciones'''
+    t[0] = {"expresion": t[2], "instrucciones": t[3]}
 
 
 def p_inst_asig(t):
