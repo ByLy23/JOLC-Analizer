@@ -15,7 +15,7 @@ class CondWhile(Instruccion):
         val = self.condicion.interpretar(arbol, tablaSimbolo)
         if isinstance(val, Error):
             return val
-        if self.condicion.tipo == TipoDato.BOOLEANO:
+        if self.condicion.tipo != TipoDato.BOOLEANO:
             return Error("Error Semantico", "Dato debe de ser booleano", self.linea, self.columna)
         while self.condicion.interpretar(arbol, tablaSimbolo):
             nuevaTabla = TablaSimbolos(tablaSimbolo)

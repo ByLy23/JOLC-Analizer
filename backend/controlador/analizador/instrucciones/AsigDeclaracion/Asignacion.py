@@ -16,9 +16,7 @@ class Asignacion(Instruccion):
             if variable.tipo != self.valor.tipo:
                 return Error("Error Semantico", "Variable {} con tipo de dato diferente".format(self.identificador), self.linea, self.columna)
             else:
-                print(variable.getValor())
                 variable.setValor(val)
-                print(variable.getValor())
                 # Actualiza tabla
 
         else:

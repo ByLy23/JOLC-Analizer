@@ -5,6 +5,7 @@ Segundo semestre 2021
 '''
 # IMPORTACIONES
 # librerias
+from controlador.analizador.instrucciones.ciclica.CondWhile import CondWhile
 from controlador.analizador.instrucciones.condicional.CondIf import CondIf
 from controlador.analizador.instrucciones.AsigDeclaracion.Asignacion import Asignacion
 from controlador.analizador.expresiones.Identificador import Identificador
@@ -40,7 +41,8 @@ reservadas = {
     'if': 'RESIF',
     'else': 'RESELSE',
     'elseif': 'RESELSEIF',
-    'end': 'RESEND'
+    'end': 'RESEND',
+    'while': 'RESWHILE'
 }
 tokens = [
     'PTCOMA',
@@ -213,6 +215,7 @@ def p_instruccion(t):
                         | inst_decla PTCOMA
                         | inst_asig PTCOMA
                         | inst_if RESEND PTCOMA
+                        | inst_while RESEND PTCOMA
     '''
     t[0] = t[1]
 
@@ -225,6 +228,12 @@ def p_error(t):
                               str(t[1].value), t.lineno(1), columnas(input, t.slice[1])))
     t[0] = ""
 # RESULTANTES
+
+
+def p_inst_while(t):
+    'inst_while : RESWHILE expresion instrucciones'
+    t[0] = CondWhile(t[2], t[3], t.lineno(1), columnas(input, t.slice[1]))
+    # condicion instrucciones
 
 
 def p_tipo_dato(t):
