@@ -5,6 +5,9 @@ Segundo semestre 2021
 '''
 # IMPORTACIONES
 # librerias
+from controlador.analizador.instrucciones.transferencia.Return import Return
+from controlador.analizador.instrucciones.transferencia.Continue import Continue
+from controlador.analizador.instrucciones.transferencia.Break import Break
 from controlador.analizador.instrucciones.ciclica.CondFor import CondFor
 from controlador.analizador.instrucciones.ciclica.CondWhile import CondWhile
 from controlador.analizador.instrucciones.condicional.CondIf import CondIf
@@ -45,7 +48,10 @@ reservadas = {
     'end': 'RESEND',
     'while': 'RESWHILE',
     'for': 'RESFOR',
-    'in': 'RESIN'
+    'in': 'RESIN',
+    'break': 'RESBREAK',
+    'continue': 'RESCONTINUE',
+    'return': 'RESRETURN'
 }
 tokens = [
     'PTCOMA',
@@ -220,6 +226,9 @@ def p_instruccion(t):
                         | inst_if RESEND PTCOMA
                         | inst_while RESEND PTCOMA
                         | inst_for RESEND PTCOMA
+                        | inst_break PTCOMA
+                        | inst_continue PTCOMA
+                        | inst_return PTCOMA
     '''
     t[0] = t[1]
 
@@ -232,6 +241,26 @@ def p_error(t):
                               str(t[1].value), t.lineno(1), columnas(input, t.slice[1])))
     t[0] = ""
 # RESULTANTES
+
+
+def p_inst_continue(t):
+    'inst_continue : RESCONTINUE'
+    t[0] = Continue(t.lineno(1), columnas(input, t.slice[1]))
+
+
+def p_inst_return(t):
+    'inst_return : RESRETURN'
+    t[0] = Return(t.lineno(1), columnas(input, t.slice[1]), None)
+
+
+def p_inst_return2(t):
+    'inst_return : RESRETURN expresion'
+    t[0] = Return(t.lineno(1), columnas(input, t.slice[1]), t[2])
+
+
+def p_inst_break(t):
+    'inst_break : RESBREAK'
+    t[0] = Break(t.lineno(1), columnas(input, t.slice[1]))
 
 
 def p_inst_for(t):

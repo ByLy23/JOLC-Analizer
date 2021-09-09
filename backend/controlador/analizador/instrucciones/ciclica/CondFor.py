@@ -21,7 +21,7 @@ class CondFor(Instruccion):
             val2 = self.tipoRango["exp2"].interpretar(arbol, tablaSimbolo)
             if isinstance(val2, Error):
                 return val2
-            if self.tipoRango["exp1"].tipo != TipoDato.ENTERO or self.tipoRango["exp2"] != TipoDato.ENTERO:
+            if self.tipoRango["exp1"].tipo != TipoDato.ENTERO or self.tipoRango["exp2"].tipo != TipoDato.ENTERO:
                 return Error("Error Semantico", "Rango no entero", self.linea, self.columna)
             for i in range(val1, val2):
                 otraTabla = TablaSimbolos(tablaSimbolo)

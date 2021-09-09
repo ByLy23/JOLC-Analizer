@@ -10,7 +10,7 @@ class Return(Instruccion):
         self.expresion = expresion
 
     def interpretar(self, arbol, tablaSimbolo):
-        if self.expresion:
+        if self.expresion != None:
             self.valor = self.expresion.interpretar(arbol, tablaSimbolo)
             self.tipo = self.expresion.tipo
         return self
