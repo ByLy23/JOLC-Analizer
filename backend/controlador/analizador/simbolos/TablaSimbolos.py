@@ -39,9 +39,11 @@ class TablaSimbolos:
     def getVariable(self, id):
         aux = self
         while aux != None:
-            if aux.getTabla().get(id):
+            if id in aux.tablaActual:
                 return aux.tablaActual[id]
-            aux = aux.getAnterior()
+            else:
+                aux = aux.tablaAnterior
+        return None
 
     def getNombre(self):
         return self.nombreDato

@@ -12,4 +12,5 @@ class Identificador(Instruccion):
         variable = tablaSimbolo.getVariable(self.identificador)
         if variable == None:
             return Error("Error Semantico", "la variable {} no existe".format(self.identificador), self.linea, self.columna)
+        self.tipo = variable.tipo
         return variable.getValor()

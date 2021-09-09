@@ -264,7 +264,7 @@ class Aritmetica(Instruccion):
                 return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
         elif numero == 4:
             if op2 == TipoDato.CADENA:
-                self.tipo = TipoDato.CARACTER
+                self.tipo = TipoDato.CADENA
                 return "{}{}".format(izq, der)
             else:
                 return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)

@@ -8,6 +8,7 @@ class TipoDato(Enum):
     BOOLEANO = 4
     CARACTER = 5
     NOTHING = 6
+    ARREGLO = 7
 
 
 class opAritmetico(Enum):

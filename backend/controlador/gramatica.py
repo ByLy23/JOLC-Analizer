@@ -5,6 +5,7 @@ Segundo semestre 2021
 '''
 # IMPORTACIONES
 # librerias
+from controlador.analizador.instrucciones.ciclica.CondFor import CondFor
 from controlador.analizador.instrucciones.ciclica.CondWhile import CondWhile
 from controlador.analizador.instrucciones.condicional.CondIf import CondIf
 from controlador.analizador.instrucciones.AsigDeclaracion.Asignacion import Asignacion
@@ -42,7 +43,9 @@ reservadas = {
     'else': 'RESELSE',
     'elseif': 'RESELSEIF',
     'end': 'RESEND',
-    'while': 'RESWHILE'
+    'while': 'RESWHILE',
+    'for': 'RESFOR',
+    'in': 'RESIN'
 }
 tokens = [
     'PTCOMA',
@@ -216,6 +219,7 @@ def p_instruccion(t):
                         | inst_asig PTCOMA
                         | inst_if RESEND PTCOMA
                         | inst_while RESEND PTCOMA
+                        | inst_for RESEND PTCOMA
     '''
     t[0] = t[1]
 
@@ -228,6 +232,22 @@ def p_error(t):
                               str(t[1].value), t.lineno(1), columnas(input, t.slice[1])))
     t[0] = ""
 # RESULTANTES
+
+
+def p_inst_for(t):
+    'inst_for : RESFOR IDENTIFICADOR RESIN tipo_rango instrucciones'
+    t[0] = CondFor(t[2], t[4], t[5], t.lineno(1), columnas(input, t.slice[1]))
+
+
+def p_tipo_rango_int(t):
+    'tipo_rango : expresion DOSPUNTOS expresion'
+    t[0] = {"exp1": t[1], "exp2": t[3]}
+
+
+def p_tipo_rango_string(t):
+    '''tipo_rango : expresion'''
+    t[0] = {"exp1": t[1], "exp2": None}
+# def p_tipoRangoCadena          <---------------------------
 
 
 def p_inst_while(t):

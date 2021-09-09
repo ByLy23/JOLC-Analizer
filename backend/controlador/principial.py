@@ -9,7 +9,7 @@ def metodoPrincipal(EntradaAnalizar):
     listaErrores = []
     # try:
     ast = Arbol(parse(EntradaAnalizar))  # entrada con parser
-    tabla = TablaSimbolos({})
+    tabla = TablaSimbolos()
     ast.setGlobal(tabla)
     for ins in ast.getInstrucciones():
         resultado = ins.interpretar(ast, tabla)
