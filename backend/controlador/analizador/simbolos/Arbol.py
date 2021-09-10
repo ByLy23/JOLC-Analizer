@@ -1,3 +1,7 @@
+from controlador.analizador.simbolos.Tipo import TipoDato
+from controlador.reportes.ReporteTabla import ReporteTabla
+
+
 class Arbol:
     def __init__(self, instrucciones):
         self.instrucciones = instrucciones
@@ -8,6 +12,25 @@ class Arbol:
         self.listaSimbolos = []
 
     # gets
+    def actualizarTabla(self, ide, valor, linea, entorno, columna):
+        for elemento in self.listaSimbolos:
+            if elemento.getIdentificador() == ide and elemento.getEntorno() == entorno:
+                elemento.setValor(valor)
+                elemento.setLinea(linea)
+                elemento.setColumna(columna)
+                return True
+        return False
+
+    def getFuncion(self, identificador):
+        for f in self.funciones:
+            if identificador == f.identificador:
+                if not self.actualizarTabla(f.identificador, '', f.linea, '', f.columna):
+                    # TODO CAMBIAR TIPO DE DATO XD
+                    nuevoSimbolo = ReporteTabla(f.identificador, '', 'FuncionCreacion', str(
+                        TipoDato.ENTERO), '', f.linea, f.columna)
+                    self.listaSimbolos.append(nuevoSimbolo)
+                return f
+
     def getSimbolos(self):
         return self.listaSimbolos
 
