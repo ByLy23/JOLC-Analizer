@@ -5,6 +5,8 @@ Segundo semestre 2021
 '''
 # IMPORTACIONES
 # librerias
+from controlador.analizador.instrucciones.struct.AsignacionStruct import AsignacionStruct
+from controlador.analizador.instrucciones.struct.AccesoStruct import AccesoStruct
 from controlador.analizador.instrucciones.struct.LlamadaStruct import LlamadaStruct
 from controlador.analizador.instrucciones.struct.Struct import Struct
 from controlador.analizador.instrucciones.funciones.LlamadaFuncion import LlamadaFuncion
@@ -96,7 +98,7 @@ tokens = [
 t_PTCOMA = r';'
 t_DOSPUNTOS = r':'
 t_MAS = r'\+'
-t_PUNTO = r'.'
+t_PUNTO = r'\.'
 t_COMA = r','
 t_MENOS = r'-'
 t_POR = r'\*'
@@ -243,6 +245,7 @@ def p_instruccion(t):
                         | inst_funcion RESEND PTCOMA
                         | inst_llamada PTCOMA
                         | inst_struct RESEND PTCOMA
+                        | inst_asig_struct PTCOMA
     '''
     t[0] = t[1]
 
@@ -261,6 +264,12 @@ def p_error(t):
 
 
 # creacion
+def p_inst_asig_strct(t):
+    'inst_asig_struct : IDENTIFICADOR PUNTO IDENTIFICADOR IGUAL expresion'
+    t[0] = AsignacionStruct(t[1], t[3], t[5], t.lineno(1),
+                            columnas(input, t.slice[1]))
+
+
 def p_inst_strct(t):
     '''inst_struct : RESESTRUCT IDENTIFICADOR params_struct'''
     t[0] = Struct(False, t[2], t[3], t.lineno(1), columnas(input, t.slice[1]))
@@ -356,6 +365,11 @@ def p_lista_parametros2(t):
 
 def p_tipo_parametros2(t):
     '''tipo_parametro : IDENTIFICADOR DOSPUNTOS DOSPUNTOS tipodato'''
+    t[0] = {"tipato": t[4], "identificador": t[1]}
+
+
+def p_tipo_parametros3(t):
+    '''tipo_parametro : IDENTIFICADOR DOSPUNTOS DOSPUNTOS IDENTIFICADOR'''
     t[0] = {"tipato": t[4], "identificador": t[1]}
 
 
@@ -598,7 +612,7 @@ def p_primitivo_menosU(t):
 
 def p_acceso_struct(t):
     'expresion : IDENTIFICADOR PUNTO IDENTIFICADOR'
-    t[0] = {"ide1": t[1], "param": t[3]}
+    t[0] = AccesoStruct(t[1], t[3], t.lineno(1), columnas(input, t.slice[1]))
 
 
 def p_exp_llamada(t):

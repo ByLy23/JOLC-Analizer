@@ -6,6 +6,7 @@ class Instruccion(ABC):
         self.tipo = tipo
         self.linea = linea
         self.columna = columna
+        self.tipoStruct = None  # Trae el nombre del Struct
         super().__init__()
 
     @abstractmethod

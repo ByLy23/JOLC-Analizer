@@ -3,6 +3,7 @@ class Simbolo:
         self.identificador = identificador
         self.tipo = tipo
         self.valor = valor
+        self.tipoStruct = None  # Trae el nombre del Struct
 
     def getTipo(self):
         return self.tipo

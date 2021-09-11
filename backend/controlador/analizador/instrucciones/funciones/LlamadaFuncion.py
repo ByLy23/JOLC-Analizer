@@ -54,6 +54,7 @@ class LlamadaFuncion(Instruccion):
         valStruct = arbol.getStruct(self.identificador)
         if valStruct == None:
             return Error("Error Semantico", "La variable no es funcion ni estruct", self.linea, self.columna)
+        self.tipoStruct = self.identificador
         # Lista de parametros de struct=valStruct.parametros
         # parametros de la llamada=self.parametros
         if len(valStruct.parametros) != len(self.parametros):
@@ -70,5 +71,5 @@ class LlamadaFuncion(Instruccion):
             listaStruct.append(
                 Simbolo(valStruct.parametros[iterador]["identificador"], nuevoVal.tipo, val))
             iterador = iterador+1
-        self.tipo = TipoDato.ARREGLO
+        self.tipo = TipoDato.STRUCT
         return listaStruct

@@ -24,5 +24,7 @@ class Asignacion(Instruccion):
             val = self.valor.interpretar(arbol, tablaSimbolo)
             if isinstance(val, Error):
                 return val
-            if tablaSimbolo.setVariable(Simbolo(self.identificador, self.valor.tipo, val)) != 'La variable existe':
+            nuevoSimbolo = Simbolo(self.identificador, self.valor.tipo, val)
+            nuevoSimbolo.tipoStruct = self.valor.tipoStruct
+            if tablaSimbolo.setVariable(nuevoSimbolo) != 'La variable existe':
                 return Error("Error Semantico", "La variable {} Existe actualmente".format(self.identificador), self.linea, self.columna)
