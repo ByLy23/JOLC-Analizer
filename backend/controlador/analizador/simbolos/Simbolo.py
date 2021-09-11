@@ -4,6 +4,7 @@ class Simbolo:
         self.tipo = tipo
         self.valor = valor
         self.tipoStruct = None  # Trae el nombre del Struct
+        self.mutable = False
 
     def getTipo(self):
         return self.tipo

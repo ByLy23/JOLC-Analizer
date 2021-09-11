@@ -281,8 +281,8 @@ def p_inst_struct_mut(t):
 
 
 def p_params_strct(t):
-    'params_struct : params_struct PTCOMA param_struct'
-    t[1].append(t[3])
+    'params_struct : params_struct param_struct'
+    t[1].append(t[2])
     t[0] = t[1]
 
 
@@ -292,12 +292,12 @@ def p_params_struct2(t):
 
 
 def p_param_struct(t):
-    'param_struct : IDENTIFICADOR'
+    'param_struct : IDENTIFICADOR PTCOMA'
     t[0] = {"identificador": t[1], "tipato": None}
 
 
 def p_param_struct2(t):
-    'param_struct : IDENTIFICADOR DOSPUNTOS DOSPUNTOS tipodato'
+    'param_struct : IDENTIFICADOR DOSPUNTOS DOSPUNTOS tipodato PTCOMA'
     t[0] = {"identificador": t[1], "tipato": t[4]}
 # struct identificador parametros end ;
 # mutable struct identificador parametros end;
@@ -644,6 +644,12 @@ def p_primitivo_identificador(t):
     '''expresion : IDENTIFICADOR'''
     t[0] = Identificador(t[1], t.lineno(1), columnas(input, t.slice[1])
                          )
+
+
+def p_primitivo_nothing(t):
+    'expresion : RESNOTHING'
+    t[0] = Nativo(TipoDato.NOTHING, None, t.lineno(1),
+                  columnas(input, t.slice[1]))
 
 
 def p_primitivo_booleanoF(t):

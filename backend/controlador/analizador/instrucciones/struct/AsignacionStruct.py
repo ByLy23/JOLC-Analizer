@@ -15,14 +15,16 @@ class AsignacionStruct(Instruccion):
         if variable == None:
             return Error("Error Semantico", "la variable {} no existe".format(self.identificador), self.linea, self.columna)
         valStruct = arbol.getStruct(variable.tipoStruct)
+        print(variable.getIdentificador())
         if valStruct == None:
-            return Error("Error Semantico", "La variable no es funcion ni estruct", self.linea, self.columna)
+            return Error("Error Semantico", "La variable no es estruct", self.linea, self.columna)
         if not valStruct.mutable:
             return Error("Error Semantico", "El struct no es de tipo mutable", self.linea, self.columna)
         for param in variable.getValor():
             if param.getIdentificador() == self.parametro:
                 self.tipo = param.getTipo()
                 val = self.expresion.interpretar(arbol, tablaSimbolo)
+                # print(self.expresion.tipo)
                 if isinstance(val, Error):
                     return val
                 if self.noNulo(valStruct, self.parametro):

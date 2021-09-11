@@ -22,7 +22,9 @@ class Declaracion(Instruccion):
                 return val
             if self.valor.tipo != self.tipo:
                 return Error("Error Semantico", "{} no es compatible con {} ".format(self.valor.tipo, self.tipo), self.linea, self.columna)
-            if tablaSimbolo.setVariable(Simbolo(self.identificador, self.tipo, val)) != 'La variable existe':
+            nuevaVal = Simbolo(self.identificador, self.tipo, val)
+            nuevaVal.tipoStruct = self.valor.tipoStruct
+            if tablaSimbolo.setVariable(nuevaVal) != 'La variable existe':
                 return Error("Error Semantico", "La variable {} Existe actualmente".format(self.identificador), self.linea, self.columna)
             # else:
                 # Actualiza tabla y eso

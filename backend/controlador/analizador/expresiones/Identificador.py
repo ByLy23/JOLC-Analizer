@@ -13,4 +13,5 @@ class Identificador(Instruccion):
         if variable == None:
             return Error("Error Semantico", "la variable {} no existe".format(self.identificador), self.linea, self.columna)
         self.tipo = variable.tipo
+        self.tipoStruct = variable.tipoStruct
         return variable.getValor()

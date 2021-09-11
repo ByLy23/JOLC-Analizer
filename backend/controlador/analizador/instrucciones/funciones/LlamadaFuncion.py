@@ -25,22 +25,41 @@ class LlamadaFuncion(Instruccion):
                     val = nuevoVal.interpretar(arbol, tablaSimbolo)
                     if isinstance(val, Error):
                         return val
-
-                    dec = Declaracion(nuevoVal.tipo, funcion.linea,
-                                      funcion.columna, funcion.parametros[iterador]["identificador"], nuevoVal)
-                    nuevaDec = dec.interpretar(arbol, nuevaTabla)
-                    if isinstance(nuevaDec, Error):
-                        return nuevaDec
-                    var = nuevaTabla.getVariable(
-                        funcion.parametros[iterador]["identificador"])
-                    if var != None:
-                        if var.tipo != nuevoVal.tipo:
-                            return Error("Semantico", "Tipo de dato diferente", self.linea, self.columna)
+                    if isinstance(funcion.parametros[iterador]["tipato"], str):
+                        # Se realiza como un struct
+                        dec = Declaracion(TipoDato.STRUCT, funcion.linea,
+                                          funcion.columna, funcion.parametros[iterador]["identificador"], nuevoVal)
+                        nuevaDec = dec.interpretar(arbol, nuevaTabla)
+                        if isinstance(nuevaDec, Error):
+                            return nuevaDec
+                        var = nuevaTabla.getVariable(
+                            funcion.parametros[iterador]["identificador"])
+                        if var != None:
+                            if var.tipo != nuevoVal.tipo:
+                                return Error("Semantico", "Tipo de dato diferente", self.linea, self.columna)
+                            else:
+                                # print(nuevoVal.tipoStruct)
+                                var.tipoStruct = nuevoVal.tipoStruct
+                                var.setValor(val)
+                                nuevaTabla.setNombre(funcion.identificador)
                         else:
-                            var.setValor(val)
-                            nuevaTabla.setNombre(funcion.identificador)
+                            return Error("Error Semantico", "Variable no existe", self.linea, self.columna)
                     else:
-                        return Error("Error Semantico", "Variable no existe", self.linea, self.columna)
+                        dec = Declaracion(nuevoVal.tipo, funcion.linea,
+                                          funcion.columna, funcion.parametros[iterador]["identificador"], nuevoVal)
+                        nuevaDec = dec.interpretar(arbol, nuevaTabla)
+                        if isinstance(nuevaDec, Error):
+                            return nuevaDec
+                        var = nuevaTabla.getVariable(
+                            funcion.parametros[iterador]["identificador"])
+                        if var != None:
+                            if var.tipo != nuevoVal.tipo:
+                                return Error("Semantico", "Tipo de dato diferente", self.linea, self.columna)
+                            else:
+                                var.setValor(val)
+                                nuevaTabla.setNombre(funcion.identificador)
+                        else:
+                            return Error("Error Semantico", "Variable no existe", self.linea, self.columna)
                     iterador = iterador+1
                 nuevoMet = funcion.interpretar(arbol, nuevaTabla)
                 if isinstance(nuevoMet, Error):
@@ -70,6 +89,8 @@ class LlamadaFuncion(Instruccion):
             # se agrega el simbolo de cda parametro del struct
             listaStruct.append(
                 Simbolo(valStruct.parametros[iterador]["identificador"], nuevoVal.tipo, val))
+            # print(valStruct.parametros[iterador]["identificador"], val)
             iterador = iterador+1
+
         self.tipo = TipoDato.STRUCT
         return listaStruct

@@ -10,11 +10,18 @@ class AccesoStruct(Instruccion):
         self.parametro = parametro
 
     def interpretar(self, arbol, tablaSimbolo):
+        # print(self.identificador)
+        # print(self.parametro)
         variable = tablaSimbolo.getVariable(self.identificador)
+        self.tipoStruct = variable.tipoStruct
+        # print(variable.getValor()[0].getIdentificador())
         if variable == None:
             return Error("Error Semantico", "la variable {} no existe".format(self.identificador), self.linea, self.columna)
+        # print(self.identificador)
+        # print(variable.getValor())
         for param in variable.getValor():
             if param.getIdentificador() == self.parametro:
+                # print(param.getIdentificador())
                 self.tipo = param.getTipo()
                 return param.getValor()
         return Error("Error Semantico", "No existe este parametro dentro del struct", self.linea, self.columna)

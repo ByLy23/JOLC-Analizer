@@ -17,12 +17,24 @@ class Relacional(Instruccion):
         der = self.obtieneValor(self.cond2, arbol, tablaSimbolo)
         if isinstance(der, Error):
             return der
-        if izq == None or der == None:
-            return Error("Error Semantico", "Variable con dato nulo no puede ser ejecutada", self.linea, self.columna)
+
+        # print(self.cond1, "<--->", self.cond2)
         self.tipo = TipoDato.BOOLEANO
         if self.relacion == opRelacional.IGUAL:
+            if izq == None and der == None:
+                return True
+            if izq == None:
+                return (der) == None
+            if der == None:
+                return (izq) == None
             return izq == der
         elif self.relacion == opRelacional.DIFERENTE:
+            if izq == None and der == None:
+                return False
+            if izq == None:
+                return not (der) == None
+            if der == None:
+                return not (izq) == None
             return izq != der
         elif self.relacion == opRelacional.MENOR:
             return izq < der
@@ -46,6 +58,10 @@ class Relacional(Instruccion):
         elif operando.tipo == TipoDato.CARACTER:
             return chr(ord(valor))
         elif operando.tipo == TipoDato.BOOLEANO:
-            return str(valor).lower()
+            return str(valor)
         elif operando.tipo == TipoDato.CADENA:
             return str(valor)
+        elif operando.tipo == TipoDato.NOTHING:
+            return None
+        elif operando.tipo == TipoDato.STRUCT:
+            return valor
