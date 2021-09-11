@@ -1,3 +1,4 @@
+from controlador.analizador.instrucciones.funciones.Funcion import Funcion
 from controlador.analizador.excepciones.Error import Error
 from flask import jsonify
 from .analizador.simbolos.Arbol import Arbol
@@ -12,6 +13,11 @@ def metodoPrincipal(EntradaAnalizar):
     tabla = TablaSimbolos()
     ast.setGlobal(tabla)
     for ins in ast.getInstrucciones():
+        if isinstance(ins, Funcion):
+            ast.getFunciones().append(ins)
+    for ins in ast.getInstrucciones():
+        if isinstance(ins, Funcion):
+            continue
         resultado = ins.interpretar(ast, tabla)
         if isinstance(resultado, Error):
             ast.getErrores().append(resultado)

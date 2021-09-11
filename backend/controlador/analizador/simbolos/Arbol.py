@@ -24,12 +24,13 @@ class Arbol:
     def getFuncion(self, identificador):
         for f in self.funciones:
             if identificador == f.identificador:
-                if not self.actualizarTabla(f.identificador, '', f.linea, '', f.columna):
-                    # TODO CAMBIAR TIPO DE DATO XD
-                    nuevoSimbolo = ReporteTabla(f.identificador, '', 'FuncionCreacion', str(
-                        TipoDato.ENTERO), '', f.linea, f.columna)
-                    self.listaSimbolos.append(nuevoSimbolo)
+                # if not self.actualizarTabla(f.identificador, '', f.linea, '', f.columna):
+                #     # TODO CAMBIAR TIPO DE DATO XD
+                #     nuevoSimbolo = ReporteTabla(f.identificador, '', 'FuncionCreacion', str(
+                #         TipoDato.ENTERO), '', f.linea, f.columna)
+                #     self.listaSimbolos.append(nuevoSimbolo)
                 return f
+        return None
 
     def getSimbolos(self):
         return self.listaSimbolos
@@ -70,10 +71,11 @@ class Arbol:
         self.consola = "{}{}".format(self.consola, str(actualizar))
 
     def actualizarTabla(self, identificadr, valor, linea, entorno, columna):
-        for item in self.listaSimbolos.keys():
+        for item in self.listaSimbolos:
             if item.getIdentificador() == identificadr:
                 item.setValor(valor)
                 item.setLinea(linea)
+                item.setEntorno(entorno)
                 item.setColumna(columna)
                 return True
         return False
