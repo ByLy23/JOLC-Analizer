@@ -22,6 +22,7 @@ def metodoPrincipal(EntradaAnalizar):
         if isinstance(resultado, Error):
             ast.getErrores().append(resultado)
             ast.actualizaConsola(resultado.retornaError())
+    print(ast.getGlobal())
     return jsonify(
         {
             "consola": ast.getConsola(),

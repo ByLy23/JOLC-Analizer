@@ -5,6 +5,8 @@ Segundo semestre 2021
 '''
 # IMPORTACIONES
 # librerias
+from controlador.analizador.instrucciones.struct.LlamadaStruct import LlamadaStruct
+from controlador.analizador.instrucciones.struct.Struct import Struct
 from controlador.analizador.instrucciones.funciones.LlamadaFuncion import LlamadaFuncion
 from controlador.analizador.instrucciones.funciones.Funcion import Funcion
 from controlador.analizador.instrucciones.transferencia.Return import Return
@@ -54,11 +56,14 @@ reservadas = {
     'break': 'RESBREAK',
     'continue': 'RESCONTINUE',
     'return': 'RESRETURN',
-    'function': 'RESFUNCTION'
+    'function': 'RESFUNCTION',
+    'mutable': 'RESMUTABLE',
+    'struct': 'RESESTRUCT'
 }
 tokens = [
     'PTCOMA',
     'DOSPUNTOS',
+    'PUNTO',
     'COMA',
     'MAS',
     'MENOS',
@@ -91,6 +96,7 @@ tokens = [
 t_PTCOMA = r';'
 t_DOSPUNTOS = r':'
 t_MAS = r'\+'
+t_PUNTO = r'.'
 t_COMA = r','
 t_MENOS = r'-'
 t_POR = r'\*'
@@ -236,6 +242,7 @@ def p_instruccion(t):
                         | inst_return PTCOMA
                         | inst_funcion RESEND PTCOMA
                         | inst_llamada PTCOMA
+                        | inst_struct RESEND PTCOMA
     '''
     t[0] = t[1]
 
@@ -244,10 +251,54 @@ def p_instruccion(t):
 
 def p_error(t):
     'instruccion :      error PTCOMA'
+    print(t)
     listaErrores.append(Error("Sintactico", "Error de tipo sintactico: " +
                               str(t[1].value), t.lineno(1), columnas(input, t.slice[1])))
     t[0] = ""
 # RESULTANTES
+
+# STRUCTS
+
+
+# creacion
+def p_inst_strct(t):
+    '''inst_struct : RESESTRUCT IDENTIFICADOR params_struct'''
+    t[0] = Struct(False, t[2], t[3], t.lineno(1), columnas(input, t.slice[1]))
+
+
+def p_inst_struct_mut(t):
+    '''inst_struct : RESMUTABLE RESESTRUCT IDENTIFICADOR params_struct'''
+    t[0] = Struct(True, t[3], t[4], t.lineno(1), columnas(input, t.slice[1]))
+
+
+def p_params_strct(t):
+    'params_struct : params_struct PTCOMA param_struct'
+    t[1].append(t[3])
+    t[0] = t[1]
+
+
+def p_params_struct2(t):
+    'params_struct : param_struct'
+    t[0] = [t[1]]
+
+
+def p_param_struct(t):
+    'param_struct : IDENTIFICADOR'
+    t[0] = {"identificador": t[1], "tipato": None}
+
+
+def p_param_struct2(t):
+    'param_struct : IDENTIFICADOR DOSPUNTOS DOSPUNTOS tipodato'
+    t[0] = {"identificador": t[1], "tipato": t[4]}
+# struct identificador parametros end ;
+# mutable struct identificador parametros end;
+
+
+# expresion que retorna un struct (constructor):
+# identificador parabre parametros parcierra ;
+
+# acceso a parametros struct:
+# identificador.parametro
 
 # LLAMADA FUNCION
 
@@ -372,16 +423,18 @@ def p_tipo_dato(t):
                        | RESCHAR
                        | RESBOOL
     '''
-    if t[1].lower() == 'int64':
+    if t[1] == 'Int64':
         t[0] = TipoDato.ENTERO
-    elif t[1].lower() == 'nothing':
+    elif t[1] == 'nothing':
         t[0] = TipoDato.NOTHING
-    elif t[1].lower() == 'float64':
+    elif t[1] == 'Float64':
         t[0] = TipoDato.DECIMAL
-    elif t[1].lower() == 'string':
+    elif t[1] == 'String':
         t[0] = TipoDato.CADENA
-    elif t[1].lower() == 'char':
+    elif t[1] == 'Char':
         t[0] = TipoDato.CARACTER
+    elif t[1] == 'Bool':
+        t[0] = TipoDato.BOOLEANO
 
 # IF
 
@@ -541,6 +594,16 @@ def p_primitivo_menosU(t):
     if t[1] == '-':
         t[0] = Aritmetica(opAritmetico.UMENOS, t.lineno(
             1), columnas(input, t.slice[1]), t[2], None)
+
+
+def p_acceso_struct(t):
+    'expresion : IDENTIFICADOR PUNTO IDENTIFICADOR'
+    t[0] = {"ide1": t[1], "param": t[3]}
+
+
+def p_exp_llamada(t):
+    'expresion : inst_llamada'
+    t[0] = t[1]
 
 
 def p_primitivo_parentesis(t):

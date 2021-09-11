@@ -20,7 +20,6 @@ class Declaracion(Instruccion):
             val = self.valor.interpretar(arbol, tablaSimbolo)
             if isinstance(val, Error):
                 return val
-            print(self.valor.tipo, self.tipo)
             if self.valor.tipo != self.tipo:
                 return Error("Error Semantico", "{} no es compatible con {} ".format(self.valor.tipo, self.tipo), self.linea, self.columna)
             if tablaSimbolo.setVariable(Simbolo(self.identificador, self.tipo, val)) != 'La variable existe':

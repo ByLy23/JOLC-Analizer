@@ -1,3 +1,4 @@
+from controlador.analizador.simbolos.Simbolo import Simbolo
 from controlador.analizador.excepciones.Error import Error
 from controlador.analizador.simbolos.Tipo import TipoDato
 from controlador.analizador.abstracto.Instruccion import Instruccion
@@ -20,4 +21,8 @@ class Asignacion(Instruccion):
                 # Actualiza tabla
 
         else:
-            return Error("Error Semantico", "Variable {} no existe".format(self.identificador), self.linea, self.columna)
+            val = self.valor.interpretar(arbol, tablaSimbolo)
+            if isinstance(val, Error):
+                return val
+            if tablaSimbolo.setVariable(Simbolo(self.identificador, self.valor.tipo, val)) != 'La variable existe':
+                return Error("Error Semantico", "La variable {} Existe actualmente".format(self.identificador), self.linea, self.columna)

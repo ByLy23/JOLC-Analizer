@@ -9,6 +9,7 @@ class TipoDato(Enum):
     CARACTER = 5
     NOTHING = 6
     ARREGLO = 7
+    STRUCT = 8
 
 
 class opAritmetico(Enum):
