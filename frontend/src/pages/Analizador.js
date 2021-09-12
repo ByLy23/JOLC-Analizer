@@ -10,10 +10,13 @@ export const Analizador = () => {
   const [state = { outputCode: 'salida' }, setstate] = useState([]);
   const [salida = { outputCode: 'salida' }, setSalida] = useState([]);
   const handleSubmit = () => {
-    setSalida({ outputCode: getConsola(valor) });
+    getConsola(valor).then((data) => {
+      setSalida({ outputCode: data.consola });
+    });
+
     setpopUp(true);
   };
-  const input = <input type="submit" className="analizar" onClick={handleSubmit} value="analizar" />;
+  const input = <input type="submit" className="analizar" onClick={handleSubmit} value="Analizar" />;
   const valor = {
     estado: state.outputCode,
     colocaEstado: setstate,

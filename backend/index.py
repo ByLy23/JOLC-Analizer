@@ -1,4 +1,5 @@
 from flask import Flask, request
+from flask_cors import CORS
 from controlador.principial import metodoPrincipal
 
 
@@ -7,6 +8,7 @@ def pruebaModo(entrada):
 
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route("/interpretar", methods=['GET', 'POST'])
