@@ -66,7 +66,8 @@ reservadas = {
     'mutable': 'RESMUTABLE',
     'struct': 'RESESTRUCT',
     'log10': 'RESLOG10', 'log': 'RESLOG', 'sin': 'RESSIN', 'cos': 'RESCOS', 'tan': 'RESTAN', 'sqrt': 'RESRAIZ',
-    'parse': 'RESPARSE', 'trunc': 'RESTRUNC', 'float': 'RESPARSEFLOAT', 'string': 'RESPARSESTRING', 'typeof': 'RESTYPE', 'push': 'RESPUSH', 'pop': 'RESPOP', 'length': 'RESLEN'
+    'parse': 'RESPARSE', 'trunc': 'RESTRUNC', 'float': 'RESPARSEFLOAT', 'string': 'RESPARSESTRING', 'typeof': 'RESTYPE', 'push': 'RESPUSH', 'pop': 'RESPOP', 'length': 'RESLEN',
+    'lowercase': 'RESLOWER', 'uppercase': 'RESUPPER'
 }
 tokens = [
     'PTCOMA',

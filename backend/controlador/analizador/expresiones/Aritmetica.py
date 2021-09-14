@@ -155,7 +155,8 @@ class Aritmetica(Instruccion):
         if numero == 1:
             if op2 == TipoDato.ENTERO:
                 self.tipo = TipoDato.ENTERO
-                return izq - der
+                print(self.op1.tipo, self.op2.tipo)
+                return int(izq) - int(der)
             elif op2 == TipoDato.DECIMAL:
                 self.tipo = TipoDato.DECIMAL
                 return float(izq)-float(der)

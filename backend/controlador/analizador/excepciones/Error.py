@@ -6,6 +6,6 @@ class Error:
         self.columna = columna
 
     def retornaError(self):
-        return str("Error de tipo: {} {} en la linea: {} y columna: {}".format(
+        return str("Error de tipo: {} {} en la linea: {} y columna: {} \n".format(
             self.tipo, self.descripcion, self.fila, self.columna
         ))

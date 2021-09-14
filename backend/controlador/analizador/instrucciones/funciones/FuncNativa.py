@@ -30,11 +30,17 @@ class FuncNativa(Instruccion):
                 self.tipo = TipoDato.CADENA
                 return str(self.argumentos["exp1"].tipo)[9:]
             elif exp == "float":  # ARGUMENTO
-                if self.argumentos["exp1"].tipo != TipoDato.ENTERO:
+                if self.argumentos["exp1"].tipo == TipoDato.ENTERO:
                     self.tipo = TipoDato.DECIMAL
                     return float(arg1)
                 else:
                     return Error("Error Semantico", "Valor debe ser entero", self.linea, self.columna)
+            elif exp == "trunc":  # ARGUMENTO
+                if self.argumentos["exp1"].tipo == TipoDato.DECIMAL:
+                    self.tipo = TipoDato.ENTERO
+                    return trunc(arg1)
+                else:
+                    return Error("Error Semantico", "Valor debe ser decimal", self.linea, self.columna)
             elif exp == "string":  # ARGUMENTO
                 self.tipo = TipoDato.CADENA
                 return str(arg1)

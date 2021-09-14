@@ -12,14 +12,20 @@ class Print(Instruccion):
         self.columna = columna
 
     def interpretar(self, arbol, tablaSimbolo):
-        valor = self.expresion.interpretar(arbol, tablaSimbolo)
-        if isinstance(valor, Error):
-            return valor
-        if self.expresion.tipo == TipoDato.ARREGLO:
-            arbol.actualizaConsola(self.impresion(valor))
+        for valor in self.expresion:
+            variable = valor.interpretar(arbol, tablaSimbolo)
+            if isinstance(variable, Error):
+                return variable
+            if variable == None:
+                err = Error(
+                    "Error Semantico", "No existe ningun valor que mostrar", self.linea, self.columna)
+                arbol.getErrores().append(err)
+                arbol.actualizaConsola(err.retornaError())
+            if valor.tipo == TipoDato.ARREGLO:
+                arbol.actualizaConsola(self.impresion(variable))
 
-        else:
-            arbol.actualizaConsola(str(valor))
+            else:
+                arbol.actualizaConsola(str(variable))
 
     def impresion(self, valor):
         dato = ""
