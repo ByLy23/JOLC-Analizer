@@ -5,6 +5,7 @@ Segundo semestre 2021
 '''
 # IMPORTACIONES
 # librerias
+from controlador.analizador.instrucciones.funciones.FuncNativa import FuncNativa
 from controlador.analizador.instrucciones.struct.AsignacionStruct import AsignacionStruct
 from controlador.analizador.instrucciones.struct.AccesoStruct import AccesoStruct
 from controlador.analizador.instrucciones.struct.LlamadaStruct import LlamadaStruct
@@ -33,7 +34,7 @@ from .analizador.instrucciones.Println import Println
 from .analizador.excepciones.Error import Error
 import re
 import sys
-sys.setrecursionlimit(3000)
+sys.setrecursionlimit(5000)
 
 listaErrores = []
 input = ''
@@ -60,7 +61,9 @@ reservadas = {
     'return': 'RESRETURN',
     'function': 'RESFUNCTION',
     'mutable': 'RESMUTABLE',
-    'struct': 'RESESTRUCT'
+    'struct': 'RESESTRUCT',
+    'log10': 'RESLOG10', 'log': 'RESLOG', 'sin': 'RESSIN', 'cos': 'RESCOS', 'tan': 'RESTAN', 'sqrt': 'RESRAIZ',
+    'parse': 'RESPARSE', 'trunc': 'RESTRUNC', 'float': 'RESPARSEFLOAT', 'string': 'RESPARSESTRING', 'typeof': 'RESTYPE', 'push': 'RESPUSH', 'pop': 'RESPOP', 'length': 'RESLEN'
 }
 tokens = [
     'PTCOMA',
@@ -617,6 +620,39 @@ def p_acceso_struct(t):
 
 def p_exp_llamada(t):
     'expresion : inst_llamada'
+    t[0] = t[1]
+
+
+def p_func_primitiva(t):
+    'expresion : expresion_nativa PARABRE par_nativa PARCIERRA'
+    t[0] = FuncNativa(t[1], t[3], t.lineno(2), columnas(input, t.slice[2]))
+
+
+def p_par_nativa(t):
+    'par_nativa : expresion COMA expresion'
+    t[0] = {"exp1": t[1], "exp2": t[3]}
+
+
+def p_par_nativa2(t):
+    'par_nativa : expresion'
+    t[0] = {"exp1": t[1], "exp2": None}
+
+
+def p_expresion_nativa(t):
+    '''expresion_nativa :    RESLOG10
+                           | RESLOG
+                           | RESSIN
+                           | RESCOS
+                           | RESTAN
+                           | RESRAIZ
+                           | RESPARSE
+                           | RESTRUNC
+                           | RESPARSEFLOAT
+                           | RESPARSESTRING
+                           | RESTYPE
+                           | RESPUSH
+                           | RESPOP
+                           | RESLEN'''
     t[0] = t[1]
 
 

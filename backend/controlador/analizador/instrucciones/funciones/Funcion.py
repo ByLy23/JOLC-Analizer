@@ -26,6 +26,7 @@ class Funcion(Instruccion):
                 arbol.actualizaConsola(error.retornaError())
             if isinstance(valor, Return):
                 self.tipo = valor.tipo
+                self.tipoStruct = valor.tipoStruct
                 return valor.valor
         return None
         # for item in self.instrucciones:

@@ -13,15 +13,21 @@ class AccesoStruct(Instruccion):
         # print(self.identificador)
         # print(self.parametro)
         variable = tablaSimbolo.getVariable(self.identificador)
+        self.tipo = variable.tipo
         self.tipoStruct = variable.tipoStruct
         # print(variable.getValor()[0].getIdentificador())
         if variable == None:
             return Error("Error Semantico", "la variable {} no existe".format(self.identificador), self.linea, self.columna)
         # print(self.identificador)
         # print(variable.getValor())
+        # print(variable.getIdentificador())
+        # print(self.linea, self.columna)
         for param in variable.getValor():
+
             if param.getIdentificador() == self.parametro:
                 # print(param.getIdentificador())
                 self.tipo = param.getTipo()
+                # print(self.tipo)
+                # print(param.getValor())
                 return param.getValor()
         return Error("Error Semantico", "No existe este parametro dentro del struct", self.linea, self.columna)

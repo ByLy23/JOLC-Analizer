@@ -21,6 +21,7 @@ class Relacional(Instruccion):
         # print(self.cond1, "<--->", self.cond2)
         self.tipo = TipoDato.BOOLEANO
         if self.relacion == opRelacional.IGUAL:
+            # print(izq, der)
             if izq == None and der == None:
                 return True
             if izq == None:
@@ -48,7 +49,9 @@ class Relacional(Instruccion):
             return 'Byron lo hizo, si aparece esto en el proyecto de alguien mas es copia sin mi permiso >:v'
 
     def obtieneValor(self, operando, arbol, tabla):
+
         valor = operando.interpretar(arbol, tabla)
+        # print(operando.tipo)
         if isinstance(valor, Error):
             return valor
         if operando.tipo == TipoDato.ENTERO:

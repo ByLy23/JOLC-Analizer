@@ -9,9 +9,12 @@ class Identificador(Instruccion):
         self.identificador = identificador
 
     def interpretar(self, arbol, tablaSimbolo):
+        # print(self.identificador)
         variable = tablaSimbolo.getVariable(self.identificador)
         if variable == None:
             return Error("Error Semantico", "la variable {} no existe".format(self.identificador), self.linea, self.columna)
         self.tipo = variable.tipo
+        # print(variable.tipo)
         self.tipoStruct = variable.tipoStruct
+        # print(self.tipo)
         return variable.getValor()

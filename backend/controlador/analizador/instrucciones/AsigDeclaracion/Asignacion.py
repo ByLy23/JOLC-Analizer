@@ -16,15 +16,18 @@ class Asignacion(Instruccion):
         # print(variable)
         if variable != None:
             val = self.valor.interpretar(arbol, tablaSimbolo)
+            # print(self.valor.tipo)
             if not variable.mutable:
                 if variable.tipo != self.valor.tipo:
                     return Error("Error Semantico", "Variable {} con tipo de dato diferente".format(self.identificador), self.linea, self.columna)
                 else:
                     variable.setValor(val)
+                    variable.setTipo(self.valor.tipo)
                     variable.tipoStruct = self.valor.tipoStruct
                     # Actualiza tabla
             else:
                 variable.setValor(val)
+                variable.tipo = self.valor.tipo
                 variable.tipoStruct = self.valor.tipoStruct
         else:
             val = self.valor.interpretar(arbol, tablaSimbolo)

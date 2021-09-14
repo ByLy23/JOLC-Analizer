@@ -16,6 +16,8 @@ class AsignacionStruct(Instruccion):
             return Error("Error Semantico", "la variable {} no existe".format(self.identificador), self.linea, self.columna)
         valStruct = arbol.getStruct(variable.tipoStruct)
         print(variable.getIdentificador())
+        print(valStruct)
+        print(variable.tipoStruct)
         if valStruct == None:
             return Error("Error Semantico", "La variable no es estruct", self.linea, self.columna)
         if not valStruct.mutable:
