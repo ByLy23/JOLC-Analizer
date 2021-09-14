@@ -21,7 +21,7 @@ class FuncNativa(Instruccion):
             arg2 = self.argumentos["exp2"].interpretar(arbol, tablaSimbolo)
             if isinstance(arg2, Error):
                 return arg2
-            print(exp, arg1, arg2)
+            # print(exp, arg1, arg2)
         else:
             arg1 = self.argumentos["exp1"].interpretar(arbol, tablaSimbolo)
             if isinstance(arg1, Error):

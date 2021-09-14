@@ -15,4 +15,19 @@ class Println(Instruccion):
         valor = self.expresion.interpretar(arbol, tablaSimbolo)
         if isinstance(valor, Error):
             return valor
-        arbol.actualizaConsola(str(valor)+"\n")
+        if self.expresion.tipo == TipoDato.ARREGLO:
+            arbol.actualizaConsola(self.impresion(valor)+"\n")
+
+        else:
+            arbol.actualizaConsola(str(valor)+"\n")
+
+    def impresion(self, valor):
+        dato = ""
+        dato = dato+"[ "
+        for val in valor.values():
+            if val.tipo == TipoDato.ARREGLO:
+                dato = dato+self.impresion(val.getValor())+", "
+            else:
+                dato = dato+str(val.getValor())+", "
+        dato = dato+"]"
+        return dato

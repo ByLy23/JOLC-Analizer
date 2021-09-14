@@ -7,6 +7,7 @@ class Instruccion(ABC):
         self.linea = linea
         self.columna = columna
         self.tipoStruct = None  # Trae el nombre del Struct
+        self.mutable = False
         super().__init__()
 
     @abstractmethod

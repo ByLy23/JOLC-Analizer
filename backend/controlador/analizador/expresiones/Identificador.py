@@ -16,5 +16,6 @@ class Identificador(Instruccion):
         self.tipo = variable.tipo
         # print(variable.tipo)
         self.tipoStruct = variable.tipoStruct
+        self.mutable = variable.mutable
         # print(self.tipo)
         return variable.getValor()

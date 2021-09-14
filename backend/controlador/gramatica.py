@@ -5,6 +5,9 @@ Segundo semestre 2021
 '''
 # IMPORTACIONES
 # librerias
+from controlador.analizador.instrucciones.arreglos.AccesoArreglo import AccesoArreglo
+from controlador.analizador.instrucciones.arreglos.AsigArreglo import AsigArreglo
+from controlador.analizador.instrucciones.arreglos.Arreglo import Arreglo
 from controlador.analizador.instrucciones.funciones.FuncNativa import FuncNativa
 from controlador.analizador.instrucciones.struct.AsignacionStruct import AsignacionStruct
 from controlador.analizador.instrucciones.struct.AccesoStruct import AccesoStruct
@@ -90,6 +93,8 @@ tokens = [
     'MENRIGL2',
     'PARABRE',
     'PARCIERRA',
+    'CORABRE',
+    'CORCIERRA',
     'ENTERO',
     'DECIMAL',
     'CARACTER',
@@ -122,6 +127,8 @@ t_OR = r'\|\|'
 t_MOD = r'%'
 t_PARABRE = r"\("
 t_PARCIERRA = r"\)"
+t_CORABRE = r"\["
+t_CORCIERRA = r"\]"
 t_ignore = ' \t'
 
 
@@ -249,6 +256,7 @@ def p_instruccion(t):
                         | inst_llamada PTCOMA
                         | inst_struct RESEND PTCOMA
                         | inst_asig_struct PTCOMA
+                        | inst_asig_arreglo PTCOMA
     '''
     t[0] = t[1]
 
@@ -302,6 +310,28 @@ def p_param_struct(t):
 def p_param_struct2(t):
     'param_struct : IDENTIFICADOR DOSPUNTOS DOSPUNTOS tipodato PTCOMA'
     t[0] = {"identificador": t[1], "tipato": t[4]}
+
+
+def p_asig_arreglo(t):
+    'inst_asig_arreglo : IDENTIFICADOR lista_accesos_arreglo IGUAL expresion'
+    t[0] = AsigArreglo(t[1], t[2], t[4], t.lineno(1),
+                       columnas(input, t.slice[1]))
+
+
+def p_lista_accesos(t):
+    'lista_accesos_arreglo :  lista_accesos_arreglo  acceso_arreglo '
+    t[1].append(t[2])
+    t[0] = t[1]
+
+
+def p_lista_accesos2(t):
+    'lista_accesos_arreglo : acceso_arreglo'
+    t[0] = [t[1]]
+
+
+def p_acceso_arreglo(t):
+    'acceso_arreglo : CORABRE expresion CORCIERRA'
+    t[0] = t[2]
 # struct identificador parametros end ;
 # mutable struct identificador parametros end;
 
@@ -526,12 +556,12 @@ def p_inst_decN(t):
 
 
 def p_inst_imprm(t):
-    'inst_imp :      RESPRINT PARABRE expresion PARCIERRA'
+    'inst_imp :      RESPRINT PARABRE parllamadas PARCIERRA'
     t[0] = Print(t.lineno(1), columnas(input, t.slice[1]), t[3])
 
 
 def p_inst_imprmln(t):
-    'inst_impln :      RESPRINTLN PARABRE expresion PARCIERRA'
+    'inst_impln :      RESPRINTLN PARABRE parllamadas PARCIERRA'
     t[0] = Println(t.lineno(1), columnas(input, t.slice[1]), t[3])
 
 
@@ -659,6 +689,16 @@ def p_expresion_nativa(t):
 def p_primitivo_parentesis(t):
     '''expresion : PARABRE expresion PARCIERRA'''
     t[0] = t[2]
+
+
+def p_expresion_arr(t):
+    '''expresion : CORABRE parllamadas CORCIERRA'''
+    t[0] = Arreglo(t[2], t.lineno(1), columnas(input, t.slice[1]))
+
+
+def p_acceso_arr(t):
+    'expresion : IDENTIFICADOR lista_accesos_arreglo'
+    t[0] = AccesoArreglo(t[1], t[2], t.lineno(1), columnas(input, t.slice[1]))
 
 
 def p_primitivo_negadoU(t):

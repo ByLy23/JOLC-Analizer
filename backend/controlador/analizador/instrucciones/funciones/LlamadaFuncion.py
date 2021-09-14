@@ -39,6 +39,7 @@ class LlamadaFuncion(Instruccion):
                                 return Error("Semantico", "Tipo de dato diferente", self.linea, self.columna)
                             else:
                                 # print(nuevoVal.tipoStruct)
+                                var.mutable = nuevoVal.mutable
                                 var.tipoStruct = nuevoVal.tipoStruct
                                 var.setValor(val)
                                 nuevaTabla.setNombre(funcion.identificador)
@@ -67,6 +68,8 @@ class LlamadaFuncion(Instruccion):
                     return nuevoMet
                 self.tipo = funcion.tipo
                 self.tipoStruct = funcion.tipoStruct
+                self.mutable = funcion.mutable
+
                 return nuevoMet
             else:
                 return Error("Error Semantico", "parametros no coincidientes", self.linea, self.columna)

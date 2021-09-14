@@ -27,6 +27,7 @@ class Funcion(Instruccion):
             if isinstance(valor, Return):
                 self.tipo = valor.tipo
                 self.tipoStruct = valor.tipoStruct
+                self.mutable = valor.mutable
                 return valor.valor
         return None
         # for item in self.instrucciones:

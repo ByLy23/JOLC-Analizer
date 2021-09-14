@@ -15,6 +15,7 @@ class AccesoStruct(Instruccion):
         variable = tablaSimbolo.getVariable(self.identificador)
         self.tipo = variable.tipo
         self.tipoStruct = variable.tipoStruct
+        self.mutable = variable.mutable
         # print(variable.getValor()[0].getIdentificador())
         if variable == None:
             return Error("Error Semantico", "la variable {} no existe".format(self.identificador), self.linea, self.columna)
