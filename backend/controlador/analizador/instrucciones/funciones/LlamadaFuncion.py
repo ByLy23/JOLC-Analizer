@@ -1,3 +1,4 @@
+from controlador.analizador.instrucciones.AsigDeclaracion.Asignacion import Asignacion
 from controlador.analizador.simbolos.Simbolo import Simbolo
 from controlador.analizador.instrucciones.funciones.Funcion import Funcion
 from re import S

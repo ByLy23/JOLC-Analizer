@@ -23,7 +23,7 @@ class CondFor(Instruccion):
                 return val2
             if self.tipoRango["exp1"].tipo != TipoDato.ENTERO or self.tipoRango["exp2"].tipo != TipoDato.ENTERO:
                 return Error("Error Semantico", "Rango no entero", self.linea, self.columna)
-            for i in range(val1, val2):
+            for i in range(val1, val2+1):
                 otraTabla = TablaSimbolos(tablaSimbolo)
                 otraTabla.setNombre('For')
                 if otraTabla.setVariable(Simbolo(self.ide, TipoDato.ENTERO, i)) != 'La variable existe':

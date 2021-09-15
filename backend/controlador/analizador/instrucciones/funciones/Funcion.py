@@ -1,3 +1,5 @@
+from re import L
+from controlador.analizador.instrucciones.AsigDeclaracion.Asignacion import Asignacion
 from controlador.analizador.instrucciones.transferencia.Break import Break
 from controlador.analizador.simbolos.TablaSimbolos import TablaSimbolos
 from controlador.analizador.instrucciones.transferencia.Return import Return

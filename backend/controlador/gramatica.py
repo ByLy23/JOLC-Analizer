@@ -67,7 +67,8 @@ reservadas = {
     'struct': 'RESESTRUCT',
     'log10': 'RESLOG10', 'log': 'RESLOG', 'sin': 'RESSIN', 'cos': 'RESCOS', 'tan': 'RESTAN', 'sqrt': 'RESRAIZ',
     'parse': 'RESPARSE', 'trunc': 'RESTRUNC', 'float': 'RESPARSEFLOAT', 'string': 'RESPARSESTRING', 'typeof': 'RESTYPE', 'push': 'RESPUSH', 'pop': 'RESPOP', 'length': 'RESLEN',
-    'lowercase': 'RESLOWER', 'uppercase': 'RESUPPER'
+    'lowercase': 'RESLOWER', 'uppercase': 'RESUPPER',
+    'global': 'RESGLOBAL', 'local': 'RESLOCAL'
 }
 tokens = [
     'PTCOMA',
@@ -259,6 +260,8 @@ def p_instruccion(t):
                         | inst_asig_struct PTCOMA
                         | inst_asig_arreglo PTCOMA
                         | inst_push_pop PTCOMA
+                        | inst_asig_global PTCOMA
+                        | inst_asig_local PTCOMA
     '''
     t[0] = t[1]
 
@@ -272,6 +275,18 @@ def p_error(t):
                               str(t[1].value), t.lineno(1), columnas(input, t.slice[1])))
     t[0] = ""
 # RESULTANTES
+
+
+def p_inst_asig_global(t):
+    'inst_asig_global : RESGLOBAL IDENTIFICADOR'
+    t[0] = Asignacion(t[1], t[2], None, t.lineno(1),
+                      columnas(input, t.slice[1]))
+
+
+def p_inst_asig_local(t):
+    'inst_asig_local : RESLOCAL IDENTIFICADOR'
+    t[0] = Asignacion(t[1], t[2], None, t.lineno(1),
+                      columnas(input, t.slice[1]))
 
 
 def p_inst_push_pop(t):
@@ -547,7 +562,21 @@ def p_elifes(t):
 
 def p_inst_asig(t):
     'inst_asig : IDENTIFICADOR IGUAL expresion'
-    t[0] = Asignacion(t[1], t[3], t.lineno(1), columnas(input, t.slice[1]))
+    t[0] = Asignacion(None, t[1], t[3], t.lineno(1),
+                      columnas(input, t.slice[1]))
+
+
+def p_inst_asig_glob(t):
+    'inst_asig : RESGLOBAL IDENTIFICADOR IGUAL expresion'
+    t[0] = Asignacion(t[1], t[2], t[4], t.lineno(1),
+                      columnas(input, t.slice[1]))
+
+
+def p_inst_asig_loc(t):
+    'inst_asig : RESLOCAL IDENTIFICADOR IGUAL expresion'
+    t[0] = Asignacion(t[1], t[2], t[4], t.lineno(1),
+                      columnas(input, t.slice[1]))
+
 
 # DECLARACION
 

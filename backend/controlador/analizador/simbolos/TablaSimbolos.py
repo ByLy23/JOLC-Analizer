@@ -45,6 +45,12 @@ class TablaSimbolos:
                 aux = aux.tablaAnterior
         return None
 
+    def getVariableGlobal(self, id):
+        aux = self
+        if id in aux.tablaActual:
+            return aux.tablaActual[id]
+        return None
+
     def getNombre(self):
         return self.nombreDato
 
