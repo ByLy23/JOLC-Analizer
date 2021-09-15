@@ -29,11 +29,11 @@ class Print(Instruccion):
 
     def impresion(self, valor):
         dato = ""
-        dato = dato+"[ "
+        dato = dato+"["
         for val in valor.values():
             if val.tipo == TipoDato.ARREGLO:
-                dato = dato+self.impresion(val.getValor())+", "
+                dato = dato+self.impresion(val.getValor())+","
             else:
-                dato = dato+str(val.getValor())+", "
+                dato = dato+str(val.getValor())+","
         dato = dato+"]"
         return dato

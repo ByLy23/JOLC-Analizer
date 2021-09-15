@@ -258,6 +258,7 @@ def p_instruccion(t):
                         | inst_struct RESEND PTCOMA
                         | inst_asig_struct PTCOMA
                         | inst_asig_arreglo PTCOMA
+                        | inst_push_pop PTCOMA
     '''
     t[0] = t[1]
 
@@ -271,6 +272,16 @@ def p_error(t):
                               str(t[1].value), t.lineno(1), columnas(input, t.slice[1])))
     t[0] = ""
 # RESULTANTES
+
+
+def p_inst_push_pop(t):
+    'inst_push_pop : RESPUSH NOT PARABRE par_nativa PARCIERRA'
+    t[0] = FuncNativa(t[1], t[4], t.lineno(1), columnas(input, t.slice[1]))
+
+
+def p_inst_push_pop2(t):
+    'inst_push_pop : RESPOP NOT PARABRE par_nativa PARCIERRA'
+    t[0] = FuncNativa(t[1], t[4], t.lineno(1), columnas(input, t.slice[1]))
 
 # STRUCTS
 
@@ -465,7 +476,6 @@ def p_inst_while(t):
 def p_tipo_dato(t):
     '''
     tipodato :           RESINT
-                       | RESNOTHING
                        | RESFLOAT
                        | RESTRING
                        | RESCHAR
@@ -473,8 +483,8 @@ def p_tipo_dato(t):
     '''
     if t[1] == 'Int64':
         t[0] = TipoDato.ENTERO
-    elif t[1] == 'nothing':
-        t[0] = TipoDato.NOTHING
+    # elif t[1] == 'nothing':
+    #     t[0] = TipoDato.NOTHING
     elif t[1] == 'Float64':
         t[0] = TipoDato.DECIMAL
     elif t[1] == 'String':
@@ -661,12 +671,22 @@ def p_func_primitiva(t):
 
 def p_par_nativa(t):
     'par_nativa : expresion COMA expresion'
-    t[0] = {"exp1": t[1], "exp2": t[3]}
+    t[0] = {"exp1": t[1], "exp2": t[3], "string": False}
+
+
+def p_par_nativaint(t):
+    'par_nativa : RESINT COMA expresion'
+    t[0] = {"exp1": t[1], "exp2": t[3], "string": True}
+
+
+def p_par_nativafloat(t):
+    'par_nativa : RESFLOAT COMA expresion'
+    t[0] = {"exp1": t[1], "exp2": t[3], "string": True}
 
 
 def p_par_nativa2(t):
     'par_nativa : expresion'
-    t[0] = {"exp1": t[1], "exp2": None}
+    t[0] = {"exp1": t[1], "exp2": None, "string": False}
 
 
 def p_expresion_nativa(t):
@@ -681,8 +701,8 @@ def p_expresion_nativa(t):
                            | RESPARSEFLOAT
                            | RESPARSESTRING
                            | RESTYPE
-                           | RESPUSH
-                           | RESPOP
+                           | RESPUSH NOT
+                           | RESPOP NOT
                            | RESLEN'''
     t[0] = t[1]
 

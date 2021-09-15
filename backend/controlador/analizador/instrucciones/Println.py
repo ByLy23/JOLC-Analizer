@@ -22,18 +22,18 @@ class Println(Instruccion):
                 arbol.getErrores().append(err)
                 arbol.actualizaConsola(err.retornaError()+"\n")
             if valor.tipo == TipoDato.ARREGLO:
-                arbol.actualizaConsola(self.impresion(variable)+"\n")
+                arbol.actualizaConsola(self.impresion(variable))
             else:
                 arbol.actualizaConsola(str(variable))
         arbol.actualizaConsola("\n")
 
     def impresion(self, valor):
         dato = ""
-        dato = dato+"[ "
+        dato = dato+"["
         for val in valor.values():
             if val.tipo == TipoDato.ARREGLO:
-                dato = dato+self.impresion(val.getValor())+", "
+                dato = dato+self.impresion(val.getValor())+","
             else:
-                dato = dato+str(val.getValor())+", "
+                dato = dato+str(val.getValor())+","
         dato = dato+"]"
         return dato
