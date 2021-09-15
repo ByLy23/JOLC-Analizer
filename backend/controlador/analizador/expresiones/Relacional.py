@@ -42,6 +42,7 @@ class Relacional(Instruccion):
         elif self.relacion == opRelacional.MENORIGUAL:
             return izq <= der
         elif self.relacion == opRelacional.MAYOR:
+            # print(izq, der, izq > der)
             return izq > der
         elif self.relacion == opRelacional.MAYORIGUAL:
             return izq >= der

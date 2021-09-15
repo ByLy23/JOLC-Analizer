@@ -43,6 +43,7 @@ class CondIf(Instruccion):
                         for i in range(0, len(item["instrucciones"])):
                             a = item["instrucciones"][i].interpretar(
                                 arbol, nuevaTabla)
+                            # print(item["instrucciones"][i])
                             if isinstance(a, Error):
                                 arbol.getErrores().append(a)
                                 arbol.actualizaConsola(a.retornaError())
@@ -53,6 +54,7 @@ class CondIf(Instruccion):
                                 return a
                             if a == 'ByLy23':
                                 return a
+
                         return None
                 else:
                     nuevaTabla = TablaSimbolos(tablaSimbolo)

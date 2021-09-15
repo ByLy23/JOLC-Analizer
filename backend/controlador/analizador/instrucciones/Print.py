@@ -1,3 +1,4 @@
+from controlador.analizador.instrucciones.struct.AccesoStruct import AccesoStruct
 from ..abstracto.Instruccion import Instruccion
 from ..excepciones.Error import Error
 from ..simbolos.Arbol import Arbol
@@ -22,10 +23,34 @@ class Print(Instruccion):
                 arbol.getErrores().append(err)
                 arbol.actualizaConsola(err.retornaError())
             if valor.tipo == TipoDato.ARREGLO:
-                arbol.actualizaConsola(self.impresion(variable))
-
+                arbol.actualizaConsola(self.impresion(variable).replace(
+                    '(,', '("",').replace(',,', ',"",').replace(',)', ',"")'))
+            elif valor.tipo == TipoDato.STRUCT:
+                if isinstance(valor, AccesoStruct):
+                    arbol.actualizaConsola(
+                        valor.parametro+self.impresionStruct(variable).replace(
+                            '(,', '("",').replace(',,', ',"",').replace(',)', ',"")')
+                    )
+                else:
+                    arbol.actualizaConsola(
+                        valor.identificador+self.impresionStruct(variable).replace('(,', '("",').replace(',,', ',"",').replace(',)', ',"")'))
             else:
-                arbol.actualizaConsola(str(variable))
+                arbol.actualizaConsola(str(variable).replace(
+                    '(,', '("",').replace(',,', ',"",').replace(',)', ',"")'))
+
+    def impresionStruct(self, valor):
+        dato = ""
+        dato = dato+"("
+        for val in valor:
+            if val.tipo == TipoDato.ARREGLO:
+                dato = dato+self.impresion(val.getValor())+","
+            elif val.tipo == TipoDato.STRUCT:
+                dato = dato+val.tipoStruct + \
+                    self.impresionStruct(val.getValor())+","
+            else:
+                dato = dato+str(val.getValor())+","
+        dato = dato[:-1]+")"
+        return dato
 
     def impresion(self, valor):
         dato = ""
@@ -33,7 +58,10 @@ class Print(Instruccion):
         for val in valor.values():
             if val.tipo == TipoDato.ARREGLO:
                 dato = dato+self.impresion(val.getValor())+","
+            elif val.tipo == TipoDato.STRUCT:
+                dato = dato+val.tipoStruct + \
+                    self.impresionStruct(val.getValor())+","
             else:
                 dato = dato+str(val.getValor())+","
-        dato = dato+"]"
+        dato = dato[:-1]+"]"
         return dato

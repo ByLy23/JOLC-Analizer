@@ -24,6 +24,21 @@ class Logica(Instruccion):
             if self.condExcep.tipo == TipoDato.NOTHING:
                 return Error("Error Semantico", "Variable con dato nulo no puede ser ejecutada", self.linea, self.columna)
         else:
+            if self.relacion == opLogico.AND:
+                self.tipo = TipoDato.BOOLEANO
+                izq = self.cond1.interpretar(arbol, tablaSimbolo)
+                if isinstance(izq, Error):
+                    return izq
+                if izq:
+                    der = self.cond2.interpretar(arbol, tablaSimbolo)
+                    if isinstance(der, Error):
+                        return der
+                    if der:
+                        return True
+                    else:
+                        return False
+                else:
+                    return False
             izq = self.cond1.interpretar(arbol, tablaSimbolo)
             if isinstance(izq, Error):
                 return izq
@@ -33,9 +48,8 @@ class Logica(Instruccion):
             if self.cond1.tipo == TipoDato.NOTHING or self.cond2.tipo == TipoDato.NOTHING:
                 return Error("Error Semantico", "Variable con dato nulo no puede ser ejecutada", self.linea, self.columna)
         self.tipo = TipoDato.BOOLEANO
-        if self.relacion == opLogico.AND:
-            return True if izq and der else False
-        elif self.relacion == opLogico.OR:
+
+        if self.relacion == opLogico.OR:
             return True if izq or der else False
         elif self.relacion == opLogico.NOT:
             return not uno

@@ -11,7 +11,6 @@ from controlador.analizador.instrucciones.arreglos.Arreglo import Arreglo
 from controlador.analizador.instrucciones.funciones.FuncNativa import FuncNativa
 from controlador.analizador.instrucciones.struct.AsignacionStruct import AsignacionStruct
 from controlador.analizador.instrucciones.struct.AccesoStruct import AccesoStruct
-from controlador.analizador.instrucciones.struct.LlamadaStruct import LlamadaStruct
 from controlador.analizador.instrucciones.struct.Struct import Struct
 from controlador.analizador.instrucciones.funciones.LlamadaFuncion import LlamadaFuncion
 from controlador.analizador.instrucciones.funciones.Funcion import Funcion
@@ -272,7 +271,7 @@ def p_error(t):
     'instruccion :      error PTCOMA'
     print(t)
     listaErrores.append(Error("Sintactico", "Error de tipo sintactico: " +
-                              str(t[1].value), t.lineno(1), columnas(input, t.slice[1])))
+                              str(t[1].value), t.lineno(2), columnas(input, t.slice[2])))
     t[0] = ""
 # RESULTANTES
 
@@ -303,10 +302,14 @@ def p_inst_push_pop2(t):
 
 # creacion
 def p_inst_asig_strct(t):
-    'inst_asig_struct : IDENTIFICADOR PUNTO IDENTIFICADOR IGUAL expresion'
-    t[0] = AsignacionStruct(t[1], t[3], t[5], t.lineno(1),
+    'inst_asig_struct : expresion PUNTO IDENTIFICADOR IGUAL expresion'
+    t[0] = AsignacionStruct(t[1], t[3], t[5],None, t.lineno(1),
                             columnas(input, t.slice[1]))
 
+def p_inst_asig_strct2(t):
+    'inst_asig_struct : expresion PUNTO IDENTIFICADOR lista_accesos_arreglo IGUAL expresion'
+    t[0] = AsignacionStruct(t[1], t[3], t[6],t[4], t.lineno(1),
+                            columnas(input, t.slice[1]))
 
 def p_inst_strct(t):
     '''inst_struct : RESESTRUCT IDENTIFICADOR params_struct'''
@@ -337,6 +340,11 @@ def p_param_struct(t):
 def p_param_struct2(t):
     'param_struct : IDENTIFICADOR DOSPUNTOS DOSPUNTOS tipodato PTCOMA'
     t[0] = {"identificador": t[1], "tipato": t[4]}
+
+
+def p_param_struct3(t):
+    'param_struct : IDENTIFICADOR DOSPUNTOS DOSPUNTOS IDENTIFICADOR PTCOMA'
+    t[0] = {"identificador": t[1], "tipato": TipoDato.STRUCT, "tipoStruct": t[4]}
 
 
 def p_asig_arreglo(t):
@@ -584,14 +592,25 @@ def p_inst_asig_loc(t):
 def p_inst_dec(t):
     '''inst_decla :   IDENTIFICADOR IGUAL expresion DOSPUNTOS DOSPUNTOS tipodato'''
     t[0] = Declaracion(t[6], t.lineno(1), columnas(
-        input, t.slice[1]), t[1], t[3])
+        input, t.slice[1]), t[1], t[3], None)
+
+
+def p_inst_dec2(t):
+    '''inst_decla :   IDENTIFICADOR IGUAL expresion DOSPUNTOS DOSPUNTOS IDENTIFICADOR'''
+    t[0] = Declaracion(TipoDato.STRUCT, t.lineno(1), columnas(
+        input, t.slice[1]), t[1], t[3], t[6])
 
 
 def p_inst_decN(t):
     '''inst_decla :   IDENTIFICADOR DOSPUNTOS DOSPUNTOS tipodato'''
     t[0] = Declaracion(t[4], t.lineno(1), columnas(
-        input, t.slice[1]), t[1], None)
+        input, t.slice[1]), t[1], None, None)
 
+
+def p_inst_decN2(t):
+    '''inst_decla :   IDENTIFICADOR DOSPUNTOS DOSPUNTOS IDENTIFICADOR'''
+    t[0] = Declaracion(TipoDato.STRUCT, t.lineno(1), columnas(
+        input, t.slice[1]), t[1], None, t[4])
 # IMPRIMIR
 
 
@@ -603,6 +622,16 @@ def p_inst_imprm(t):
 def p_inst_imprmln(t):
     'inst_impln :      RESPRINTLN PARABRE parllamadas PARCIERRA'
     t[0] = Println(t.lineno(1), columnas(input, t.slice[1]), t[3])
+
+
+def p_inst_imprm2(t):
+    'inst_imp :      RESPRINT PARABRE  PARCIERRA'
+    t[0] = Print(t.lineno(1), columnas(input, t.slice[1]), [])
+
+
+def p_inst_imprmln2(t):
+    'inst_impln :      RESPRINTLN PARABRE  PARCIERRA'
+    t[0] = Println(t.lineno(1), columnas(input, t.slice[1]), [])
 
 
 # Valores nativos
@@ -628,52 +657,52 @@ def p_expresion_lista(t):
     '''
     if t[2] == '+':
         t[0] = Aritmetica(opAritmetico.MAS, t.lineno(
-            1), columnas(input, t.slice[2]), t[1], t[3])
+            2), columnas(input, t.slice[2]), t[1], t[3])
     elif t[2] == '-':
         t[0] = Aritmetica(opAritmetico.MENOS, t.lineno(
-            1), columnas(input, t.slice[2]), t[1], t[3])
+            2), columnas(input, t.slice[2]), t[1], t[3])
     elif t[2] == '*':
         t[0] = Aritmetica(opAritmetico.POR, t.lineno(
-            1), columnas(input, t.slice[2]), t[1], t[3])
+            2), columnas(input, t.slice[2]), t[1], t[3])
     elif t[2] == '/':
         t[0] = Aritmetica(opAritmetico.DIVI, t.lineno(
-            1), columnas(input, t.slice[2]), t[1], t[3])
+            2), columnas(input, t.slice[2]), t[1], t[3])
     elif t[2] == '%':
         t[0] = Aritmetica(opAritmetico.MODULO, t.lineno(
-            1), columnas(input, t.slice[2]), t[1], t[3])
+            2), columnas(input, t.slice[2]), t[1], t[3])
     elif t[2] == '^':
         t[0] = Aritmetica(opAritmetico.POTENCIA, t.lineno(
-            1), columnas(input, t.slice[2]), t[1], t[3])
+            2), columnas(input, t.slice[2]), t[1], t[3])
     elif t[2] == '&&':
         t[0] = Logica(opLogico.AND, t.lineno(
-            1), columnas(input, t.slice[2]), t[1], t[3])
+            2), columnas(input, t.slice[2]), t[1], t[3])
     elif t[2] == '||':
         t[0] = Logica(opLogico.OR, t.lineno(
-            1), columnas(input, t.slice[2]), t[1], t[3])
+            2), columnas(input, t.slice[2]), t[1], t[3])
     elif t[2] == '==':
         t[0] = Relacional(opRelacional.IGUAL, t[1], t[3], t.lineno(
-            1), columnas(input, t.slice[2]))
+            2), columnas(input, t.slice[2]))
     elif t[2] == '!=':
         t[0] = Relacional(opRelacional.DIFERENTE, t[1], t[3], t.lineno(
-            1), columnas(input, t.slice[2]))
+            2), columnas(input, t.slice[2]))
     elif t[2] == '>':
         t[0] = Relacional(opRelacional.MAYOR, t[1], t[3], t.lineno(
-            1), columnas(input, t.slice[2]))
+            2), columnas(input, t.slice[2]))
     elif t[2] == '<':
         t[0] = Relacional(opRelacional.MENOR, t[1], t[3], t.lineno(
-            1), columnas(input, t.slice[2]))
+            2), columnas(input, t.slice[2]))
     elif t[2] == '>=':
         t[0] = Relacional(opRelacional.MAYORIGUAL, t[1], t[3], t.lineno(
-            1), columnas(input, t.slice[2]))
+            2), columnas(input, t.slice[2]))
     elif t[2] == '=>':
-        t[0] = Relacional(opRelacional.MAYORIGUAL, t[1], t[3], t.lineno(
-            1), columnas(input, t.slice[2]))
+        t[0] = Relacional(opRelacional.MAYORIGUAL, t[1], t[3],
+                          t.lineno(2), columnas(input, t.slice[2]))
     elif t[2] == '<=':
         t[0] = Relacional(opRelacional.MENORIGUAL, t[1], t[3], t.lineno(
-            1), columnas(input, t.slice[2]))
+            2), columnas(input, t.slice[2]))
     elif t[2] == '=<':
         t[0] = Relacional(opRelacional.MENORIGUAL, t[1], t[3], t.lineno(
-            1), columnas(input, t.slice[2]))
+            2), columnas(input, t.slice[2]))
 
 
 def p_primitivo_menosU(t):
@@ -684,8 +713,15 @@ def p_primitivo_menosU(t):
 
 
 def p_acceso_struct(t):
-    'expresion : IDENTIFICADOR PUNTO IDENTIFICADOR'
-    t[0] = AccesoStruct(t[1], t[3], t.lineno(1), columnas(input, t.slice[1]))
+    'expresion : expresion PUNTO IDENTIFICADOR'
+    t[0] = AccesoStruct(t[1], t[3], None, t.lineno(2),
+                        columnas(input, t.slice[2]))
+
+
+def p_acceso_struct2(t):
+    'expresion : expresion PUNTO IDENTIFICADOR lista_accesos_arreglo'
+    t[0] = AccesoStruct(t[1], t[3], t[4], t.lineno(2),
+                        columnas(input, t.slice[2]))
 
 
 def p_exp_llamada(t):
@@ -732,7 +768,9 @@ def p_expresion_nativa(t):
                            | RESTYPE
                            | RESPUSH NOT
                            | RESPOP NOT
-                           | RESLEN'''
+                           | RESLEN
+                           | RESLOWER
+                           | RESUPPER'''
     t[0] = t[1]
 
 

@@ -12,22 +12,24 @@ class CondWhile(Instruccion):
         self.expresion = expresion
 
     def interpretar(self, arbol, tablaSimbolo):
-        val = self.condicion.interpretar(arbol, tablaSimbolo)
-        if isinstance(val, Error):
-            return val
-        if self.condicion.tipo != TipoDato.BOOLEANO:
-            return Error("Error Semantico", "Dato debe de ser booleano", self.linea, self.columna)
-        while self.condicion.interpretar(arbol, tablaSimbolo):
-            nuevaTabla = TablaSimbolos(tablaSimbolo)
-            nuevaTabla.setNombre('While')
-            for i in range(0, len(self.expresion)):
-                a = self.expresion[i].interpretar(arbol, nuevaTabla)
-                if isinstance(a, Error):
-                    arbol.getErrores().append(a)
-                    arbol.actualizaConsola(a.retornaError())
-                if isinstance(a, Return):
-                    return a
-                if a == 'ByLyContinue':
+        while True:
+            cond = self.condicion.interpretar(arbol, tablaSimbolo)
+            if isinstance(cond, Error):
+                return cond
+            if self.condicion.tipo == TipoDato.BOOLEANO:
+                if bool(cond) == True:
+                    nuevaTabla = TablaSimbolos(tablaSimbolo)
+                    nuevaTabla.setNombre('While')
+                    for i in self.expresion:
+                        a = i.interpretar(arbol, nuevaTabla)
+                        if isinstance(a, Error):
+                            arbol.getErrores().append(a)
+                            arbol.actualizaConsola(a.retornaError())
+                        if isinstance(a, Return):
+                            return a
+                        if a == 'ByLyContinue':
+                            break
+                        if a == 'ByLy23':
+                            return
+                else:
                     break
-                if a == 'ByLy23':
-                    return

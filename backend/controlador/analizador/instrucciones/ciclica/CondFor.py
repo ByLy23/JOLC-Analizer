@@ -66,11 +66,13 @@ class CondFor(Instruccion):
                         if res == 'ByLy23':
                             return
             elif self.tipoRango["exp1"].tipo == TipoDato.ARREGLO:
+
                 # TODO esto funciona con diccionario, revisar bien
                 for clave, valor in val1.items():
                     otraTabla = TablaSimbolos(tablaSimbolo)
                     otraTabla.setNombre('For')
                     # TODO variable valor va a ser un simbolo
+                    # print(valor.tipo, valor.getValor())
                     if otraTabla.setVariable(Simbolo(self.ide, valor.tipo, valor.getValor())) != 'La variable existe':
                         variable = otraTabla.getVariable(self.ide)
                         variable.setValor(valor.getValor())

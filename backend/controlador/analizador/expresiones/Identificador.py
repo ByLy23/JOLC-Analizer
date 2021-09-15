@@ -7,6 +7,7 @@ class Identificador(Instruccion):
     def __init__(self, identificador, linea, columna):
         super().__init__(TipoDato.ENTERO, linea, columna)
         self.identificador = identificador
+        self.listaAccesos = []
 
     def interpretar(self, arbol, tablaSimbolo):
         # print(self.identificador)

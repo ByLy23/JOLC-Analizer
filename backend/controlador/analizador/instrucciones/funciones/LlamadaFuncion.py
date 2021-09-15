@@ -92,9 +92,15 @@ class LlamadaFuncion(Instruccion):
             if valStruct.parametros[iterador]["tipato"] != None:
                 if valStruct.parametros[iterador]["tipato"] != nuevoVal.tipo:
                     return Error("Error Semantico", "Tipos de dato diferentes", self.linea, self.columna)
+                if nuevoVal.tipo == TipoDato.STRUCT:
+                    if valStruct.parametros[iterador]["tipoStruct"] != nuevoVal.tipoStruct:
+                        return Error("Error Semantico", "Tipo de Struct diferente", self.linea, self.columna)
             # se agrega el simbolo de cda parametro del struct
-            listaStruct.append(
-                Simbolo(valStruct.parametros[iterador]["identificador"], nuevoVal.tipo, val))
+            simbolo = Simbolo(
+                valStruct.parametros[iterador]["identificador"], nuevoVal.tipo, val)
+            simbolo.tipoStruct = nuevoVal.tipoStruct
+            simbolo.mutable = nuevoVal.mutable
+            listaStruct.append(simbolo)
             # print(valStruct.parametros[iterador]["identificador"], val)
             iterador = iterador+1
 

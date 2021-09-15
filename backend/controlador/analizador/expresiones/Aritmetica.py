@@ -155,7 +155,6 @@ class Aritmetica(Instruccion):
         if numero == 1:
             if op2 == TipoDato.ENTERO:
                 self.tipo = TipoDato.ENTERO
-                print(self.op1.tipo, self.op2.tipo)
                 return int(izq) - int(der)
             elif op2 == TipoDato.DECIMAL:
                 self.tipo = TipoDato.DECIMAL
@@ -379,6 +378,15 @@ class Aritmetica(Instruccion):
             elif op2 == TipoDato.BOOLEANO:
                 self.tipo = TipoDato.ENTERO
                 return math.pow(nuevoIzq, 1) if str(der).lower() == 'true' else math.pow(nuevoIzq, 0)
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        elif numero == 4:
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.CADENA
+                cadena = ""
+                for i in range(0, int(der)):
+                    cadena = cadena+str(izq)
+                return cadena
             else:
                 return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
         else:
