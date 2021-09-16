@@ -12,26 +12,13 @@ class Asignacion(Instruccion):
         self.valor = valor
 
     def interpretar(self, arbol, tablaSimbolo):
-        # variable = None
-        # if self.tipoAsignacion != None:
-        #     asig = self.tipoAsignacion
-        #     if asig == 'global':
-        #         print(asig)
-        #         variable = arbol.getGlobal().getVariableGlobal(self.identificador)
-        #         print(variable)
-        #     if asig=='local':
-        #         nuevaTabla
-        # else:
+
         variable = tablaSimbolo.getVariable(self.identificador)
-        # print(self.identificador)
-        # print(variable)
         if variable != None:
             if self.valor != None:
                 val = self.valor.interpretar(arbol, tablaSimbolo)
-                # print(val)
-                # print(self.valor.tipo)
                 if not variable.mutable:
-                    # print(variable.tipo, self.valor.tipo)
+
                     if variable.tipo != TipoDato.NOTHING and variable.tipo != self.valor.tipo:
                         return Error("Error Semantico", "Variable {} con tipo de dato diferente".format(self.identificador), self.linea, self.columna)
                     else:

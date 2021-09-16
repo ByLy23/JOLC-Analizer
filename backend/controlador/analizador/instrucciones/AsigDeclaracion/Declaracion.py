@@ -5,7 +5,7 @@ from controlador.analizador.abstracto.Instruccion import Instruccion
 
 
 class Declaracion(Instruccion):
-    def __init__(self, tipo, linea, columna, identificador, valor=None, struct=None):
+    def __init__(self, tipo, linea, columna, identificador, valor, struct=None):
         super().__init__(tipo, linea, columna)
         self.identificador = identificador
         self.valor = valor

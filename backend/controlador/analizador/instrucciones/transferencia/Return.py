@@ -15,5 +15,4 @@ class Return(Instruccion):
             self.tipo = self.expresion.tipo
             self.tipoStruct = self.expresion.tipoStruct
             self.mutable = self.expresion.mutable
-            # print(self.expresion.tipo)
         return self

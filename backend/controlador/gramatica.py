@@ -211,7 +211,8 @@ precedence = (
     ('left', 'MAS', 'MENOS'),
     ('left', 'POR', 'DIVI', 'MOD'),
     ('right', 'POTENCIA'),
-    ('right', 'UMENOS')
+    ('right', 'UMENOS'),
+    ('left', 'PUNTO')
     # precedencia mas alta
 )
 
@@ -303,13 +304,15 @@ def p_inst_push_pop2(t):
 # creacion
 def p_inst_asig_strct(t):
     'inst_asig_struct : expresion PUNTO IDENTIFICADOR IGUAL expresion'
-    t[0] = AsignacionStruct(t[1], t[3], t[5],None, t.lineno(1),
-                            columnas(input, t.slice[1]))
+    t[0] = AsignacionStruct(t[1], t[3], t[5], None, t.lineno(2),
+                            columnas(input, t.slice[2]))
+
 
 def p_inst_asig_strct2(t):
     'inst_asig_struct : expresion PUNTO IDENTIFICADOR lista_accesos_arreglo IGUAL expresion'
-    t[0] = AsignacionStruct(t[1], t[3], t[6],t[4], t.lineno(1),
-                            columnas(input, t.slice[1]))
+    t[0] = AsignacionStruct(t[1], t[3], t[6], t[4], t.lineno(2),
+                            columnas(input, t.slice[2]))
+
 
 def p_inst_strct(t):
     '''inst_struct : RESESTRUCT IDENTIFICADOR params_struct'''

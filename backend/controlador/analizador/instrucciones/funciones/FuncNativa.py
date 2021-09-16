@@ -47,34 +47,21 @@ class FuncNativa(Instruccion):
             elif exp == "push":
                 if self.argumentos["exp1"].tipo == TipoDato.ARREGLO:
                     self.tipo = TipoDato.ARREGLO
-                    variable = tablaSimbolo.getVariable(
-                        self.argumentos["exp1"].identificador)
-                    if variable == None:
-                        return Error("Error Semantico", "la variable {} no existe".format(self.identificador), self.linea, self.columna)
-                    if variable.tipo != TipoDato.ARREGLO:
+
+                    variable = arg1
+                    if not isinstance(variable, dict):
                         return Error("Error Semantico", "La variable debe ser de tipo arreglo", self.linea, self.columna)
-                    for acceso in self.argumentos["exp1"].listaAccesos:
-                        val = acceso.interpretar(arbol, tablaSimbolo)
-                        if isinstance(val, Error):
-                            return val
-                        if acceso.tipo != TipoDato.ENTERO:
-                            return Error("Error Semantico", "El tipo de dato debe ser entero", self.linea, self.columna)
-                        try:
-                            variable = variable.getValor()[str(val)]
-                        except:
-                            return Error("Error Semantico", "No se encontro el acceso", self.linea, self.columna)
                     exp = self.argumentos["exp2"].interpretar(
                         arbol, tablaSimbolo)
                     if isinstance(exp, Error):
                         return exp
-                    print(variable.getValor())
                     try:
-                        key = int(list(variable.getValor())[-1])+1
+                        key = int(list(variable)[-1])+1
                         simbolo = Simbolo(
                             str(key), self.argumentos["exp2"].tipo, exp)
                         simbolo.tipoStruct = self.argumentos["exp2"].tipoStruct
                         simbolo.mutable = self.argumentos["exp2"].mutable
-                        variable.getValor()[str(key)] = simbolo
+                        variable[str(key)] = simbolo
                         # variable.tipo = self.expresion.tipo
                         # variable.tipoStruct = self.expresion.tipoStruct
                         # variable.mutable = self.expresion.mutable
@@ -160,7 +147,7 @@ class FuncNativa(Instruccion):
                 else:
                     return Error("Error Semantico", "Debe ser un tipo de dato cadena", self.linea, self.columna)
             elif exp == "trunc":
-                print("trunc")
+                # print("trunc")
                 if self.argumentos["exp1"].tipo == TipoDato.DECIMAL:
                     self.tipo = TipoDato.ENTERO
                     return trunc(arg1)

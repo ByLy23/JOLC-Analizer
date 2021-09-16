@@ -10,13 +10,10 @@ class Identificador(Instruccion):
         self.listaAccesos = []
 
     def interpretar(self, arbol, tablaSimbolo):
-        # print(self.identificador)
         variable = tablaSimbolo.getVariable(self.identificador)
         if variable == None:
             return Error("Error Semantico", "la variable {} no existe".format(self.identificador), self.linea, self.columna)
         self.tipo = variable.tipo
-        # print(variable.tipo)
         self.tipoStruct = variable.tipoStruct
         self.mutable = variable.mutable
-        # print(self.tipo)
         return variable.getValor()

@@ -14,13 +14,10 @@ class AccesoStruct(Instruccion):
         identificador = self.identificador.interpretar(arbol, tablaSimbolo)
         if isinstance(identificador, Error):
             return identificador
-        # print(self.identificador.tipo)
         if self.identificador.tipo != TipoDato.STRUCT:
             return Error("Error Semantico", "Variable no es struct", self.linea, self.columna)
-        # print(identificador)
 
         for param in identificador:
-            # print(param.getIdentificador(), self.parametro)
             if param.getIdentificador() == self.parametro:
                 if self.accesos != None:
                     if param.tipo != TipoDato.ARREGLO:

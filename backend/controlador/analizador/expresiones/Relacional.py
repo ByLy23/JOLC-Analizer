@@ -18,10 +18,8 @@ class Relacional(Instruccion):
         if isinstance(der, Error):
             return der
 
-        # print(self.cond1, "<--->", self.cond2)
         self.tipo = TipoDato.BOOLEANO
         if self.relacion == opRelacional.IGUAL:
-            # print(izq, der)
             if izq == None and der == None:
                 return True
             if izq == None:
@@ -42,7 +40,6 @@ class Relacional(Instruccion):
         elif self.relacion == opRelacional.MENORIGUAL:
             return izq <= der
         elif self.relacion == opRelacional.MAYOR:
-            # print(izq, der, izq > der)
             return izq > der
         elif self.relacion == opRelacional.MAYORIGUAL:
             return izq >= der
@@ -52,7 +49,6 @@ class Relacional(Instruccion):
     def obtieneValor(self, operando, arbol, tabla):
 
         valor = operando.interpretar(arbol, tabla)
-        # print(operando.tipo)
         if isinstance(valor, Error):
             return valor
         if operando.tipo == TipoDato.ENTERO:

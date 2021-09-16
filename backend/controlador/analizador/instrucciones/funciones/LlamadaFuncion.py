@@ -1,7 +1,5 @@
 from controlador.analizador.instrucciones.AsigDeclaracion.Asignacion import Asignacion
 from controlador.analizador.simbolos.Simbolo import Simbolo
-from controlador.analizador.instrucciones.funciones.Funcion import Funcion
-from re import S
 from controlador.analizador.instrucciones.AsigDeclaracion.Declaracion import Declaracion
 from controlador.analizador.simbolos.TablaSimbolos import TablaSimbolos
 from controlador.analizador.excepciones.Error import Error
@@ -29,7 +27,7 @@ class LlamadaFuncion(Instruccion):
                     if isinstance(funcion.parametros[iterador]["tipato"], str):
                         # Se realiza como un struct
                         dec = Declaracion(TipoDato.STRUCT, funcion.linea,
-                                          funcion.columna, funcion.parametros[iterador]["identificador"], nuevoVal)
+                                          funcion.columna, funcion.parametros[iterador]["identificador"], nuevoVal, funcion.parametros[iterador]["tipato"])
                         nuevaDec = dec.interpretar(arbol, nuevaTabla)
                         if isinstance(nuevaDec, Error):
                             return nuevaDec
@@ -39,7 +37,6 @@ class LlamadaFuncion(Instruccion):
                             if var.tipo != nuevoVal.tipo:
                                 return Error("Semantico", "Tipo de dato diferente", self.linea, self.columna)
                             else:
-                                # print(nuevoVal.tipoStruct)
                                 var.mutable = nuevoVal.mutable
                                 var.tipoStruct = nuevoVal.tipoStruct
                                 var.setValor(val)
@@ -47,8 +44,9 @@ class LlamadaFuncion(Instruccion):
                         else:
                             return Error("Error Semantico", "Variable no existe", self.linea, self.columna)
                     else:
+
                         dec = Declaracion(nuevoVal.tipo, funcion.linea,
-                                          funcion.columna, funcion.parametros[iterador]["identificador"], nuevoVal)
+                                          funcion.columna, funcion.parametros[iterador]["identificador"], nuevoVal, nuevoVal.tipoStruct)
                         nuevaDec = dec.interpretar(arbol, nuevaTabla)
                         if isinstance(nuevaDec, Error):
                             return nuevaDec
@@ -70,7 +68,6 @@ class LlamadaFuncion(Instruccion):
                 self.tipo = funcion.tipo
                 self.tipoStruct = funcion.tipoStruct
                 self.mutable = funcion.mutable
-
                 return nuevoMet
             else:
                 return Error("Error Semantico", "parametros no coincidientes", self.linea, self.columna)
@@ -79,6 +76,7 @@ class LlamadaFuncion(Instruccion):
         valStruct = arbol.getStruct(self.identificador)
         if valStruct == None:
             return Error("Error Semantico", "La variable no es funcion ni estruct", self.linea, self.columna)
+
         self.tipoStruct = self.identificador
         # Lista de parametros de struct=valStruct.parametros
         # parametros de la llamada=self.parametros
@@ -89,6 +87,7 @@ class LlamadaFuncion(Instruccion):
             val = nuevoVal.interpretar(arbol, tablaSimbolo)
             if isinstance(val, Error):
                 return val
+
             if valStruct.parametros[iterador]["tipato"] != None:
                 if valStruct.parametros[iterador]["tipato"] != nuevoVal.tipo:
                     return Error("Error Semantico", "Tipos de dato diferentes", self.linea, self.columna)
@@ -101,8 +100,8 @@ class LlamadaFuncion(Instruccion):
             simbolo.tipoStruct = nuevoVal.tipoStruct
             simbolo.mutable = nuevoVal.mutable
             listaStruct.append(simbolo)
-            # print(valStruct.parametros[iterador]["identificador"], val)
             iterador = iterador+1
-
         self.tipo = TipoDato.STRUCT
+        self.tipoStruct = self.identificador
+        self.mutable = True
         return listaStruct

@@ -35,7 +35,7 @@ class Println(Instruccion):
             else:
                 arbol.actualizaConsola(str(variable).replace(
                     '(,', '("",').replace(',,', ',"",').replace(',)', ',"")'))
-            arbol.actualizaConsola("\n")
+        arbol.actualizaConsola("\n")
 
     def impresionStruct(self, valor):
         dato = ""
