@@ -196,16 +196,6 @@ class Aritmetica(Instruccion):
                 return chr(nuevoIzq+ord(str(der)))
             else:
                 return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
-        # elif numero == 4:
-        #     nuevoIzq = ord(str(izq))
-        #     if op2 == TipoDato.ENTERO:
-        #         self.tipo = TipoDato.CARACTER
-        #         return chr(nuevoIzq + der)
-        #     elif op2 == TipoDato.BOOLEANO:
-        #         self.tipo = TipoDato.CARACTER
-        #         return chr(nuevoIzq+1 if str(der).lower() == 'true' else nuevoIzq)
-        #     else:
-        #         return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
         else:
             return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
 
