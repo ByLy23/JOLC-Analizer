@@ -5,6 +5,8 @@ Segundo semestre 2021
 '''
 # IMPORTACIONES
 # librerias
+
+
 from controlador.analizador.instrucciones.arreglos.AccesoArreglo import AccesoArreglo
 from controlador.analizador.instrucciones.arreglos.AsigArreglo import AsigArreglo
 from controlador.analizador.instrucciones.arreglos.Arreglo import Arreglo
@@ -37,7 +39,6 @@ from .analizador.excepciones.Error import Error
 import re
 import sys
 sys.setrecursionlimit(5000)
-
 listaErrores = []
 input = ''
 reservadas = {
@@ -132,6 +133,11 @@ t_CORABRE = r"\["
 t_CORCIERRA = r"\]"
 t_ignore = ' \t'
 
+t_ignore_COMMENT_SIMPLE = r'\#.*\n?'
+
+
+t_ignore_COMMENT_MULTI = r'\#\=(.|\n)*?\=\#'
+
 
 def t_nuevaLinea(t):
     r'\n+'
@@ -144,8 +150,9 @@ def columnas(entrada, token):
 
 
 def t_error(t):
-    listaErrores.append(Exception("Lexico", "Existe un error lexico. " +
+    listaErrores.append(Error("Lexico", "Existe un error lexico. " +
                         t.value[0], t.lexer.lineno, columnas(input, t)))
+
     t.lexer.skip(1)
 
 
@@ -185,16 +192,6 @@ def t_CARACTER(t):
     r'\'.?\''
     t.value = t.value[1:-1]
     return t
-
-
-def t_COMEN_SIMPLE(t):
-    r'\#.*\n'
-    t.lexer.lineno += 1
-
-
-def t_COMEN_MULTI(t):
-    r'\#\=(.|\n)*?\=\#'
-    t.lexer.lineno += t.value.count('\n')
 
 
 # analisis lexico
@@ -245,7 +242,7 @@ def p_instrucciones_instruccion(t):
 
 def p_instruccion(t):
     '''instruccion      : inst_imp PTCOMA
-                        | inst_impln PTCOMA 
+                        | inst_impln PTCOMA
                         | inst_decla PTCOMA
                         | inst_asig PTCOMA
                         | inst_if RESEND PTCOMA
@@ -269,11 +266,27 @@ def p_instruccion(t):
 
 
 def p_error(t):
-    'instruccion :      error PTCOMA'
-    print(t)
-    listaErrores.append(Error("Sintactico", "Error de tipo sintactico: " +
-                              str(t[1].value), t.lineno(2), columnas(input, t.slice[2])))
-    t[0] = ""
+    'instruccion : error PTCOMA'
+    if t:
+        print(t.type, "<----")
+        listaErrores.append(
+            Error("Sintactico", "Error de tipo sintactico: " +
+                  t.type, t.lineno, t.lexpos))
+        print(listaErrores)
+        parser.restart()
+    # while True:
+    #     tok = parser.token()
+    #     if not tok or tok.type == 'PTCOMA':
+    #         listaErrores.append(Error("Sintactico", "Error de tipo sintactico: " +
+    #                             str(t[1].value), t.lineno(1), columnas(input, t.slice[1])))
+    #         break
+    # parser.errok()
+    # return tok
+    # 'instruccion :      error PTCOMA'
+    # listaErrores.append(Error("Sintactico", "Error de tipo sintactico: " +
+    #                           str(t[1].value), t.lineno(1), columnas(input, t.slice[1])))
+    # print(listaErrores)
+    # t[0] = ""
 # RESULTANTES
 
 
@@ -656,7 +669,7 @@ def p_expresion_lista(t):
               | expresion MENRIGL1 expresion
               | expresion MENRIGL2 expresion
               | expresion COMPARACION expresion
-              | expresion DIFERENTE expresion            
+              | expresion DIFERENTE expresion
     '''
     if t[2] == '+':
         t[0] = Aritmetica(opAritmetico.MAS, t.lineno(
@@ -865,9 +878,14 @@ parser = yacc.yacc()
 def parse(inp):
     global listaErrores
     global lexer
-    listaErrores = []
     lexer = lex.lex(reflags=re.IGNORECASE)
     parser = yacc.yacc()
     global input
     input = inp
     return parser.parse(inp)
+
+
+def errores():
+    lista = listaErrores
+    print(lista)
+    return lista

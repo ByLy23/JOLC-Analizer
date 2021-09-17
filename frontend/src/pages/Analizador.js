@@ -10,8 +10,8 @@ export const Analizador = () => {
   const [state = { outputCode: 'salida' }, setstate] = useState([]);
   const [salida = { outputCode: 'salida' }, setSalida] = useState([]);
   const handleSubmit = () => {
-    getConsola(valor).then((data) => {
-      setSalida({ outputCode: data.consola });
+    getConsola(valor).then(({ consola, simbolos, errores }) => {
+      setSalida({ outputCode: consola });
     });
 
     setpopUp(true);

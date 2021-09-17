@@ -1,16 +1,13 @@
 .analizer-container {
+  width: 60%;
   display: flex;
   flex-flow: column nowrap;
   margin: auto;
 }
 .analizer {
-  width: 50em;
+  width: 100%;
   height: auto;
-  background: linear-gradient(
-    180deg,
-    rgba(239, 239, 239, 0.7) 0%,
-    rgba(239, 239, 239, 0.3) 100%
-  );
+  background: linear-gradient(180deg, rgba(239, 239, 239, 0.7) 0%, rgba(239, 239, 239, 0.3) 100%);
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
   border-radius: 1em;
   margin-top: 2em;
@@ -23,11 +20,7 @@
 .consola {
   width: 50em;
   height: auto;
-  background: linear-gradient(
-    180deg,
-    rgba(239, 239, 239, 0.7) 0%,
-    rgba(239, 239, 239, 0.3) 100%
-  );
+  background: linear-gradient(180deg, rgba(239, 239, 239, 0.7) 0%, rgba(239, 239, 239, 0.3) 100%);
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
   border-radius: 1em;
   margin: auto;
@@ -69,4 +62,10 @@
   background: rgba(36, 59, 85, 0.9);
   transition: ease 0.5s;
   cursor: pointer;
+}
+
+@media (max-width: 800px) {
+  .analizer-container {
+    width: 90%;
+  }
 }
