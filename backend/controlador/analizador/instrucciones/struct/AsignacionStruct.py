@@ -1,3 +1,4 @@
+from controlador.reportes.ReporteTabla import ReporteTabla
 from controlador.analizador.excepciones.Error import Error
 from controlador.analizador.simbolos.Tipo import TipoDato
 from controlador.analizador.abstracto.Instruccion import Instruccion
@@ -45,6 +46,10 @@ class AsignacionStruct(Instruccion):
                     variable.tipoStruct = self.expresion.tipoStruct
                     variable.mutable = self.expresion.mutable
                     variable.setValor(valor)
+                    if not arbol.actualizarTabla(param.getIdentificador(), valor, self.linea, tablaSimbolo.getNombre(), self.columna):
+                        nuevoSim = ReporteTabla(param.getIdentificador(), valor, 'VariableStruct', str(
+                            self.expresion.tipo), tablaSimbolo.getNombre(), self.linea, self.columna)
+                        arbol.getSimbolos().append(nuevoSim)
                     return None
                 else:
                     self.tipo = param.getTipo()
@@ -58,6 +63,10 @@ class AsignacionStruct(Instruccion):
                     param.tipoStruct = self.expresion.tipoStruct
                     param.mutable = self.expresion.mutable
                     param.setValor(val)
+                    if not arbol.actualizarTabla(param.getIdentificador(), val, self.linea, tablaSimbolo.getNombre(), self.columna):
+                        nuevoSim = ReporteTabla(param.getIdentificador(), val, 'VariableStruct', str(
+                            self.expresion.tipo), tablaSimbolo.getNombre(), self.linea, self.columna)
+                        arbol.getSimbolos().append(nuevoSim)
                     return None
         return Error("Error Semantico", "No existe este parametro dentro del struct", self.linea, self.columna)
 

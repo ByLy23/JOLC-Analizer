@@ -19,31 +19,36 @@ class Arbol:
     def getStruct(self, identificador):
         for f in self.structs:
             if identificador == f.identificador:
-                # if not self.actualizarTabla(f.identificador, '', f.linea, '', f.columna):
-                #     # TODO CAMBIAR TIPO DE DATO XD
-                #     nuevoSimbolo = ReporteTabla(f.identificador, '', 'FuncionCreacion', str(
-                #         TipoDato.ENTERO), '', f.linea, f.columna)
-                #     self.listaSimbolos.append(nuevoSimbolo)
+                if not self.actualizarTabla(f.identificador, '', f.linea, 'Global', f.columna):
+                    nuevoSimbolo = ReporteTabla(
+                        f.identificador, '', 'StructCreacion', f.tipo, 'Global', f.linea, f.columna)
+                    self.listaSimbolos.append(nuevoSimbolo)
                 return f
         return None
 
     def actualizarTabla(self, ide, valor, linea, entorno, columna):
         for elemento in self.listaSimbolos:
-            if elemento.getIdentificador() == ide and elemento.getEntorno() == entorno:
+            if str(elemento.getIdentificador()) == str(ide) and str(elemento.getEntorno()) == str(entorno):
                 elemento.setValor(valor)
                 elemento.setLinea(linea)
                 elemento.setColumna(columna)
                 return True
         return False
 
+    def buscarTipo(self, identificador):
+        for elemento in self.listaSimbolos:
+            if str(elemento.getIdentificador()) == identificador:
+                return str(elemento.getForma())
+        return 'as'
+
     def getFuncion(self, identificador):
         for f in self.funciones:
             if identificador == f.identificador:
-                # if not self.actualizarTabla(f.identificador, '', f.linea, '', f.columna):
-                #     # TODO CAMBIAR TIPO DE DATO XD
-                #     nuevoSimbolo = ReporteTabla(f.identificador, '', 'FuncionCreacion', str(
-                #         TipoDato.ENTERO), '', f.linea, f.columna)
-                #     self.listaSimbolos.append(nuevoSimbolo)
+                if not self.actualizarTabla(f.identificador, '', f.linea, 'Global', f.columna):
+                    # TODO CAMBIAR TIPO DE DATO XD
+                    nuevoSimbolo = ReporteTabla(f.identificador, '', 'FuncionCreacion', str(
+                        f.tipo), 'Global', f.linea, f.columna)
+                    self.listaSimbolos.append(nuevoSimbolo)
                 return f
         return None
 

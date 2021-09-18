@@ -887,5 +887,4 @@ def parse(inp):
 
 def errores():
     lista = listaErrores
-    print(lista)
     return lista

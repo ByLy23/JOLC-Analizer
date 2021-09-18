@@ -1,3 +1,4 @@
+from controlador.reportes.ReporteTabla import ReporteTabla
 from controlador.analizador.simbolos.Simbolo import Simbolo
 from controlador.analizador.excepciones.Error import Error
 from controlador.analizador.simbolos.Tipo import TipoDato
@@ -26,12 +27,16 @@ class Asignacion(Instruccion):
                         variable.setTipo(self.valor.tipo)
                         variable.tipoStruct = self.valor.tipoStruct
                         variable.mutable = self.valor.mutable
-                    # Actualiza tabla
+
                 else:
                     variable.setValor(val)
                     variable.tipo = self.valor.tipo
                     variable.tipoStruct = self.valor.tipoStruct
                     variable.mutable = self.valor.mutable
+                if not arbol.actualizarTabla(self.identificador, val, self.linea, tablaSimbolo.getNombre(), self.columna):
+                    nuevoSim = ReporteTabla(self.identificador, val, 'Variable', str(
+                        self.valor.tipo), tablaSimbolo.getNombre(), self.linea, self.columna)
+                    arbol.getSimbolos().append(nuevoSim)
         else:
             val = self.valor.interpretar(arbol, tablaSimbolo)
             if isinstance(val, Error):
@@ -42,3 +47,8 @@ class Asignacion(Instruccion):
             nuevoSimbolo.mutable = True
             if tablaSimbolo.setVariable(nuevoSimbolo) != 'La variable existe':
                 return Error("Error Semantico", "La variable {} Existe actualmente".format(self.identificador), self.linea, self.columna)
+            else:
+                if not arbol.actualizarTabla(self.identificador, val, self.linea, tablaSimbolo.getNombre(), self.columna):
+                    nuevoSim = ReporteTabla(self.identificador, val, 'Variable', str(
+                        self.tipo), tablaSimbolo.getNombre(), self.linea, self.columna)
+                    arbol.getSimbolos().append(nuevoSim)

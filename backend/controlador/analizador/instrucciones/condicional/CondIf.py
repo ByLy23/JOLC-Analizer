@@ -72,29 +72,3 @@ class CondIf(Instruccion):
                             return a
                         if a == 'ByLy23':
                             return a
-            # if self.condElse != None:
-            #     nuevaTabla = TablaSimbolos(tablaSimbolo)
-            #     nuevaTabla.setNombre('else')
-            #     for i in range(0, len(self.condElse)):
-            #         a = self.condElse[i].interpretar(arbol, nuevaTabla)
-            #         if isinstance(a, Error):
-            #             arbol.getErrores().append(a)
-            #             arbol.actualizaConsola(a.retornaError())
-            #         # If return, continue y break
-            #         if isinstance(a, Return):
-            #             return a
-            #         if a == 'ByLyContinue':
-            #             return a
-            #         if a == 'ByLy23':
-            #             return a
-            # elif self.condElseIf != None:
-            #     b = self.condElseIf.interpretar(arbol, tablaSimbolo)
-            #     if isinstance(b, Error):
-            #         return b
-            #     # If return,continue,break
-            #     if isinstance(b, Return):
-            #         return b
-            #     if b == 'ByLyContinue':
-            #         return b
-            #     if b == 'ByLy23':
-            #         return b

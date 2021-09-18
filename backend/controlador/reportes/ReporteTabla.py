@@ -40,3 +40,6 @@ class ReporteTabla():
 
     def setEntorno(self, ent):
         self.entorno = ent
+
+    def setTipo(self, tipo):
+        self.tipo = tipo

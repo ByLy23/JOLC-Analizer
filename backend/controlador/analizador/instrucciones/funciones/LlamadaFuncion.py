@@ -1,3 +1,4 @@
+from controlador.reportes.ReporteTabla import ReporteTabla
 from controlador.analizador.instrucciones.AsigDeclaracion.Asignacion import Asignacion
 from controlador.analizador.simbolos.Simbolo import Simbolo
 from controlador.analizador.instrucciones.AsigDeclaracion.Declaracion import Declaracion
@@ -61,13 +62,23 @@ class LlamadaFuncion(Instruccion):
                                 nuevaTabla.setNombre(funcion.identificador)
                         else:
                             return Error("Error Semantico", "Variable no existe", self.linea, self.columna)
+                    if not arbol.actualizarTabla(funcion.parametros[iterador]["identificador"], 'nothing', self.linea, nuevaTabla.getNombre(), self.columna):
+                        nuevoSim = ReporteTabla(funcion.parametros[iterador]["identificador"], 'nothing', 'Parametro', str(
+                            var.tipo), nuevaTabla.getNombre(), self.linea, self.columna)
+                        arbol.getSimbolos().append(nuevoSim)
                     iterador = iterador+1
+
                 nuevoMet = funcion.interpretar(arbol, nuevaTabla)
                 if isinstance(nuevoMet, Error):
                     return nuevoMet
                 self.tipo = funcion.tipo
                 self.tipoStruct = funcion.tipoStruct
                 self.mutable = funcion.mutable
+
+                # if not arbol.actualizarTabla(self.identificador, nuevoMet, self.linea, 'Funcion', self.columna):
+                #     nuevoSim = ReporteTabla(self.identificador, nuevoMet, 'Funcion', str(
+                #         self.tipo), tablaSimbolo.getNombre(), self.linea, self.columna)
+                #     arbol.getSimbolos().append(nuevoSim)
                 return nuevoMet
             else:
                 return Error("Error Semantico", "parametros no coincidientes", self.linea, self.columna)
@@ -100,8 +111,13 @@ class LlamadaFuncion(Instruccion):
             simbolo.tipoStruct = nuevoVal.tipoStruct
             simbolo.mutable = nuevoVal.mutable
             listaStruct.append(simbolo)
+            # if not arbol.actualizarTabla(valStruct.parametros[iterador]["identificador"], val, self.linea, 'Struct', self.columna):
+            #     nuevoSim = ReporteTabla(self.identificador, val, 'Struct', str(
+            #         self.tipo), tablaSimbolo.getNombre(), self.linea, self.columna)
+            #     arbol.getSimbolos().append(nuevoSim)
             iterador = iterador+1
         self.tipo = TipoDato.STRUCT
         self.tipoStruct = self.identificador
         self.mutable = True
+
         return listaStruct

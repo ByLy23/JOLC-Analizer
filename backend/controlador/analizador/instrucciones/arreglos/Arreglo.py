@@ -22,4 +22,5 @@ class Arreglo(Instruccion):
             valorArreglo[str(iterador)] = simbolo
             iterador = iterador+1
         self.mutable = True
+
         return valorArreglo

@@ -1,3 +1,4 @@
+from controlador.reportes.ReporteTabla import ReporteTabla
 from controlador.analizador.excepciones.Error import Error
 from controlador.analizador.simbolos.Tipo import TipoDato
 from controlador.analizador.abstracto.Instruccion import Instruccion

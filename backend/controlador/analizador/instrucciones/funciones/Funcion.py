@@ -1,3 +1,4 @@
+from controlador.reportes.ReporteTabla import ReporteTabla
 from re import L
 from controlador.analizador.instrucciones.AsigDeclaracion.Asignacion import Asignacion
 from controlador.analizador.instrucciones.transferencia.Break import Break
@@ -16,6 +17,7 @@ class Funcion(Instruccion):
 
     def interpretar(self, arbol, tablaSimbolo):
         nuevaTabla = TablaSimbolos(tablaSimbolo)
+        nuevaTabla.setNombre('Funcion')
         for inst in self.instrucciones:
             valor = inst.interpretar(arbol, nuevaTabla)
             if isinstance(valor, Error):
@@ -31,6 +33,7 @@ class Funcion(Instruccion):
                 self.tipoStruct = valor.tipoStruct
                 self.mutable = valor.mutable
                 return valor.valor
+
         return None
         # for item in self.instrucciones:
         #     val = item.interpretar(arbol, tablaSimbolo)

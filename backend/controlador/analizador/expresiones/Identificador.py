@@ -1,3 +1,4 @@
+from controlador.reportes.ReporteTabla import ReporteTabla
 from controlador.analizador.excepciones.Error import Error
 from controlador.analizador.simbolos.Tipo import TipoDato
 from controlador.analizador.abstracto.Instruccion import Instruccion
@@ -16,4 +17,8 @@ class Identificador(Instruccion):
         self.tipo = variable.tipo
         self.tipoStruct = variable.tipoStruct
         self.mutable = variable.mutable
+        # if not arbol.actualizarTabla(self.identificador, variable.valor, self.linea, tablaSimbolo.getNombre(), self.columna):
+        #     nuevoSim = ReporteTabla(self.identificador, variable.valor, 'Variable', str(
+        #         self.tipo), tablaSimbolo.getNombre(), self.linea, self.columna)
+        #     arbol.getSimbolos().append(nuevoSim)
         return variable.getValor()

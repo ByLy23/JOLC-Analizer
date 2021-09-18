@@ -1,3 +1,4 @@
+from controlador.reportes.ReporteTabla import ReporteTabla
 from controlador.analizador.simbolos.Simbolo import Simbolo
 from controlador.analizador.instrucciones.transferencia.Return import Return
 from controlador.analizador.excepciones.Error import Error
@@ -29,6 +30,11 @@ class CondFor(Instruccion):
                 if otraTabla.setVariable(Simbolo(self.ide, TipoDato.ENTERO, i)) != 'La variable existe':
                     variable = otraTabla.getVariable(self.ide)
                     variable.setValor(i)
+
+                if not arbol.actualizarTabla(self.ide, i, self.linea, 'ForDentro', self.columna):
+                    nuevoSim = ReporteTabla(self.ide, i, 'ForDentro', str(
+                        self.tipo), otraTabla.getNombre(), self.linea, self.columna)
+                    arbol.getSimbolos().append(nuevoSim)
                 for item in self.instrucciones:
                     res = item.interpretar(arbol, otraTabla)
                     if isinstance(res, Error):
@@ -54,6 +60,10 @@ class CondFor(Instruccion):
                     if otraTabla.setVariable(Simbolo(self.ide, TipoDato.CADENA, inst)) != 'La variable existe':
                         variable = otraTabla.getVariable(self.ide)
                         variable.setValor(inst)
+                    if not arbol.actualizarTabla(self.ide, inst, self.linea, 'ForDentro', self.columna):
+                        nuevoSim = ReporteTabla(self.ide, inst, 'ForDentro', str(
+                            self.tipo), otraTabla.getNombre(), self.linea, self.columna)
+                        arbol.getSimbolos().append(nuevoSim)
                     for item in self.instrucciones:
                         res = item.interpretar(arbol, otraTabla)
                         if isinstance(res, Error):
@@ -76,6 +86,10 @@ class CondFor(Instruccion):
                     if otraTabla.setVariable(Simbolo(self.ide, valor.tipo, valor.getValor())) != 'La variable existe':
                         variable = otraTabla.getVariable(self.ide)
                         variable.setValor(valor.getValor())
+                    if not arbol.actualizarTabla(self.ide, valor.getValor(), self.linea, 'ForDentro', self.columna):
+                        nuevoSim = ReporteTabla(self.ide, valor.getValor(), 'ForDentro', str(
+                            self.tipo), otraTabla.getNombre(), self.linea, self.columna)
+                        arbol.getSimbolos().append(nuevoSim)
                     for item in self.instrucciones:
                         res = item.interpretar(arbol, otraTabla)
                         if isinstance(res, Error):

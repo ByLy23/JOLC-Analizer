@@ -1,3 +1,4 @@
+from controlador.reportes.ReporteTabla import ReporteTabla
 from controlador.analizador.excepciones.Error import Error
 from controlador.analizador.simbolos.Simbolo import Simbolo
 from controlador.analizador.simbolos.Tipo import TipoDato
@@ -18,7 +19,11 @@ class Declaracion(Instruccion):
             simbolo.mutable = True
             if tablaSimbolo.setVariable(simbolo) != 'La variable existe':
                 return Error("Error Semantico", "La variable {} Existe actualmente".format(self.identificador), self.linea, self.columna)
-            # else: nuevoSimbolo y tabla y todo eso
+            else:
+                if not arbol.actualizarTabla(self.identificador, 'nothing', self.linea, tablaSimbolo.getNombre(), self.columna):
+                    nuevoSim = ReporteTabla(self.identificador, 'nothing', 'Variable', str(
+                        self.tipo), tablaSimbolo.getNombre(), self.linea, self.columna)
+                    arbol.getSimbolos().append(nuevoSim)
         else:
             val = self.valor.interpretar(arbol, tablaSimbolo)
             if isinstance(val, Error):
@@ -34,5 +39,8 @@ class Declaracion(Instruccion):
 
             if tablaSimbolo.setVariable(nuevaVal) != 'La variable existe':
                 return Error("Error Semantico", "La variable {} Existe actualmente".format(self.identificador), self.linea, self.columna)
-            # else:
-                # Actualiza tabla y eso
+            else:
+                if not arbol.actualizarTabla(self.identificador, val, self.linea, tablaSimbolo.getNombre(), self.columna):
+                    nuevoSim = ReporteTabla(self.identificador, val, 'Variable', str(
+                        self.tipo), tablaSimbolo.getNombre(), self.linea, self.columna)
+                    arbol.getSimbolos().append(nuevoSim)
