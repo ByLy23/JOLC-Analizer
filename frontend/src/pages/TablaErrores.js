@@ -1,9 +1,8 @@
 import React from 'react';
-import { tableData } from '../components/tableData';
+import { ErrData } from '../components/ErrData';
 import '../css/tabla.css';
 
 export const TablaErrores = () => {
-  let contador = 0;
   return (
     <div className="table-container animate__animated animate__fadeInUp">
       <table className="table">
@@ -13,24 +12,22 @@ export const TablaErrores = () => {
             <th className="first">Descripcion</th>
             <th className="second">Linea</th>
             <th className="second">Columna</th>
-            <th>fecha</th>
+            <th>Tipo</th>
           </tr>
         </thead>
-        {tableData.map(
-          ({ columnaError, lineaError, descErrores, fechaError }, index) => {
-            return (
-              <tbody key={index}>
-                <tr>
-                  <td>{contador++}</td>
-                  <td>{descErrores}</td>
-                  <td>{lineaError}</td>
-                  <td>{columnaError}</td>
-                  <td>{fechaError}</td>
-                </tr>
-              </tbody>
-            );
-          }
-        )}
+        {ErrData.map(({ No, Tipo, Descripcion, Linea, Columna }, index) => {
+          return (
+            <tbody key={index}>
+              <tr>
+                <td>{No}</td>
+                <td>{Descripcion}</td>
+                <td>{Linea}</td>
+                <td>{Columna}</td>
+                <td>{Tipo}</td>
+              </tr>
+            </tbody>
+          );
+        })}
       </table>
     </div>
   );

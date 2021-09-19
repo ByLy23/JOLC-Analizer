@@ -1,6 +1,7 @@
 from flask import Flask, request
 from flask_cors import CORS
 from controlador.principial import metodoPrincipal
+from flask import jsonify
 
 
 def pruebaModo(entrada):
@@ -16,7 +17,10 @@ def interpretar():
     if request.method == "POST":
         cuerpo = request.get_json()
         salida = cuerpo['peticion']
-        return pruebaModo(salida)
+        response = jsonify(pruebaModo(salida))
+        print(response)
+        response.status_code = 200
+        return response
 
 
 if __name__ == "__main__":

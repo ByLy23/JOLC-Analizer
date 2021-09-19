@@ -1,5 +1,5 @@
 import React from 'react';
-import { tableData } from '../components/tableData';
+import { SimData } from '../components/SimData';
 import '../css/tabla.css';
 export const TablaSimbolos = () => {
   return (
@@ -7,22 +7,24 @@ export const TablaSimbolos = () => {
       <table className="table">
         <thead>
           <tr>
+            <th>No.</th>
             <th>Nombre</th>
             <th>Tipo</th>
-            <th>Ambito</th>
-            <th className="second">Fila</th>
+            <th>Entorno</th>
+            <th className="second">Linea</th>
             <th className="second">Columna</th>
           </tr>
         </thead>
-        {tableData.map(({ nombre, tipo, ambito, fila, columna }, index) => {
+        {SimData.map(({ No, Nombre, Tipo, Entorno, Linea, Columna }, index) => {
           return (
             <tbody key={index}>
               <tr>
-                <td>{nombre}</td>
-                <td>{tipo}</td>
-                <td>{ambito}</td>
-                <td>{fila}</td>
-                <td>{columna}</td>
+                <td>{No}</td>
+                <td>{Nombre}</td>
+                <td>{Tipo}</td>
+                <td>{Entorno}</td>
+                <td>{Linea}</td>
+                <td>{Columna}</td>
               </tr>
             </tbody>
           );

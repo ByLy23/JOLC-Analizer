@@ -150,8 +150,8 @@ def columnas(entrada, token):
 
 
 def t_error(t):
-    listaErrores.append(Error("Lexico", "Existe un error lexico. " +
-                        t.value[0], t.lexer.lineno, columnas(input, t)))
+    listaErrores.append(Error("Lexico", "Token: \" {} \" no pertenece al lenguaje".format(
+        t.value[0]), t.lexer.lineno, columnas(input, t)))
 
     t.lexer.skip(1)
 
@@ -878,6 +878,7 @@ parser = yacc.yacc()
 def parse(inp):
     global listaErrores
     global lexer
+    listaErrores = []
     lexer = lex.lex(reflags=re.IGNORECASE)
     parser = yacc.yacc()
     global input
