@@ -12,7 +12,7 @@ export const TablaErrores = () => {
             <th className="first">Descripcion</th>
             <th className="second">Linea</th>
             <th className="second">Columna</th>
-            <th>Tipo</th>
+            <th>Hora</th>
           </tr>
         </thead>
         {ErrData.map(({ No, Tipo, Descripcion, Linea, Columna }, index) => {

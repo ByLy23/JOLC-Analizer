@@ -119,7 +119,7 @@ def interpretarErrores(errores):
     listaFinal = []
     iterador = 1
     for error in errores:
-        errorTemp = {"No": iterador, "Tipo": error.tipo, "Descripcion":
+        errorTemp = {"No": iterador, "Tipo": error.hora, "Descripcion":
                      error.descripcion, "Linea": error.fila, "Columna": error.columna}
         listaFinal.append(errorTemp)
         iterador += 1
