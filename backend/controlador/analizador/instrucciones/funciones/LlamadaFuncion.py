@@ -1,3 +1,4 @@
+from controlador.analizador.abstracto.NodoAST import NodoAST
 from controlador.reportes.ReporteTabla import ReporteTabla
 from controlador.analizador.instrucciones.AsigDeclaracion.Asignacion import Asignacion
 from controlador.analizador.simbolos.Simbolo import Simbolo
@@ -13,6 +14,16 @@ class LlamadaFuncion(Instruccion):
         super().__init__(TipoDato.ENTERO, linea, columna)
         self.identificador = identificador
         self.parametros = parametros
+
+    def getNodo(self):
+        nodo = NodoAST('LLAMADA FUNCION')
+        nodo.agregar(self.identificador)
+        nodo.agregar('(')
+        for param in self.parametros:
+            nodo.agregar(param.getNodo())
+            nodo.agregar(',')
+        nodo.agregar(')')
+        return nodo
 
     def interpretar(self, arbol, tablaSimbolo):
         funcion = arbol.getFuncion(self.identificador)

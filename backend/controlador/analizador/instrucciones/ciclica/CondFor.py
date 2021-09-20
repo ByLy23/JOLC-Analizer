@@ -1,3 +1,4 @@
+from controlador.analizador.abstracto.NodoAST import NodoAST
 from controlador.reportes.ReporteTabla import ReporteTabla
 from controlador.analizador.simbolos.Simbolo import Simbolo
 from controlador.analizador.instrucciones.transferencia.Return import Return
@@ -13,6 +14,23 @@ class CondFor(Instruccion):
         self.ide = ide
         self.tipoRango = tipoRango
         self.instrucciones = instrucciones
+
+    def getNodo(self):
+        nodo = NodoAST('CICLO FOR')
+        nodo.agregar('for')
+        nodo.agregar(self.ide)
+        nodo.agregar('in')
+        if self.tipoRango["exp2"] != None:
+            nodo.agregar(self.tipoRango["exp1"].getNodo())
+            nodo.agregar(':')
+            nodo.agregar(self.tipoRango["exp2"].getNodo())
+        else:
+            nodo.agregar(self.tipoRango["exp1"].getNodo())
+        for inst in self.instrucciones:
+            nodo.agregar(inst.getNodo())
+        nodo.agregar('end')
+        nodo.agregar(';')
+        return nodo
 
     def interpretar(self, arbol, tablaSimbolo):
         if self.tipoRango["exp2"] != None:

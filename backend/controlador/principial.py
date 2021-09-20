@@ -1,3 +1,4 @@
+from controlador.analizador.abstracto.NodoAST import NodoAST
 from controlador.analizador.simbolos.Tipo import TipoDato
 from controlador.analizador.instrucciones.funciones.Funcion import Funcion
 from controlador.analizador.excepciones.Error import Error
@@ -33,6 +34,12 @@ def metodoPrincipal(EntradaAnalizar):
     listaSimbolos = ast.getSimbolos()
     sim = interpretarSimbolos(listaSimbolos)
     err = interpretarErrores(listaErrores)
+    arbol = NodoAST('RAIZ')
+    nodoIsnt = NodoAST('INSTRUCCIONES')
+    for inst in ast.getInstrucciones():
+        nodoIsnt.agregar(inst.getNodo())
+    arbol.agregar(nodoIsnt)
+    print(arbol)
     # print(ast.getGlobal())
     return {
         "consola": ast.getConsola(),

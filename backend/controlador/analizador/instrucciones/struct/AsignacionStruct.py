@@ -1,3 +1,4 @@
+from controlador.analizador.abstracto.NodoAST import NodoAST
 from controlador.reportes.ReporteTabla import ReporteTabla
 from controlador.analizador.excepciones.Error import Error
 from controlador.analizador.simbolos.Tipo import TipoDato
@@ -11,6 +12,21 @@ class AsignacionStruct(Instruccion):
         self.parametro = parametro
         self.expresion = expresion
         self.accesos = accesos
+
+    def getNodo(self):
+        nodo = NodoAST('ASIGNACION STRUCT')
+        nodo.agregar(self.identificador.getNodo())
+        nodo.agregar('.')
+        nodo.agregar(self.parametro)
+        if self.accesos != None:
+            for acceso in self.accesos:
+                nodo.agregar('[')
+                nodo.agregar(acceso.getNodo())
+                nodo.agregar(']')
+        nodo.agregar('=')
+        nodo.agregar(self.expresion.getNodo())
+        nodo.agregar(';')
+        return nodo
 
     def interpretar(self, arbol, tablaSimbolo):
 

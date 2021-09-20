@@ -1,3 +1,4 @@
+from controlador.analizador.abstracto.NodoAST import NodoAST
 from controlador.analizador.simbolos.Simbolo import Simbolo
 from controlador.analizador.excepciones.Error import Error
 from controlador.analizador.simbolos.Tipo import TipoDato
@@ -10,6 +11,19 @@ class FuncNativa(Instruccion):
         super().__init__(TipoDato.ENTERO, linea, columna)
         self.nombre = nombre
         self.argumentos = argumentos
+
+    def getNodo(self):
+        nodo = NodoAST('FUNCION NATIVA')
+        nodo.agregar(self.nombre)
+        nodo.agregar('(')
+        if self.argumentos["exp2"] != None:
+            nodo.agregar(self.argumentos["exp1"])
+            nodo.agregar(',')
+            nodo.agregar(self.argumentos["exp2"])
+        else:
+            nodo.agregar(self.argumentos["exp1"])
+        nodo.agregar(')')
+        return nodo
 
     def interpretar(self, arbol, tablaSimbolo):
         exp = self.nombre

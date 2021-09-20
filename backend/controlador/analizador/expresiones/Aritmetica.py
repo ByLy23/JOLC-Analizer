@@ -1,4 +1,5 @@
 
+from controlador.analizador.abstracto.NodoAST import NodoAST
 from controlador.analizador.excepciones.Error import Error
 from controlador.analizador.simbolos.Tipo import TipoDato, opAritmetico
 from controlador.analizador.abstracto.Instruccion import Instruccion
@@ -15,6 +16,17 @@ class Aritmetica(Instruccion):
         else:
             self.op1 = op1
             self.op2 = op2
+
+    def getNodo(self):
+        nodo = NodoAST('ARITMETICA')
+        if self.operadorUnico != None:
+            nodo.agregar(self.operador)
+            nodo.agregar(self.operadorUnico.getNodo())
+        else:
+            nodo.agregar(self.op1.getNodo())
+            nodo.agregar(self.operador, 'ar', self.operador)
+            nodo.agregar(self.op2.getNodo())
+        return nodo
 
     def interpretar(self, arbol, tablaSimbolo):
         izq = der = uno = None

@@ -1,3 +1,4 @@
+from controlador.analizador.abstracto.NodoAST import NodoAST
 from controlador.analizador.excepciones.Error import Error
 from controlador.analizador.simbolos.Tipo import TipoDato, opRelacional
 from controlador.analizador.abstracto.Instruccion import Instruccion
@@ -9,6 +10,13 @@ class Relacional(Instruccion):
         self.relacion = relacion
         self.cond1 = cond1
         self.cond2 = cond2
+
+    def getNodo(self):
+        nodo = NodoAST('RELACIONAL')
+        nodo.agregar(self.cond1.getNodo())
+        nodo.agregar(self.relacion, 'rel', self.relacion)
+        nodo.agregar(self.cond2.getNodo())
+        return nodo
 
     def interpretar(self, arbol, tablaSimbolo):
         izq = self.obtieneValor(self.cond1, arbol, tablaSimbolo)

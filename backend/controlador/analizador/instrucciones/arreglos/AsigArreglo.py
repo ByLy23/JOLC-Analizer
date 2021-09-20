@@ -1,3 +1,5 @@
+from math import exp
+from controlador.analizador.abstracto.NodoAST import NodoAST
 from controlador.analizador.excepciones.Error import Error
 from controlador.analizador.simbolos.Tipo import TipoDato
 from controlador.analizador.abstracto.Instruccion import Instruccion
@@ -9,6 +11,18 @@ class AsigArreglo(Instruccion):
         self.identificador = identificador
         self.listaAccesos = listaAccesos
         self.expresion = expresion
+
+    def getNodo(self):
+        nodo = NodoAST('ASIGNACION ARREGLO')
+        nodo.agregar(str(self.identificador))
+        for acceso in self.listaAccesos:
+            nodo.agregar('[')
+            nodo.agregar(acceso.getNodo())
+            nodo.agregar(']')
+        nodo.agregar('=')
+        nodo.agregar(self.expresion.getNodo())
+        nodo.agregar(';')
+        return nodo
 
     def interpretar(self, arbol, tablaSimbolo):
         variable = tablaSimbolo.getVariable(self.identificador)

@@ -1,3 +1,4 @@
+from controlador.analizador.abstracto.NodoAST import NodoAST
 from controlador.reportes.ReporteTabla import ReporteTabla
 from controlador.analizador.simbolos.Simbolo import Simbolo
 from controlador.analizador.excepciones.Error import Error
@@ -11,6 +12,17 @@ class Asignacion(Instruccion):
         self.identificador = identificador
         self.tipoAsignacion = tipoAsignacion
         self.valor = valor
+
+    def getNodo(self):
+        nodo = NodoAST('ASIGNACION')
+        if self.tipoAsignacion != None:
+            nodo.agregar(str(self.tipoAsignacion))
+        nodo.agregar(str(self.identificador))
+        nodo.agregar('=')
+        if self.valor != None:
+            nodo.agregar(self.valor.getNodo())
+        nodo.agregar(';')
+        return nodo
 
     def interpretar(self, arbol, tablaSimbolo):
 

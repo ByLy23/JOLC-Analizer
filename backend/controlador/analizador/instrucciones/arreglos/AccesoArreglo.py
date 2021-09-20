@@ -1,3 +1,4 @@
+from controlador.analizador.abstracto.NodoAST import NodoAST
 from controlador.reportes.ReporteTabla import ReporteTabla
 from controlador.analizador.excepciones.Error import Error
 from controlador.analizador.simbolos.Tipo import TipoDato
@@ -9,6 +10,15 @@ class AccesoArreglo(Instruccion):
         super().__init__(TipoDato.ARREGLO, linea, columna)
         self.identificador = identificador
         self.listaAccesos = listaAccesos
+
+    def getNodo(self):
+        nodo = NodoAST('ACCESO ARREGLO')
+        nodo.agregar(self.identificador)
+        for lista in self.listaAccesos:
+            nodo.agregar('[')
+            nodo.agregar(lista.getNodo())
+            nodo.agregar(']')
+        return nodo
 
     def interpretar(self, arbol, tablaSimbolo):
         variable = tablaSimbolo.getVariable(self.identificador)

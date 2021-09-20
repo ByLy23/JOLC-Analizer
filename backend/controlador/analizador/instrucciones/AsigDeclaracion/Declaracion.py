@@ -1,3 +1,4 @@
+from controlador.analizador.abstracto.NodoAST import NodoAST
 from controlador.reportes.ReporteTabla import ReporteTabla
 from controlador.analizador.excepciones.Error import Error
 from controlador.analizador.simbolos.Simbolo import Simbolo
@@ -11,6 +12,18 @@ class Declaracion(Instruccion):
         self.identificador = identificador
         self.valor = valor
         self.struct = struct
+
+    def getNodo(self):
+        nodo = NodoAST('DECLARACION')
+        nodo.agregar(self.identificador)
+        if self.valor != None:
+            nodo.agregar('=')
+            nodo.agregar(self.valor.getNodo())
+        nodo.agregar(':')
+        nodo.agregar(':')
+        nodo.agregar(self.tipo)
+        nodo.agregar(';')
+        return nodo
 
     def interpretar(self, arbol, tablaSimbolo):
         if self.valor == None:  # valor Nothing

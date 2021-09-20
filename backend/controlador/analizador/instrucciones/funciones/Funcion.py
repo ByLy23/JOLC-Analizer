@@ -1,3 +1,5 @@
+from controlador.analizador.simbolos.Tipo import TipoDato
+from controlador.analizador.abstracto.NodoAST import NodoAST
 from controlador.reportes.ReporteTabla import ReporteTabla
 from re import L
 from controlador.analizador.instrucciones.AsigDeclaracion.Asignacion import Asignacion
@@ -14,6 +16,27 @@ class Funcion(Instruccion):
         self.identificador = identificador
         self.parametros = parametros
         self.instrucciones = instrucciones
+
+    def getNodo(self):
+        nodo = NodoAST('FUNCION')
+        nodo.agregar('function')
+        nodo.agregar(self.identificador)
+        nodo.agregar('(')
+        for param in self.parametros:
+            if param["tipato"] != None:
+                nodo.agregar(param["identificador"])
+                nodo.agregar(':')
+                nodo.agregar(':')
+                nodo.agregar(param["tipato"])
+            else:
+                nodo.agregar(param["identificador"])
+            nodo.agregar(',')
+        nodo.agregar(')')
+        for inst in self.instrucciones:
+            nodo.agregar(inst.getNodo())
+        nodo.agregar('end')
+        nodo.agregar(';')
+        return nodo
 
     def interpretar(self, arbol, tablaSimbolo):
         nuevaTabla = TablaSimbolos(tablaSimbolo)

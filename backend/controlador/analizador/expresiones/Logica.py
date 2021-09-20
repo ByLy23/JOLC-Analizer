@@ -1,3 +1,4 @@
+from controlador.analizador.abstracto.NodoAST import NodoAST
 from controlador.analizador.excepciones.Error import Error
 from controlador.analizador.simbolos.Tipo import TipoDato, opLogico
 from controlador.analizador.abstracto.Instruccion import Instruccion
@@ -14,6 +15,17 @@ class Logica(Instruccion):
         else:
             self.cond1 = cond1
             self.cond2 = cond2
+
+    def getNodo(self):
+        nodo = NodoAST('LOGICA')
+        if self.condExcep != None:
+            nodo.agregar(self.relacion, 'log', self.relacion)
+            nodo.agregar(self.condExcep.getNodo())
+        else:
+            nodo.agregar(self.cond1.getNodo())
+            nodo.agregar(self.relacion, 'log', self.relacion)
+            nodo.agregar(self.cond2)
+        return nodo
 
     def interpretar(self, arbol, tablaSimbolo):
         izq = der = uno = None

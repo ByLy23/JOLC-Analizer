@@ -1,3 +1,4 @@
+from controlador.analizador.abstracto.NodoAST import NodoAST
 from controlador.analizador.instrucciones.struct.AccesoStruct import AccesoStruct
 from ..abstracto.Instruccion import Instruccion
 from ..excepciones.Error import Error
@@ -11,6 +12,16 @@ class Print(Instruccion):
         self.expresion = expresion
         self.linea = linea
         self.columna = columna
+
+    def getNodo(self):
+        nodo = NodoAST('PRINT')
+        nodo.agregar('print')
+        nodo.agregar('(')
+        for exp in self.expresion:
+            nodo.agregar(exp.getNodo())
+        nodo.agregar(')')
+        nodo.agregar(';')
+        return nodo
 
     def interpretar(self, arbol, tablaSimbolo):
         for valor in self.expresion:

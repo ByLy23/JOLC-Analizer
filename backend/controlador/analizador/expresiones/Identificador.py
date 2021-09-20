@@ -1,3 +1,4 @@
+from controlador.analizador.abstracto.NodoAST import NodoAST
 from controlador.reportes.ReporteTabla import ReporteTabla
 from controlador.analizador.excepciones.Error import Error
 from controlador.analizador.simbolos.Tipo import TipoDato
@@ -9,6 +10,11 @@ class Identificador(Instruccion):
         super().__init__(TipoDato.ENTERO, linea, columna)
         self.identificador = identificador
         self.listaAccesos = []
+
+    def getNodo(self):
+        nodo = NodoAST('IDENTIFICADOR')
+        nodo.agregar(str(self.identificador))
+        return nodo
 
     def interpretar(self, arbol, tablaSimbolo):
         variable = tablaSimbolo.getVariable(self.identificador)

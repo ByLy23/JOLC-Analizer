@@ -1,3 +1,4 @@
+from controlador.analizador.abstracto.NodoAST import NodoAST
 from controlador.analizador.excepciones.Error import Error
 from controlador.analizador.simbolos.Tipo import TipoDato
 from controlador.analizador.abstracto.Instruccion import Instruccion
@@ -9,6 +10,18 @@ class AccesoStruct(Instruccion):
         self.identificador = identificador
         self.parametro = parametro
         self.accesos = accesos
+
+    def getNodo(self):
+        nodo = NodoAST('ACCESO STRUCT')
+        nodo.agregar(self.identificador.getNodo())
+        nodo.agregar('.')
+        nodo.agregar(self.parametro)
+        if self.accesos != None:
+            for acceso in self.accesos:
+                nodo.agregar('[')
+                nodo.agregar(acceso.getNodo())
+                nodo.agregar(']')
+        return nodo
 
     def interpretar(self, arbol, tablaSimbolo):
         identificador = self.identificador.interpretar(arbol, tablaSimbolo)

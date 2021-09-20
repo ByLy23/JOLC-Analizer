@@ -1,3 +1,4 @@
+from controlador.analizador.abstracto.NodoAST import NodoAST
 from controlador.analizador.instrucciones.transferencia.Return import Return
 from controlador.analizador.simbolos.TablaSimbolos import TablaSimbolos
 from controlador.analizador.excepciones.Error import Error
@@ -11,6 +12,26 @@ class CondIf(Instruccion):
         self.expresion = expresion
         self.condIf = instrucIf
         self.listaInstruccionesElseIf = listaInstruccionesElseIf
+
+    def getNodo(self):
+        nodo = NodoAST('CONDICION IF')
+        nodo.agregar('if')
+        nodo.agregar(self.expresion.getNodo())
+        for instIf in self.condIf:
+            nodo.agregar(instIf.getNodo())
+        for itm in self.listaInstruccionesElseIf:
+            if itm["expresion"] != None:
+                nodo.agregar('elseif')
+                nodo.agregar(itm["expresion"].getNodo())
+                for i in itm["instrucciones"]:
+                    nodo.agregar(i.getNodo())
+            else:
+                nodo.agregar('else')
+                for i in itm["instrucciones"]:
+                    nodo.agregar(i.getNodo())
+        nodo.agregar('end')
+        nodo.agregar(';')
+        return nodo
 
     def interpretar(self, arbol, tablaSimbolo):
         val = self.expresion.interpretar(arbol, tablaSimbolo)

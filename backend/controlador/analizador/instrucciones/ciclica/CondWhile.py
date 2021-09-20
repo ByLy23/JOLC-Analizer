@@ -1,3 +1,4 @@
+from controlador.analizador.abstracto.NodoAST import NodoAST
 from controlador.analizador.instrucciones.transferencia.Return import Return
 from controlador.analizador.simbolos.TablaSimbolos import TablaSimbolos
 from controlador.analizador.excepciones.Error import Error
@@ -10,6 +11,16 @@ class CondWhile(Instruccion):
         super().__init__(TipoDato.ENTERO, linea, columna)
         self.condicion = condicion
         self.expresion = expresion
+
+    def getNodo(self):
+        nodo = NodoAST('CONDICION WHILE')
+        nodo.agregar('while')
+        nodo.agregar(self.condicion.getNodo())
+        for exp in self.expresion:
+            nodo.agregar(exp.getNodo())
+        nodo.agregar('end')
+        nodo.agregar(';')
+        return nodo
 
     def interpretar(self, arbol, tablaSimbolo):
         while True:
