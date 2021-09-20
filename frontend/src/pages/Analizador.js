@@ -10,11 +10,12 @@ export const Analizador = () => {
   const [state = { outputCode: 'salida' }, setstate] = useState({ outputCode: JSON.parse(localStorage.getItem('EDITOR')) });
   const [salida = { outputCode: 'salida' }, setSalida] = useState({ outputCode: JSON.parse(localStorage.getItem('SALIDA_CONSOLA')) });
   const handleSubmit = () => {
-    getConsola(valor).then(({ consola, simbolos, errores }) => {
+    getConsola(valor).then(({ consola, simbolos, errores, ast }) => {
       localStorage.setItem('SALIDA_CONSOLA', JSON.stringify(consola));
       localStorage.setItem('TABLA_SIMBOLOS', JSON.stringify(simbolos));
       localStorage.setItem('TABLA_ERRORES', JSON.stringify(errores));
       localStorage.setItem('EDITOR', JSON.stringify(valor.estado));
+      console.log(ast);
       setSalida({ outputCode: consola });
     });
     setpopUp(true);

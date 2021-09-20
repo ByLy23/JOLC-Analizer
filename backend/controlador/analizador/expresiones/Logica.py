@@ -20,11 +20,11 @@ class Logica(Instruccion):
         nodo = NodoAST('LOGICA')
         if self.condExcep != None:
             nodo.agregar(self.relacion, 'log', self.relacion)
-            nodo.agregar(self.condExcep.getNodo())
+            nodo.agregarAST(self.condExcep.getNodo())
         else:
-            nodo.agregar(self.cond1.getNodo())
+            nodo.agregarAST(self.cond1.getNodo())
             nodo.agregar(self.relacion, 'log', self.relacion)
-            nodo.agregar(self.cond2)
+            nodo.agregarAST(self.cond2.getNodo())
         return nodo
 
     def interpretar(self, arbol, tablaSimbolo):

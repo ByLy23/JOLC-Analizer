@@ -18,7 +18,7 @@ class Println(Instruccion):
         nodo.agregar('println')
         nodo.agregar('(')
         for exp in self.expresion:
-            nodo.agregar(exp.getNodo())
+            nodo.agregarAST(exp.getNodo())
         nodo.agregar(')')
         nodo.agregar(';')
         return nodo

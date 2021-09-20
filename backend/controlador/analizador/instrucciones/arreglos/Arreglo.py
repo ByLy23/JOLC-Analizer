@@ -14,7 +14,7 @@ class Arreglo(Instruccion):
         nodo = NodoAST('ARREGLO')
         nodo.agregar('[')
         for expresion in self.expresiones:
-            nodo.agregar(expresion.getNodo())
+            nodo.agregarAST(expresion.getNodo())
             nodo.agregar(',')
         nodo.agregar(']')
         return nodo

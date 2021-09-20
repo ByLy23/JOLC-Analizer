@@ -18,7 +18,7 @@ class Declaracion(Instruccion):
         nodo.agregar(self.identificador)
         if self.valor != None:
             nodo.agregar('=')
-            nodo.agregar(self.valor.getNodo())
+            nodo.agregarAST(self.valor.getNodo())
         nodo.agregar(':')
         nodo.agregar(':')
         nodo.agregar(self.tipo)

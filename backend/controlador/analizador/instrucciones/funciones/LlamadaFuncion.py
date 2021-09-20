@@ -20,7 +20,7 @@ class LlamadaFuncion(Instruccion):
         nodo.agregar(self.identificador)
         nodo.agregar('(')
         for param in self.parametros:
-            nodo.agregar(param.getNodo())
+            nodo.agregarAST(param.getNodo())
             nodo.agregar(',')
         nodo.agregar(')')
         return nodo

@@ -20,12 +20,12 @@ class Aritmetica(Instruccion):
     def getNodo(self):
         nodo = NodoAST('ARITMETICA')
         if self.operadorUnico != None:
-            nodo.agregar(self.operador)
-            nodo.agregar(self.operadorUnico.getNodo())
-        else:
-            nodo.agregar(self.op1.getNodo())
             nodo.agregar(self.operador, 'ar', self.operador)
-            nodo.agregar(self.op2.getNodo())
+            nodo.agregarAST(self.operadorUnico.getNodo())
+        else:
+            nodo.agregarAST(self.op1.getNodo())
+            nodo.agregar(self.operador, 'ar', self.operador)
+            nodo.agregarAST(self.op2.getNodo())
         return nodo
 
     def interpretar(self, arbol, tablaSimbolo):

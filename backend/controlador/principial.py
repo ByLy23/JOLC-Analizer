@@ -12,51 +12,81 @@ def metodoPrincipal(EntradaAnalizar):
     err = []
     sim = []
     listaErrores = []
-    # try:
-    ast = Arbol(parse(EntradaAnalizar))  # entrada con parser
-    tabla = TablaSimbolos()
-    ast.setGlobal(tabla)
-    tabla.setNombre('Global')
-    listaErrores = errores()
-    for error in listaErrores:
-        ast.getErrores().append(error)
-        ast.actualizaConsola(error.retornaError())
-    for ins in ast.getInstrucciones():
-        if isinstance(ins, Funcion):
-            ast.getFunciones().append(ins)
-    for ins in ast.getInstrucciones():
-        if isinstance(ins, Funcion):
-            continue
-        resultado = ins.interpretar(ast, tabla)
-        if isinstance(resultado, Error):
-            ast.getErrores().append(resultado)
-            ast.actualizaConsola(resultado.retornaError())
-    listaSimbolos = ast.getSimbolos()
-    sim = interpretarSimbolos(listaSimbolos)
-    err = interpretarErrores(listaErrores)
-    arbol = NodoAST('RAIZ')
-    nodoIsnt = NodoAST('INSTRUCCIONES')
-    for inst in ast.getInstrucciones():
-        nodoIsnt.agregar(inst.getNodo())
-    arbol.agregar(nodoIsnt)
-    print(arbol)
-    # print(ast.getGlobal())
-    return {
-        "consola": ast.getConsola(),
-        "simbolos": sim,
-        "errores":  err,
-    }
+    try:
+        ast = Arbol(parse(EntradaAnalizar))  # entrada con parser
+        tabla = TablaSimbolos()
+        ast.setGlobal(tabla)
+        tabla.setNombre('Global')
+        listaErrores = errores()
+        for error in listaErrores:
+            ast.getErrores().append(error)
+            ast.actualizaConsola(error.retornaError())
+        for ins in ast.getInstrucciones():
+            if isinstance(ins, Funcion):
+                ast.getFunciones().append(ins)
+        for ins in ast.getInstrucciones():
+            if isinstance(ins, Funcion):
+                continue
+            resultado = ins.interpretar(ast, tabla)
+            if isinstance(resultado, Error):
+                ast.getErrores().append(resultado)
+                ast.actualizaConsola(resultado.retornaError())
+        listaSimbolos = ast.getSimbolos()
+        sim = interpretarSimbolos(listaSimbolos)
+        err = interpretarErrores(listaErrores)
+        arbol = NodoAST('RAIZ')
+        nodoIsnt = NodoAST('INSTRUCCIONES')
+        for inst in ast.getInstrucciones():
+            nodoIsnt.agregarAST(inst.getNodo())
+        arbol.agregarAST(nodoIsnt)
+        resultado = graficar(arbol)
+        # print(ast.getGlobal())
+        return {
+            "consola": ast.getConsola(),
+            "simbolos": sim,
+            "errores":  err,
+            "ast": resultado
+        }
 
-    # except:
-    #     listaErrores = errores()
-    #     err = interpretarErrores(listaErrores)
-    #     return jsonify(
-    #         {
-    #             "consola": "Errores Irrecuperables Encontrados",
-    #             "simbolos": [],
-    #             "errores": err
-    #         }
-    #     )
+    except:
+        listaErrores = errores()
+        err = interpretarErrores(listaErrores)
+        return {
+            "consola": "Errores Irrecuperables Encontrados",
+            "simbolos": [],
+            "errores": err,
+            "ast": []
+        }
+
+
+cuerpo = ''
+contador = 0
+
+
+def graficar(arbol):
+    res = ''
+    global cuerpo
+    global contador
+    cuerpo = ''
+    contador = 1
+    graphAST('n0', arbol)
+    res = 'digraph arbolAST'
+    res += '{'
+    res += '\nn0[label="{}"];\n{}'.format(
+        arbol.getValor(), cuerpo)
+    res += '}'
+    return res
+
+
+def graphAST(texto, padre):
+    global cuerpo
+    global contador
+    for hijo in padre.getHijos():
+        nombreHijo = 'n{}'.format(contador)
+        cuerpo += '{}[label="{}"];\n{} -> {};\n'.format(
+            nombreHijo, hijo.getValor(), texto, nombreHijo)
+        contador += 1
+        graphAST(nombreHijo, hijo)
 
 
 def interpretarSimbolos(simbolos):

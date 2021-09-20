@@ -15,16 +15,16 @@ class AsignacionStruct(Instruccion):
 
     def getNodo(self):
         nodo = NodoAST('ASIGNACION STRUCT')
-        nodo.agregar(self.identificador.getNodo())
+        nodo.agregarAST(self.identificador.getNodo())
         nodo.agregar('.')
         nodo.agregar(self.parametro)
         if self.accesos != None:
             for acceso in self.accesos:
                 nodo.agregar('[')
-                nodo.agregar(acceso.getNodo())
+                nodo.agregarAST(acceso.getNodo())
                 nodo.agregar(']')
         nodo.agregar('=')
-        nodo.agregar(self.expresion.getNodo())
+        nodo.agregarAST(self.expresion.getNodo())
         nodo.agregar(';')
         return nodo
 

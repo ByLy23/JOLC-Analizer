@@ -15,9 +15,9 @@ class CondWhile(Instruccion):
     def getNodo(self):
         nodo = NodoAST('CONDICION WHILE')
         nodo.agregar('while')
-        nodo.agregar(self.condicion.getNodo())
+        nodo.agregarAST(self.condicion.getNodo())
         for exp in self.expresion:
-            nodo.agregar(exp.getNodo())
+            nodo.agregarAST(exp.getNodo())
         nodo.agregar('end')
         nodo.agregar(';')
         return nodo

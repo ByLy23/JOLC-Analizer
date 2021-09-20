@@ -21,13 +21,13 @@ class CondFor(Instruccion):
         nodo.agregar(self.ide)
         nodo.agregar('in')
         if self.tipoRango["exp2"] != None:
-            nodo.agregar(self.tipoRango["exp1"].getNodo())
+            nodo.agregarAST(self.tipoRango["exp1"].getNodo())
             nodo.agregar(':')
-            nodo.agregar(self.tipoRango["exp2"].getNodo())
+            nodo.agregarAST(self.tipoRango["exp2"].getNodo())
         else:
-            nodo.agregar(self.tipoRango["exp1"].getNodo())
+            nodo.agregarAST(self.tipoRango["exp1"].getNodo())
         for inst in self.instrucciones:
-            nodo.agregar(inst.getNodo())
+            nodo.agregarAST(inst.getNodo())
         nodo.agregar('end')
         nodo.agregar(';')
         return nodo

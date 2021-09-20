@@ -13,9 +13,9 @@ class Relacional(Instruccion):
 
     def getNodo(self):
         nodo = NodoAST('RELACIONAL')
-        nodo.agregar(self.cond1.getNodo())
+        nodo.agregarAST(self.cond1.getNodo())
         nodo.agregar(self.relacion, 'rel', self.relacion)
-        nodo.agregar(self.cond2.getNodo())
+        nodo.agregarAST(self.cond2.getNodo())
         return nodo
 
     def interpretar(self, arbol, tablaSimbolo):

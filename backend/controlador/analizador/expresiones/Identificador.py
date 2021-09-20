@@ -13,7 +13,7 @@ class Identificador(Instruccion):
 
     def getNodo(self):
         nodo = NodoAST('IDENTIFICADOR')
-        nodo.agregar(str(self.identificador))
+        nodo.agregar(self.identificador)
         return nodo
 
     def interpretar(self, arbol, tablaSimbolo):

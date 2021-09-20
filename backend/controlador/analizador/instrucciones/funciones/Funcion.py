@@ -33,7 +33,7 @@ class Funcion(Instruccion):
             nodo.agregar(',')
         nodo.agregar(')')
         for inst in self.instrucciones:
-            nodo.agregar(inst.getNodo())
+            nodo.agregarAST(inst.getNodo())
         nodo.agregar('end')
         nodo.agregar(';')
         return nodo

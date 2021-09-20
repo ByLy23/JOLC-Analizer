@@ -14,13 +14,13 @@ class AsigArreglo(Instruccion):
 
     def getNodo(self):
         nodo = NodoAST('ASIGNACION ARREGLO')
-        nodo.agregar(str(self.identificador))
+        nodo.agregar(self.identificador)
         for acceso in self.listaAccesos:
             nodo.agregar('[')
-            nodo.agregar(acceso.getNodo())
+            nodo.agregarAST(acceso.getNodo())
             nodo.agregar(']')
         nodo.agregar('=')
-        nodo.agregar(self.expresion.getNodo())
+        nodo.agregarAST(self.expresion.getNodo())
         nodo.agregar(';')
         return nodo
 

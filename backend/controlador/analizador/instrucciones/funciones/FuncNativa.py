@@ -17,11 +17,20 @@ class FuncNativa(Instruccion):
         nodo.agregar(self.nombre)
         nodo.agregar('(')
         if self.argumentos["exp2"] != None:
-            nodo.agregar(self.argumentos["exp1"])
+            if isinstance(self.argumentos["exp1"], str):
+                nodo.agregar(self.argumentos["exp1"])
+            else:
+                nodo.agregarAST(self.argumentos["exp1"].getNodo())
             nodo.agregar(',')
-            nodo.agregar(self.argumentos["exp2"])
+            if isinstance(self.argumentos["exp2"], str):
+                nodo.agregar(self.argumentos["exp2"])
+            else:
+                nodo.agregarAST(self.argumentos["exp2"].getNodo())
         else:
-            nodo.agregar(self.argumentos["exp1"])
+            if isinstance(self.argumentos["exp1"], str):
+                nodo.agregar(self.argumentos["exp1"])
+            else:
+                nodo.agregarAST(self.argumentos["exp1"].getNodo())
         nodo.agregar(')')
         return nodo
 

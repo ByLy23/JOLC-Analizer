@@ -16,7 +16,7 @@ class AccesoArreglo(Instruccion):
         nodo.agregar(self.identificador)
         for lista in self.listaAccesos:
             nodo.agregar('[')
-            nodo.agregar(lista.getNodo())
+            nodo.agregarAST(lista.getNodo())
             nodo.agregar(']')
         return nodo
 

@@ -16,11 +16,11 @@ class Asignacion(Instruccion):
     def getNodo(self):
         nodo = NodoAST('ASIGNACION')
         if self.tipoAsignacion != None:
-            nodo.agregar(str(self.tipoAsignacion))
-        nodo.agregar(str(self.identificador))
+            nodo.agregar(self.tipoAsignacion)
+        nodo.agregar(self.identificador)
         nodo.agregar('=')
         if self.valor != None:
-            nodo.agregar(self.valor.getNodo())
+            nodo.agregarAST(self.valor.getNodo())
         nodo.agregar(';')
         return nodo
 

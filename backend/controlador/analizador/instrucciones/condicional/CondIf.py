@@ -16,19 +16,19 @@ class CondIf(Instruccion):
     def getNodo(self):
         nodo = NodoAST('CONDICION IF')
         nodo.agregar('if')
-        nodo.agregar(self.expresion.getNodo())
+        nodo.agregarAST(self.expresion.getNodo())
         for instIf in self.condIf:
-            nodo.agregar(instIf.getNodo())
+            nodo.agregarAST(instIf.getNodo())
         for itm in self.listaInstruccionesElseIf:
             if itm["expresion"] != None:
                 nodo.agregar('elseif')
-                nodo.agregar(itm["expresion"].getNodo())
+                nodo.agregarAST(itm["expresion"].getNodo())
                 for i in itm["instrucciones"]:
-                    nodo.agregar(i.getNodo())
+                    nodo.agregarAST(i.getNodo())
             else:
                 nodo.agregar('else')
                 for i in itm["instrucciones"]:
-                    nodo.agregar(i.getNodo())
+                    nodo.agregarAST(i.getNodo())
         nodo.agregar('end')
         nodo.agregar(';')
         return nodo

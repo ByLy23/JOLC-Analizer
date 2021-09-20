@@ -14,7 +14,7 @@ class Return(Instruccion):
         nodo = NodoAST('RETURN')
         nodo.agregar('return')
         if self.expresion != None:
-            nodo.agregar(self.expresion.getNodo())
+            nodo.agregarAST(self.expresion.getNodo())
         return nodo
 
     def interpretar(self, arbol, tablaSimbolo):

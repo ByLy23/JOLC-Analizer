@@ -3,43 +3,52 @@ class NodoAST():
         self.listaNodos = []
         self.valor = valor
 
-    def agregar(self, hijo, ambito=None, operador=None):
+    def agregar(self, hijo, ambito=None, op=None):
         if (hijo != None):
             if ambito != None:
                 if ambito == 'ar':
-                    if operador == 0:
+                    operador = str(op)[13:]
+                    if operador == 'MAS':
                         hijo = '+'
-                    if operador == 1:
+                    if operador == 'MENOS':
                         hijo = '-'
-                    if operador == 2:
+                    if operador == 'POR':
                         hijo = '*'
-                    if operador == 3:
+                    if operador == 'UMENOS':
+                        hijo = '-'
+                    if operador == 'DIVI':
                         hijo = '/'
-                    if operador == 4:
+                    if operador == 'POTENCIA':
                         hijo = '^'
-                    if operador == 5:
+                    if operador == 'MODULO':
                         hijo = '%'
                 elif ambito == 'log':
-                    if operador == 0:
+                    operador = str(op)[9:]
+                    if operador == 'OR':
                         hijo = '||'
-                    if operador == 1:
+                    if operador == 'AND':
                         hijo = '&&'
-                    if operador == 2:
+                    if operador == 'NOT':
                         hijo = '!'
                 elif ambito == 'rel':
-                    if operador == 0:
+                    operador = str(op)[13:]
+                    if operador == 'IGUAL':
                         hijo = '=='
-                    if operador == 1:
+                    if operador == 'DIFERENTE':
                         hijo = '!='
-                    if operador == 2:
+                    if operador == 'MAYOR':
                         hijo = '>'
-                    if operador == 3:
+                    if operador == 'MENOR':
                         hijo = '<'
-                    if operador == 4:
+                    if operador == 'MAYORIGUAL':
                         hijo = '>='
-                    if operador == 5:
+                    if operador == 'MENORIGUAL':
                         hijo = '<='
             self.listaNodos.append(NodoAST(hijo))
+
+    def agregarAST(self, hijo):
+        if hijo != None:
+            self.listaNodos.append(hijo)
 
     def getValor(self):
         return self.valor
