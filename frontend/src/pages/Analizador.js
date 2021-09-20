@@ -15,10 +15,10 @@ export const Analizador = () => {
       localStorage.setItem('TABLA_SIMBOLOS', JSON.stringify(simbolos));
       localStorage.setItem('TABLA_ERRORES', JSON.stringify(errores));
       localStorage.setItem('EDITOR', JSON.stringify(valor.estado));
-      console.log(ast);
+      localStorage.setItem('ARBOL_AST', JSON.stringify(ast));
       setSalida({ outputCode: consola });
+      setpopUp(true);
     });
-    setpopUp(true);
   };
   const input = <input type="submit" className="analizar" onClick={handleSubmit} value="Analizar" />;
   const valor = {

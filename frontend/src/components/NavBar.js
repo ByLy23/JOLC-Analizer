@@ -1,14 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import '../css/navBar.css';
 import { NavLink } from 'react-router-dom';
-import { FiHome, FiEdit, FiList, FiXSquare, FiDownload } from 'react-icons/fi';
+import { FiHome, FiEdit, FiList, FiXSquare, FiGitBranch } from 'react-icons/fi';
 import { IconContext } from 'react-icons';
-import { PopupAn } from './PopupAn';
 export const NavBar = () => {
-  const [popUp, setpopUp] = useState(false);
-  const handlePop = () => {
-    setpopUp(true);
-  };
   return (
     <nav className="glass">
       <span className="title">JOLC</span>
@@ -18,20 +13,12 @@ export const NavBar = () => {
           <NavLink activeClassName="active" className="link-item" to="/inicio">
             <FiHome /> Inicio
           </NavLink>
-          <NavLink
-            activeClassName="active"
-            className="link-item"
-            to="/analizador"
-          >
+          <NavLink activeClassName="active" className="link-item" to="/analizador">
             <FiEdit />
             Analizador
           </NavLink>
           <span className="reporte">Reportes</span>
-          <NavLink
-            activeClassName="active"
-            className="link-item"
-            to="/simbolos"
-          >
+          <NavLink activeClassName="active" className="link-item" to="/simbolos">
             <FiList />
             Tabla de Simbolos
           </NavLink>
@@ -39,16 +26,10 @@ export const NavBar = () => {
             <FiXSquare />
             Tabla de Errores
           </NavLink>
-          <NavLink
-            activeClassName=""
-            className="link-item"
-            to="/inicio"
-            onClick={handlePop}
-          >
-            <FiDownload /> Arbol AST
+          <NavLink activeClassName="active" className="link-item" to="/ast">
+            <FiGitBranch /> Arbol AST
           </NavLink>
         </div>
-        {popUp && <PopupAn setpopUp={setpopUp} valor={'Descargado'} />}
       </IconContext.Provider>
     </nav>
   );
