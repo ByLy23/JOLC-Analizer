@@ -32,13 +32,13 @@ class Asignacion(Instruccion):
                 val = self.valor.interpretar(arbol, tablaSimbolo)
                 if not variable.mutable:
 
-                    if variable.tipo != TipoDato.NOTHING and variable.tipo != self.valor.tipo:
-                        return Error("Error Semantico", "Variable {} con tipo de dato diferente".format(self.identificador), self.linea, self.columna)
-                    else:
-                        variable.setValor(val)
-                        variable.setTipo(self.valor.tipo)
-                        variable.tipoStruct = self.valor.tipoStruct
-                        variable.mutable = self.valor.mutable
+                    # if variable.tipo != TipoDato.NOTHING and variable.tipo != self.valor.tipo:
+                    #     return Error("Error Semantico", "Variable {} con tipo de dato diferente".format(self.identificador), self.linea, self.columna)
+                    # else:
+                    variable.setValor(val)
+                    variable.setTipo(self.valor.tipo)
+                    variable.tipoStruct = self.valor.tipoStruct
+                    variable.mutable = self.valor.mutable
 
                 else:
                     variable.setValor(val)

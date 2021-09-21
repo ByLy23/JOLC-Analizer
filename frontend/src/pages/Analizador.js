@@ -6,8 +6,21 @@ import { PopupAn } from '../components/PopupAn';
 import { CodeMirrorComponent } from '../components/CodeMirrorComponent';
 import { getConsola } from '../helpers/getConsola';
 export const Analizador = () => {
+  const codigo = `for i in 0:9
+
+    output = "";
+    for j in 0:(10 - i)
+        output = output * " ";
+    end;
+
+    for k in 0:i 
+        output = output * "* ";
+    end;
+    println(output);
+
+end;`;
   const [popUp, setpopUp] = useState(false);
-  const [state = { outputCode: 'salida' }, setstate] = useState({ outputCode: JSON.parse(localStorage.getItem('EDITOR')) });
+  const [state = { outputCode: 'salida' }, setstate] = useState({ outputCode: localStorage.getItem('EDITOR') == null ? codigo : JSON.parse(localStorage.getItem('EDITOR')) });
   const [salida = { outputCode: 'salida' }, setSalida] = useState({ outputCode: JSON.parse(localStorage.getItem('SALIDA_CONSOLA')) });
   const handleSubmit = () => {
     getConsola(valor).then(({ consola, simbolos, errores, ast }) => {

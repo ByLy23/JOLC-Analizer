@@ -46,13 +46,13 @@ class LlamadaFuncion(Instruccion):
                         var = nuevaTabla.getVariable(
                             funcion.parametros[iterador]["identificador"])
                         if var != None:
-                            if var.tipo != nuevoVal.tipo:
-                                return Error("Semantico", "Tipo de dato diferente", self.linea, self.columna)
-                            else:
-                                var.mutable = nuevoVal.mutable
-                                var.tipoStruct = nuevoVal.tipoStruct
-                                var.setValor(val)
-                                nuevaTabla.setNombre(funcion.identificador)
+                            # if var.tipo != nuevoVal.tipo:
+                            #     return Error("Semantico", "Tipo de dato diferente", self.linea, self.columna)
+                            # else:
+                            var.mutable = nuevoVal.mutable
+                            var.tipoStruct = nuevoVal.tipoStruct
+                            var.setValor(val)
+                            nuevaTabla.setNombre(funcion.identificador)
                         else:
                             return Error("Error Semantico", "Variable no existe", self.linea, self.columna)
                     else:
@@ -65,12 +65,12 @@ class LlamadaFuncion(Instruccion):
                         var = nuevaTabla.getVariable(
                             funcion.parametros[iterador]["identificador"])
                         if var != None:
-                            if var.tipo != nuevoVal.tipo:
-                                return Error("Semantico", "Tipo de dato diferente", self.linea, self.columna)
-                            else:
-                                var.setValor(val)
-                                var.tipoStruct = nuevoVal.tipoStruct
-                                nuevaTabla.setNombre(funcion.identificador)
+                            # if var.tipo != nuevoVal.tipo:
+                            #     return Error("Semantico", "Tipo de dato diferente", self.linea, self.columna)
+                            # else:
+                            var.setValor(val)
+                            var.tipoStruct = nuevoVal.tipoStruct
+                            nuevaTabla.setNombre(funcion.identificador)
                         else:
                             return Error("Error Semantico", "Variable no existe", self.linea, self.columna)
                     if not arbol.actualizarTabla(funcion.parametros[iterador]["identificador"], 'nothing', self.linea, nuevaTabla.getNombre(), self.columna):

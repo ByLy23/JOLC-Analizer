@@ -4,7 +4,7 @@ export const getConsola = async ({ estado }) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ peticion: estado }),
   };
-  const response = await fetch('http://127.0.0.1:8000/interpretar', requestOps);
+  const response = await fetch('https://backend-jolc.herokuapp.com/interpretar', requestOps);
   const data = await response.json();
   return data;
 };
