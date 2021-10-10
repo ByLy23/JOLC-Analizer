@@ -37,8 +37,6 @@ def metodoPrincipal(EntradaAnalizar):
             ast.getErrores().append(traduccion)
             ast.actualizaConsola(traduccion.retornaError())
         traduccionSalida += traduccion["codigo"]
-
-        print(traduccion)
     traduccionSalida += "\n}"
     if len(ast.listaTemporales) > 0:
         tempTraduccion = "var "

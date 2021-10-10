@@ -27,7 +27,6 @@ class Println(Instruccion):
         codigo = ""
         for valor in self.expresion:
             variable = valor.traducir(arbol, tablaSimbolo)
-            print(self.tipo)
             if isinstance(variable, Error):
                 return variable
             if variable == None:
