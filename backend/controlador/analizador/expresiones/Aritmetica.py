@@ -11,11 +11,76 @@ class Aritmetica(Instruccion):
         super().__init__(TipoDato.ENTERO, linea, columna)
         self.operador = operador
         self.operadorUnico = None
+        self.temporal = ""
+        self.ope = ""
         if operador == opAritmetico.UMENOS:
             self.operadorUnico = op1
         else:
             self.op1 = op1
             self.op2 = op2
+# TRADUCIR
+
+    def traducir(self, arbol, tablaSimbolo):
+        codigo = ""
+        temp = arbol.newTemp()
+        izq = der = uno = None
+        if self.operadorUnico != None:
+            uno = self.operadorUnico.traducir(arbol, tablaSimbolo)
+            if isinstance(uno, Error):
+                return uno
+            if self.operadorUnico.tipo == TipoDato.NOTHING:
+                return Error("Error Semantico", "Variable con dato nulo no puede ser ejecutada", self.linea, self.columna)
+        else:
+            izq = self.op1.traducir(arbol, tablaSimbolo)
+            if isinstance(izq, Error):
+                return izq
+            der = self.op2.traducir(arbol, tablaSimbolo)
+            if isinstance(der, Error):
+                return der
+            if self.op1.tipo == TipoDato.NOTHING or self.op2.tipo == TipoDato.NOTHING:
+                return Error("Error Semantico", "Variable con dato nulo no puede ser ejecutada", self.linea, self.columna)
+        if self.operador == opAritmetico.MAS:
+            self.ope = "+"
+            retorno = self.operador1SumaC3D(izq["temporal"], der["temporal"])
+            codigo += izq["codigo"]
+            codigo += der["codigo"]
+            codigo += arbol.assigTemp2(temp["temporal"],
+                                       retorno["op1"], self.ope, retorno["op2"])
+        return {'temporal': temp["temporal"], 'codigo': codigo}
+    # --------------------SUMA--------------------------
+
+    def operador1SumaC3D(self, izq, der):
+        op2 = self.op2.tipo
+        if self.op1.tipo == TipoDato.ENTERO:
+            return self.op2SumaC3D(1, op2, izq, der)
+        elif self.op1.tipo == TipoDato.DECIMAL:
+            return self.op2SumaC3D(2, op2, izq, der)
+        else:
+            return Error("Error Sintactico", "Operador invalido", self.linea, self.columna)
+
+    def op2SumaC3D(self, numero, op2, izq, der):
+        if numero == 1:
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.ENTERO
+                return {'op1': izq, 'op2': der}
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return {'op1': izq, 'op2': der}
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        elif numero == 2:
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.DECIMAL
+                return {'op1': izq, 'op2': der}
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return {'op1': izq, 'op2': der}
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        else:
+            return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+
+    #-----------------------------------------------------------------------------------------------------------------#
 
     def getNodo(self):
         nodo = NodoAST('ARITMETICA')

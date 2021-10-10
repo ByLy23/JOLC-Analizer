@@ -23,6 +23,70 @@ class Println(Instruccion):
         nodo.agregar(';')
         return nodo
 
+    def traducir(self, arbol, tablaSimbolo):
+        codigo = ""
+        for valor in self.expresion:
+            variable = valor.traducir(arbol, tablaSimbolo)
+            print(self.tipo)
+            if isinstance(variable, Error):
+                return variable
+            if variable == None:
+                err = Error(
+                    "Error Semantico", "No existe ningun valor que mostrar", self.linea, self.columna)
+                arbol.getErrores().append(err)
+                arbol.actualizaConsola(err.retornaError())
+            codigo += variable["codigo"]
+            # se imprime segun el tipo
+            if valor.tipo == TipoDato.ENTERO:
+
+                codigo += arbol.imprimir(
+                    '"%d", int({})'.format(variable["temporal"]))
+                #fmt.Printf("%d", int(expresion))
+            elif valor.tipo == TipoDato.DECIMAL:
+                codigo += arbol.imprimir(
+                    '"%f", {}'.format(variable["temporal"]))
+                # fmt.Printf("%f", 32.2)
+            elif valor.tipo == TipoDato.CARACTER:
+                codigo += arbol.imprimir(
+                    '"%c", {}'.format(variable["temporal"]))
+                # fmt.Printf("%c", 36)
+            elif valor.tipo == TipoDato.BOOLEANO:
+                temp = arbol.newTemp()
+                lTrue = arbol.newLabel()
+                lFalse = arbol.newLabel()
+                lSalida = arbol.newLabel()
+                codigo += arbol.assigTemp1(temp["temporal"],
+                                           variable["temporal"])
+                codigo += arbol.getCond2(temp["temporal"],
+                                         " == ", "1.0", lTrue)
+                codigo += arbol.goto(lFalse)
+                codigo += arbol.getLabel(lTrue)
+                codigo += arbol.imprimir('"%c", 116')  # t
+                codigo += arbol.imprimir('"%c", 114')  # r
+                codigo += arbol.imprimir('"%c", 117')  # u
+                codigo += arbol.imprimir('"%c", 101')  # e
+                codigo += arbol.goto(lSalida)
+                codigo += arbol.getLabel(lFalse)
+                codigo += arbol.imprimir('"%c", 102')  # f
+                codigo += arbol.imprimir('"%c", 97')  # a
+                codigo += arbol.imprimir('"%c", 108')  # l
+                codigo += arbol.imprimir('"%c", 115')  # s
+                codigo += arbol.imprimir('"%c", 101')  # e
+                codigo += arbol.getLabel(lSalida)
+                '''
+                t1=temporal
+                if(t1==1.0){goto true}
+                goto false
+                true:
+                imprimir(true) caracter por caracter
+                goto salida
+                false:
+                imprimir(false) caracter por caracter
+                salida:
+                
+                '''
+        return {'temporal': "", 'codigo': codigo}
+
     def interpretar(self, arbol, tablaSimbolo):
         for valor in self.expresion:
             variable = valor.interpretar(arbol, tablaSimbolo)

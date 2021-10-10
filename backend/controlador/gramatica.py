@@ -268,7 +268,6 @@ def p_instruccion(t):
 def p_error(t):
     'instruccion : error PTCOMA'
     if t:
-        print(t.type, "<----")
         listaErrores.append(
             Error("Sintactico", "Error de tipo sintactico: " +
                   t.type, t.lineno, t.lexpos))

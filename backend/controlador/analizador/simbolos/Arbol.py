@@ -11,8 +11,12 @@ class Arbol:
         self.errores = []
         self.listaSimbolos = []
         self.structs = []
-
+        self.listaTemporales = []
+        # SEGUNDA FASE
+        self.t = 0
+        self.l = 0
     # gets
+
     def getStructs(self):
         return self.structs
 
@@ -99,3 +103,45 @@ class Arbol:
                 item.setColumna(columna)
                 return True
         return False
+
+    # SEGUNDA FASE
+    def nuevoTemp(self, temp):
+        resultado = {'temporal': temp, 'codigo': ""}
+        return resultado
+
+    def newTemp(self, codigo=None):
+        resultado = None
+        if codigo == None:
+            resultado = {'temporal': 't{}'.format(str(self.t)), 'codigo': ''}
+        else:
+            resultado = {'temporal': 't{}'.format(
+                str(self.t)), 'codigo': codigo}
+        self.listaTemporales.append('t{}'.format(str(self.t)))
+        self.t += 1
+        return resultado
+
+    def assigTemp1(self, tempAsig, tempOperacion):
+        return '{} = {};\n'.format(tempAsig, tempOperacion)
+
+    def assigTemp2(self, tempAsig, tempOperacion1, operador, tempOperacion2):
+        return '{} = {} {} {};\n'.format(tempAsig, tempOperacion1, operador, tempOperacion2)
+
+    def newLabel(self):
+        resultado = 'L{}'.format(str(self.l))
+        self.l += 1
+        return resultado
+
+    def goto(self, l):
+        return 'goto {};\n'.format(l)
+
+    def getLabel(self, l):
+        return '{}:\n'.format(l)
+
+    def getCond1(self, temp, label):
+        return 'if ('+temp+') {goto '+label+'};\n'
+
+    def getCond2(self, c1, op, c2, label):
+        return 'if ('+c1+' '+op+' '+c2+') {goto '+label+'};\n'
+
+    def imprimir(self, temp):
+        return 'fmt.Printf({});\n'.format(temp)

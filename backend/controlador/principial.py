@@ -12,51 +12,73 @@ def metodoPrincipal(EntradaAnalizar):
     err = []
     sim = []
     listaErrores = []
-    try:
-        ast = Arbol(parse(EntradaAnalizar))  # entrada con parser
-        tabla = TablaSimbolos()
-        ast.setGlobal(tabla)
-        tabla.setNombre('Global')
-        listaErrores = errores()
-        for error in listaErrores:
-            ast.getErrores().append(error)
-            ast.actualizaConsola(error.retornaError())
-        for ins in ast.getInstrucciones():
-            if isinstance(ins, Funcion):
-                ast.getFunciones().append(ins)
-        for ins in ast.getInstrucciones():
-            if isinstance(ins, Funcion):
-                continue
-            resultado = ins.interpretar(ast, tabla)
-            if isinstance(resultado, Error):
-                ast.getErrores().append(resultado)
-                ast.actualizaConsola(resultado.retornaError())
-        listaSimbolos = ast.getSimbolos()
-        sim = interpretarSimbolos(listaSimbolos)
-        err = interpretarErrores(listaErrores)
-        arbol = NodoAST('RAIZ')
-        nodoIsnt = NodoAST('INSTRUCCIONES')
-        for inst in ast.getInstrucciones():
-            nodoIsnt.agregarAST(inst.getNodo())
-        arbol.agregarAST(nodoIsnt)
-        resultado = graficar(arbol)
-        # print(ast.getGlobal())
-        return {
-            "consola": ast.getConsola(),
-            "simbolos": sim,
-            "errores":  err,
-            "ast": resultado
-        }
+    traduccionSalida = "func main() {\n"
+    # try:
+    ast = Arbol(parse(EntradaAnalizar))  # entrada con parser
+    tabla = TablaSimbolos()
+    ast.setGlobal(tabla)
+    tabla.setNombre('Global')
+    listaErrores = errores()
+    for error in listaErrores:
+        ast.getErrores().append(error)
+        ast.actualizaConsola(error.retornaError())
+    for ins in ast.getInstrucciones():
+        if isinstance(ins, Funcion):
+            ast.getFunciones().append(ins)
+    for ins in ast.getInstrucciones():
+        if isinstance(ins, Funcion):
+            continue
+        # resultado = ins.interpretar(ast, tabla)
+        # if isinstance(resultado, Error):
+        #     ast.getErrores().append(resultado)
+        #     ast.actualizaConsola(resultado.retornaError())
+        traduccion = ins.traducir(ast, tabla)
+        if isinstance(traduccion, Error):
+            ast.getErrores().append(traduccion)
+            ast.actualizaConsola(traduccion.retornaError())
+        traduccionSalida += traduccion["codigo"]
 
-    except:
-        listaErrores = errores()
-        err = interpretarErrores(listaErrores)
-        return {
-            "consola": "Errores Irrecuperables Encontrados",
-            "simbolos": [],
-            "errores": err,
-            "ast": []
-        }
+        print(traduccion)
+    traduccionSalida += "\n}"
+    if len(ast.listaTemporales) > 0:
+        tempTraduccion = "var "
+        for item in ast.listaTemporales:
+            tempTraduccion += item+","
+        tempTraduccion = tempTraduccion[:-1]
+        tempTraduccion += " float64;\n"
+        traduccionSalida = tempTraduccion+traduccionSalida
+    traduccionSalida = """package main
+import (
+	"fmt"
+)\n"""+traduccionSalida
+    listaSimbolos = ast.getSimbolos()
+
+    sim = interpretarSimbolos(listaSimbolos)
+    err = interpretarErrores(listaErrores)
+    arbol = NodoAST('RAIZ')
+    nodoIsnt = NodoAST('INSTRUCCIONES')
+    for inst in ast.getInstrucciones():
+        nodoIsnt.agregarAST(inst.getNodo())
+    arbol.agregarAST(nodoIsnt)
+    resultado = graficar(arbol)
+    # print(ast.getGlobal())
+    return {
+        "consola2": ast.getConsola(),
+        "consola": traduccionSalida,
+        "simbolos": sim,
+        "errores":  err,
+        "ast": resultado
+    }
+
+    # except:
+    #     listaErrores = errores()
+    #     err = interpretarErrores(listaErrores)
+    #     return {
+    #         "consola": "Errores Irrecuperables Encontrados",
+    #         "simbolos": [],
+    #         "errores": err,
+    #         "ast": []
+    #     }
 
 
 cuerpo = ''

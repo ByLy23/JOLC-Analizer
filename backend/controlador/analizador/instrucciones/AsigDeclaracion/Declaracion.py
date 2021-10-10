@@ -41,8 +41,8 @@ class Declaracion(Instruccion):
             val = self.valor.interpretar(arbol, tablaSimbolo)
             if isinstance(val, Error):
                 return val
-            # if self.valor.tipo != self.tipo:
-            #     return Error("Error Semantico", "{} no es compatible con {} ".format(self.valor.tipo, self.tipo), self.linea, self.columna)
+            if self.valor.tipo != self.tipo:
+                return Error("Error Semantico", "{} no es compatible con {} ".format(self.valor.tipo, self.tipo), self.linea, self.columna)
             if self.valor.tipo == TipoDato.STRUCT:
                 if self.valor.tipoStruct != self.struct:
                     return Error("Error Semantico", "No es el mismo struct", self.linea, self.columna)
