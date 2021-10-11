@@ -1,13 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/frontend/node_modules
-#install py -3 -m venv venv
-parser.out
-parsetab.py
-__pycache__
-/backend/.vscode
-/backend/venv
+/node_modules
 /.pnp
 .pnp.js
 

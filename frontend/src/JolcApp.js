@@ -1,9 +1,10 @@
 import React from 'react';
+import { AppRouter } from './routes/AppRouter';
 
 export const JolcApp = () => {
   return (
     <div>
-      <h1>Hola mundo</h1>
+      <AppRouter />
     </div>
   );
 };
