@@ -12,6 +12,7 @@ class Arbol:
         self.listaSimbolos = []
         self.structs = []
         self.listaTemporales = []
+        self.listaImports = ["\"fmt\""]
         # SEGUNDA FASE
         self.t = 0
         self.l = 0
@@ -81,6 +82,15 @@ class Arbol:
     def setErrores(self, errores):
         self.errores = errores
 
+    def setImports(self, impor):
+        self.listaImports.append(impor)
+
+    def getImports(self):
+        im = ""
+        for i in self.listaImports:
+            im += i+"\n"
+        return im
+
     def setInstrucciones(self, instruccion):
         self.instrucciones = instruccion
 
@@ -125,6 +135,9 @@ class Arbol:
 
     def assigTemp2(self, tempAsig, tempOperacion1, operador, tempOperacion2):
         return '{} = {} {} {};\n'.format(tempAsig, tempOperacion1, operador, tempOperacion2)
+
+    def assigTempMod(self, tempAsig, tempOperacion1, tempOperacion2):
+        return '{} = math.Mod({},{});\n'.format(tempAsig, tempOperacion1, tempOperacion2)
 
     def newLabel(self):
         resultado = 'L{}'.format(str(self.l))

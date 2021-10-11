@@ -12,6 +12,7 @@ def metodoPrincipal(EntradaAnalizar):
     err = []
     sim = []
     listaErrores = []
+    listaImports = []
     traduccionSalida = "func main() {\n"
     # try:
     ast = Arbol(parse(EntradaAnalizar))  # entrada con parser
@@ -45,10 +46,11 @@ def metodoPrincipal(EntradaAnalizar):
         tempTraduccion = tempTraduccion[:-1]
         tempTraduccion += " float64;\n"
         traduccionSalida = tempTraduccion+traduccionSalida
+
     traduccionSalida = """package main
 import (
-	"fmt"
-)\n"""+traduccionSalida
+   {} 
+)\n""".format(ast.getImports())+traduccionSalida
     listaSimbolos = ast.getSimbolos()
 
     sim = interpretarSimbolos(listaSimbolos)

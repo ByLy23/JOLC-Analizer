@@ -62,12 +62,15 @@ class Aritmetica(Instruccion):
                                        retorno["op1"], self.ope, retorno["op2"])
         elif self.operador == opAritmetico.MODULO:  # FUNCION MODULO
             self.ope = "%"
-            retorno = self.operador1ModC3D(izq, der)if (der != 0) else Error(
+            arbol.setImports("\"math\"")
+            retorno = self.operador1ModC3D(izq["temporal"], der["temporal"])if (der != 0) else Error(
                 "Error Sintactico", "Error de division", self.linea, self.columna)
             codigo += izq["codigo"]
             codigo += der["codigo"]
-            codigo += arbol.assigTemp2(temp["temporal"],
-                                       retorno["op1"], self.ope, retorno["op2"])
+            codigo += arbol.assigTempMod(temp["temporal"],
+                                         retorno["op1"], retorno["op2"])
+        elif self.operador == opAritmetico.DIVI:
+            return self.operador1DivisionC3D(izq, der) if (der != 0) else Error("Error Sintactico", "No se puede dividir sobre 0", self.linea, self.columna)
 
         return {'temporal': temp["temporal"], 'codigo': codigo}
     # --------------------SUMAC3D--------------------------
@@ -203,6 +206,62 @@ class Aritmetica(Instruccion):
             elif op2 == TipoDato.DECIMAL:
                 self.tipo = TipoDato.DECIMAL
                 return {'op1': izq, 'op2': der}
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        else:
+            return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+
+    # ------------------------------ DIVISION C3D -------------------------------------------
+    def operador1DivisionC3D(self, izq, der):
+        op2 = self.op2.tipo
+        if self.op1.tipo == TipoDato.ENTERO:
+            return self.op2DivisionC3D(1, op2, izq, der)
+        elif self.op1.tipo == TipoDato.DECIMAL:
+            return self.op2DivisionC3D(2, op2, izq, der)
+        elif self.op1.tipo == TipoDato.BOOLEANO:
+            return self.op2DivisionC3D(3, op2, izq, der)
+        else:
+            return Error("Error Sintactico", "Operador invalido", self.linea, self.columna)
+
+    def op2DivisionC3D(self, numero, op2, izq, der):
+        if numero == 1:
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.DECIMAL
+                return float(izq) / float(der)
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return float(izq)/float(der)
+            elif op2 == TipoDato.BOOLEANO:
+                self.tipo = TipoDato.DECIMAL
+                if str(der).lower() == 'true':
+                    return float(izq)
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        elif numero == 2:
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.DECIMAL
+                return float(izq) / float(der)
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return float(izq)/float(der)
+            elif op2 == TipoDato.BOOLEANO:
+                self.tipo = TipoDato.DECIMAL
+                if str(der).lower() == 'true':
+                    return float(izq)
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        elif numero == 3:
+            nuevoIzq = 1 if str(izq).lower() == 'true' else 0
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.DECIMAL
+                return float(nuevoIzq) / float(der)
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return float(nuevoIzq)/float(der)
+            elif op2 == TipoDato.BOOLEANO:
+                self.tipo = TipoDato.DECIMAL
+                if str(der).lower() == 'true':
+                    return float(nuevoIzq)
             else:
                 return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
         else:
