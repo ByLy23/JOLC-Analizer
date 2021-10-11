@@ -11,11 +11,262 @@ class Aritmetica(Instruccion):
         super().__init__(TipoDato.ENTERO, linea, columna)
         self.operador = operador
         self.operadorUnico = None
+        self.temporal = ""
+        self.ope = ""
         if operador == opAritmetico.UMENOS:
             self.operadorUnico = op1
         else:
             self.op1 = op1
             self.op2 = op2
+# TRADUCIR
+
+    def traducir(self, arbol, tablaSimbolo):
+        codigo = ""
+        temp = arbol.newTemp()
+        izq = der = uno = None
+        if self.operadorUnico != None:
+            uno = self.operadorUnico.traducir(arbol, tablaSimbolo)
+            if isinstance(uno, Error):
+                return uno
+            if self.operadorUnico.tipo == TipoDato.NOTHING:
+                return Error("Error Semantico", "Variable con dato nulo no puede ser ejecutada", self.linea, self.columna)
+        else:
+            izq = self.op1.traducir(arbol, tablaSimbolo)
+            if isinstance(izq, Error):
+                return izq
+            der = self.op2.traducir(arbol, tablaSimbolo)
+            if isinstance(der, Error):
+                return der
+            if self.op1.tipo == TipoDato.NOTHING or self.op2.tipo == TipoDato.NOTHING:
+                return Error("Error Semantico", "Variable con dato nulo no puede ser ejecutada", self.linea, self.columna)
+        if self.operador == opAritmetico.MAS:  # FUNCION MAS
+            self.ope = "+"
+            retorno = self.operador1SumaC3D(izq["temporal"], der["temporal"])
+            codigo += izq["codigo"]
+            codigo += der["codigo"]
+            codigo += arbol.assigTemp2(temp["temporal"],
+                                       retorno["op1"], self.ope, retorno["op2"])
+        elif self.operador == opAritmetico.MENOS:  # FUNCION MENOS
+            self.ope = "-"
+            retorno = self.operador1RestaC3D(izq["temporal"], der["temporal"])
+            codigo += izq["codigo"]
+            codigo += der["codigo"]
+            codigo += arbol.assigTemp2(temp["temporal"],
+                                       retorno["op1"], self.ope, retorno["op2"])
+        elif self.operador == opAritmetico.POR:  # FUNCION POR
+            self.ope = "*"
+            retorno = self.operador1MultiC3D(izq["temporal"], der["temporal"])
+            codigo += izq["codigo"]
+            codigo += der["codigo"]
+            codigo += arbol.assigTemp2(temp["temporal"],
+                                       retorno["op1"], self.ope, retorno["op2"])
+        elif self.operador == opAritmetico.MODULO:  # FUNCION MODULO
+            self.ope = "%"
+            arbol.setImports("\"math\"")
+            retorno = self.operador1ModC3D(izq["temporal"], der["temporal"])if (der != 0) else Error(
+                "Error Sintactico", "Error de division", self.linea, self.columna)
+            codigo += izq["codigo"]
+            codigo += der["codigo"]
+            codigo += arbol.assigTempMod(temp["temporal"],
+                                         retorno["op1"], retorno["op2"])
+        elif self.operador == opAritmetico.DIVI:
+            return self.operador1DivisionC3D(izq, der) if (der != 0) else Error("Error Sintactico", "No se puede dividir sobre 0", self.linea, self.columna)
+
+        return {'temporal': temp["temporal"], 'codigo': codigo}
+    # --------------------SUMAC3D--------------------------
+
+    def operador1SumaC3D(self, izq, der):
+        op2 = self.op2.tipo
+        if self.op1.tipo == TipoDato.ENTERO:
+            return self.op2SumaC3D(1, op2, izq, der)
+        elif self.op1.tipo == TipoDato.DECIMAL:
+            return self.op2SumaC3D(2, op2, izq, der)
+        else:
+            return Error("Error Sintactico", "Operador invalido", self.linea, self.columna)
+
+    def op2SumaC3D(self, numero, op2, izq, der):
+        if numero == 1:
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.ENTERO
+                return {'op1': izq, 'op2': der}
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return {'op1': izq, 'op2': der}
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        elif numero == 2:
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.DECIMAL
+                return {'op1': izq, 'op2': der}
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return {'op1': izq, 'op2': der}
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        else:
+            return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+
+    # -----------RESTAC3D---------------
+    def operador1RestaC3D(self, izq, der):
+        op2 = self.op2.tipo
+        if self.op1.tipo == TipoDato.ENTERO:
+            return self.op2RestaC3D(1, op2, izq, der)
+        elif self.op1.tipo == TipoDato.DECIMAL:
+            return self.op2RestaC3D(2, op2, izq, der)
+        else:
+            return Error("Error Sintactico", "Operador invalido", self.linea, self.columna)
+
+    def op2RestaC3D(self, numero, op2, izq, der):
+        if numero == 1:
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.ENTERO
+                return {'op1': izq, 'op2': der}
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return {'op1': izq, 'op2': der}
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        elif numero == 2:
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.DECIMAL
+                return {'op1': izq, 'op2': der}
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return {'op1': izq, 'op2': der}
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        else:
+            return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+    # ----------------------MULTIPLICACIONC3D--------------------------
+
+    def operador1MultiC3D(self, izq, der):
+        op2 = self.op2.tipo
+        if self.op1.tipo == TipoDato.ENTERO:
+            return self.op2MultiC3D(1, op2, izq, der)
+        elif self.op1.tipo == TipoDato.DECIMAL:
+            return self.op2MultiC3D(2, op2, izq, der)
+        elif self.op1.tipo == TipoDato.CADENA:
+            return self.op2MultiC3D(4, op2, izq, der)
+        else:
+            return Error("Error Sintactico", "Operador invalido", self.linea, self.columna)
+
+    def op2MultiC3D(self, numero, op2, izq, der):
+        if numero == 1:
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.ENTERO
+                return {'op1': izq, 'op2': der}
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return {'op1': izq, 'op2': der}
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        elif numero == 2:
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.DECIMAL
+                return {'op1': izq, 'op2': der}
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return {'op1': izq, 'op2': der}
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        elif numero == 4:
+            print("PENDIENTE C3D CADENA * CADENA")
+            # if op2 == TipoDato.CADENA:
+            #     self.tipo = TipoDato.CADENA
+            #     return "{}{}".format(izq, der)
+            # else:
+            #     return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        else:
+            return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+    # ------------------- MOD C3D -------------------------
+
+    def operador1ModC3D(self, izq, der):
+        op2 = self.op2.tipo
+        if self.op1.tipo == TipoDato.ENTERO:
+            return self.op2ModC3D(1, op2, izq, der)
+        elif self.op1.tipo == TipoDato.DECIMAL:
+            return self.op2ModC3D(2, op2, izq, der)
+        else:
+            return Error("Error Sintactico", "Operador invalido", self.linea, self.columna)
+
+    def op2ModC3D(self, numero, op2, izq, der):
+        if numero == 1:
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.ENTERO
+                return {'op1': izq, 'op2': der}
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return {'op1': izq, 'op2': der}
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        elif numero == 2:
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.DECIMAL
+                return {'op1': izq, 'op2': der}
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return {'op1': izq, 'op2': der}
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        else:
+            return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+
+    # ------------------------------ DIVISION C3D -------------------------------------------
+    def operador1DivisionC3D(self, izq, der):
+        op2 = self.op2.tipo
+        if self.op1.tipo == TipoDato.ENTERO:
+            return self.op2DivisionC3D(1, op2, izq, der)
+        elif self.op1.tipo == TipoDato.DECIMAL:
+            return self.op2DivisionC3D(2, op2, izq, der)
+        elif self.op1.tipo == TipoDato.BOOLEANO:
+            return self.op2DivisionC3D(3, op2, izq, der)
+        else:
+            return Error("Error Sintactico", "Operador invalido", self.linea, self.columna)
+
+    def op2DivisionC3D(self, numero, op2, izq, der):
+        if numero == 1:
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.DECIMAL
+                return float(izq) / float(der)
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return float(izq)/float(der)
+            elif op2 == TipoDato.BOOLEANO:
+                self.tipo = TipoDato.DECIMAL
+                if str(der).lower() == 'true':
+                    return float(izq)
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        elif numero == 2:
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.DECIMAL
+                return float(izq) / float(der)
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return float(izq)/float(der)
+            elif op2 == TipoDato.BOOLEANO:
+                self.tipo = TipoDato.DECIMAL
+                if str(der).lower() == 'true':
+                    return float(izq)
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        elif numero == 3:
+            nuevoIzq = 1 if str(izq).lower() == 'true' else 0
+            if op2 == TipoDato.ENTERO:
+                self.tipo = TipoDato.DECIMAL
+                return float(nuevoIzq) / float(der)
+            elif op2 == TipoDato.DECIMAL:
+                self.tipo = TipoDato.DECIMAL
+                return float(nuevoIzq)/float(der)
+            elif op2 == TipoDato.BOOLEANO:
+                self.tipo = TipoDato.DECIMAL
+                if str(der).lower() == 'true':
+                    return float(nuevoIzq)
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+        else:
+            return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+    #-----------------------------------------------------------------------------------------------------------------#
 
     def getNodo(self):
         nodo = NodoAST('ARITMETICA')

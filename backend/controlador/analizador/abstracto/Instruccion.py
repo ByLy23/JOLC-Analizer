@@ -17,3 +17,7 @@ class Instruccion(ABC):
     @abstractmethod
     def getNodo(self):
         pass
+
+    @abstractmethod
+    def traducir(self, arbol, tablaSimbolo):
+        pass

@@ -1,7 +1,6 @@
 import React from 'react';
 import { ErrData } from '../components/ErrData';
 import '../css/tabla.css';
-
 export const TablaErrores = () => {
   return (
     <div className="table-container animate__animated animate__fadeInUp">
