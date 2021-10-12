@@ -41,8 +41,8 @@ end;`;
   const label = React.createElement('h1', { className: 'con-text' }, 'Consola');
   return (
     <div className="analizer-container">
-      <CodeMirrorComponent input={input} codeMirrorValue={valor} writable="true" clase="editor" />
-      <CodeMirrorComponent input={label} codeMirrorOut={salida.outputCode} writable="false" clase="console" />
+      <CodeMirrorComponent input={input} codeMirrorValue={valor} writable="true" clase="editor" modo="julia" />
+      <CodeMirrorComponent input={label} codeMirrorOut={salida.outputCode} writable="false" clase="console" modo="go" />
       {popUp && <PopupAn setpopUp={setpopUp} valor={'Analizado'} />}
     </div>
   );

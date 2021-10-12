@@ -4,13 +4,7 @@ import CodeMirror from '@uiw/react-codemirror';
 import 'codemirror/theme/cobalt.css';
 import 'codemirror/keymap/sublime';
 
-export const CodeMirrorComponent = ({
-  input,
-  codeMirrorValue,
-  codeMirrorOut,
-  writable,
-  clase,
-}) => {
+export const CodeMirrorComponent = ({ input, codeMirrorValue, codeMirrorOut, writable, clase, modo }) => {
   const WriteO = writable === 'true' ? false : true;
   return (
     <div className="analizer animate__animated animate__fadeInUp">
@@ -22,7 +16,7 @@ export const CodeMirrorComponent = ({
             options={{
               theme: 'cobalt',
               keyMap: 'sublime',
-              mode: 'julia',
+              mode: modo,
               viewportMargin: Infinity,
               autofocus: false,
               readOnly: WriteO,

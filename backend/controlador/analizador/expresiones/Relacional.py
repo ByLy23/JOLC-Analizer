@@ -11,6 +11,10 @@ class Relacional(Instruccion):
         self.cond1 = cond1
         self.cond2 = cond2
 
+    def traducir(self, arbol, tablaSimbolo):
+        codigo = ""
+        temp = arbol.newTemp()
+
     def getNodo(self):
         nodo = NodoAST('RELACIONAL')
         nodo.agregarAST(self.cond1.getNodo())
