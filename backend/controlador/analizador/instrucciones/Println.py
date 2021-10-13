@@ -40,14 +40,17 @@ class Println(Instruccion):
 
                 codigo += arbol.imprimir(
                     '"%d", int({})'.format(variable["temporal"]))
+                codigo += arbol.imprimir('"\\n"')
                 #fmt.Printf("%d", int(expresion))
             elif valor.tipo == TipoDato.DECIMAL:
                 codigo += arbol.imprimir(
                     '"%f", {}'.format(variable["temporal"]))
+                codigo += arbol.imprimir('"\\n"')
                 # fmt.Printf("%f", 32.2)
             elif valor.tipo == TipoDato.CARACTER:
                 codigo += arbol.imprimir(
                     '"%c", {}'.format(variable["temporal"]))
+                codigo += arbol.imprimir('"\\n"')
                 # fmt.Printf("%c", 36)
             elif valor.tipo == TipoDato.BOOLEANO:
                 temp = arbol.newTemp()
@@ -64,6 +67,7 @@ class Println(Instruccion):
                 codigo += arbol.imprimir('"%c", 114')  # r
                 codigo += arbol.imprimir('"%c", 117')  # u
                 codigo += arbol.imprimir('"%c", 101')  # e
+                codigo += arbol.imprimir('"\\n"')
                 codigo += arbol.goto(lSalida)
                 codigo += arbol.getLabel(lFalse)
                 codigo += arbol.imprimir('"%c", 102')  # f
@@ -71,6 +75,7 @@ class Println(Instruccion):
                 codigo += arbol.imprimir('"%c", 108')  # l
                 codigo += arbol.imprimir('"%c", 115')  # s
                 codigo += arbol.imprimir('"%c", 101')  # e
+                codigo += arbol.imprimir('"\\n"')
                 codigo += arbol.getLabel(lSalida)
                 '''
                 t1=temporal

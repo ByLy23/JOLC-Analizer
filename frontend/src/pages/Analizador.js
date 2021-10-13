@@ -33,7 +33,7 @@ end;`;
       setpopUp(true);
     });
   };
-  const input = <input type="submit" className="analizar" onClick={handleSubmit} value="Analizar" />;
+  const input = <input type="submit" className="analizar" onClick={handleSubmit} value="Traducir" />;
   const valor = {
     estado: state.outputCode,
     colocaEstado: setstate,
@@ -43,7 +43,7 @@ end;`;
     <div className="analizer-container">
       <CodeMirrorComponent input={input} codeMirrorValue={valor} writable="true" clase="editor" modo="julia" />
       <CodeMirrorComponent input={label} codeMirrorOut={salida.outputCode} writable="false" clase="console" modo="go" />
-      {popUp && <PopupAn setpopUp={setpopUp} valor={'Analizado'} />}
+      {popUp && <PopupAn setpopUp={setpopUp} valor={'Traducido'} />}
     </div>
   );
 };

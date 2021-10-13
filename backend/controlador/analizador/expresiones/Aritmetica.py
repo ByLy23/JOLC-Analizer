@@ -121,7 +121,6 @@ class Aritmetica(Instruccion):
 
             retorno = self.operador1PotenciaC3D(
                 izq["temporal"], der["temporal"])
-            print(retorno)
             rAux = ""
             if(int(retorno["op2"]) == 0):
                 codigo += izq["codigo"]
