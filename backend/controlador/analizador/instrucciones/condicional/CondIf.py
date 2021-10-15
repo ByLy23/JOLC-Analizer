@@ -13,6 +13,109 @@ class CondIf(Instruccion):
         self.condIf = instrucIf
         self.listaInstruccionesElseIf = listaInstruccionesElseIf
 
+    def traducir(self, arbol, tablaSimbolo):
+        '''
+        if (a>b) goto Lv
+        goto lF
+        Lv:
+        instrucciones true
+        Lf:
+        if(c>d) goto Lv2
+        goto Lf
+        Lv2:
+        instrucciones true instrucciones else if
+        Lf
+        instrucciones else
+        goto Ls
+        goto Ls
+        Ls
+        '''
+        codigo = ""
+        lFalsa1 = arbol.newLabel()
+        lSalida = arbol.newLabel()
+        val = self.expresion.traducir(arbol, tablaSimbolo)
+        if self.expresion.tipo != TipoDato.BOOLEANO:
+            return Error("Error Semantico", "Dato debe de ser booleano", self.linea, self.columna)
+        lVerdadera = arbol.newLabel()
+        '''
+    if (a>b) goto Lv
+    goto lF
+    Lv:
+    instrucciones true
+    goto Ls
+    Lf:
+    instrucciones else
+    goto Ls
+    goto Ls
+    Ls
+    '''
+        codigo += val["codigo"]
+        codigo += arbol.getCond2(val["temporal"], "==", "1.0", lVerdadera)
+        codigo += arbol.goto(lFalsa1)
+        codigo += arbol.getLabel(lVerdadera)
+        nuevaTabla = TablaSimbolos(tablaSimbolo)
+        aux = ""
+        for i in range(0, len(self.condIf)):
+
+            self.condIf[i].eSetSalida(lSalida)
+            self.condIf[i].eSetContinua(lSalida)
+            a = self.condIf[i].traducir(arbol, nuevaTabla)
+            aux += a["codigo"]
+            if isinstance(a, Error):
+                arbol.getErrores().append(a)
+                arbol.actualizaConsola(a.retornaError())
+        codigo += aux
+        codigo += arbol.goto(lSalida)
+        codigo += arbol.getLabel(lFalsa1)
+        for item in self.listaInstruccionesElseIf:
+            if item["expresion"] != None:
+                lNuevoVerdadero = arbol.newLabel()
+                lNuevoFalso = arbol.newLabel()
+                item["expresion"].eSetSalida(lSalida)
+                item["expresion"].eSetContinua(lSalida)
+                val = item["expresion"].traducir(arbol, tablaSimbolo)
+                codigo += val["codigo"]
+                codigo += arbol.getCond2(val["temporal"],
+                                         "==", "1.0", lNuevoVerdadero)
+                codigo += arbol.goto(lNuevoFalso)
+                codigo += arbol.getLabel(lNuevoVerdadero)
+                if item["expresion"].tipo != TipoDato.BOOLEANO:
+                    return Error("Error Semantico", "Dato debe de ser booleano", self.linea, self.columna)
+                nuevaTabla = TablaSimbolos(tablaSimbolo)
+                nuevaTabla.setNombre('Elseif')
+                aux3 = ""
+                for i in range(0, len(item["instrucciones"])):
+                    item["instrucciones"][i].eSetSalida(lSalida)
+                    item["instrucciones"][i].eSetContinua(lSalida)
+                    a = item["instrucciones"][i].traducir(
+                        arbol, nuevaTabla)
+                    aux3 += a["codigo"]
+                    # print(item["instrucciones"][i])
+                    if isinstance(a, Error):
+                        arbol.getErrores().append(a)
+                        arbol.actualizaConsola(a.retornaError())
+                codigo += aux3
+                codigo += arbol.goto(lSalida)
+                codigo += arbol.getLabel(lNuevoFalso)
+            else:
+                nuevaTabla = TablaSimbolos(tablaSimbolo)
+                nuevaTabla.setNombre('Else')
+                aux2 = ""
+                for i in range(0, len(item["instrucciones"])):
+                    item["instrucciones"][i].eSetSalida(lSalida)
+                    item["instrucciones"][i].eSetContinua(lSalida)
+                    a = item["instrucciones"][i].traducir(
+                        arbol, nuevaTabla)
+                    aux2 = a["codigo"]
+                    if isinstance(a, Error):
+                        arbol.getErrores().append(a)
+                        arbol.actualizaConsola(a.retornaError())
+                    # If return, continue y break
+                codigo += aux2
+                codigo += arbol.goto(lSalida)
+        codigo += arbol.getLabel(lSalida)
+        return {'temporal': '', 'codigo': codigo}
+
     def getNodo(self):
         nodo = NodoAST('CONDICION IF')
         nodo.agregar('if')

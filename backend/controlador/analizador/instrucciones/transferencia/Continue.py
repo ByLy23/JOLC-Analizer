@@ -11,7 +11,12 @@ class Continue(Instruccion):
         nodo = NodoAST('CONTINUE')
         nodo.agregar('continue')
         nodo.agregar(';')
+
         return nodo
+
+    def traducir(self, arbol, tablaSimbolo):
+
+        return {'temporal': "", 'codigo': arbol.goto(self.eContinua())}
 
     def interpretar(self, arbol, tablaSimbolo):
         return 'ByLyContinue'

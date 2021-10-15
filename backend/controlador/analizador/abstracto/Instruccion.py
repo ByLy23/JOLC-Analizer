@@ -8,6 +8,8 @@ class Instruccion(ABC):
         self.columna = columna
         self.tipoStruct = None  # Trae el nombre del Struct
         self.mutable = False
+        self.etiquetaSalida = None
+        self.etiquetaContinua = None
         super().__init__()
 
     @abstractmethod
@@ -21,3 +23,15 @@ class Instruccion(ABC):
     @abstractmethod
     def traducir(self, arbol, tablaSimbolo):
         pass
+
+    def eSalida(self):
+        return self.etiquetaSalida
+
+    def eSetSalida(self, s):
+        self.etiquetaSalida = s
+
+    def eContinua(self):
+        return self.etiquetaContinua
+
+    def eSetContinua(self, s):
+        self.etiquetaContinua = s

@@ -13,5 +13,9 @@ class Break(Instruccion):
         nodo.agregar(';')
         return nodo
 
+    def traducir(self, arbol, tablaSimbolo):
+        print(self.etiquetaSalida)
+        return {'temporal': "", 'codigo': arbol.goto(self.eSalida())}
+
     def interpretar(self, arbol, tablaSimbolo):
         return 'ByLy23'
