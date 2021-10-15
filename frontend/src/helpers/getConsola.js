@@ -5,7 +5,7 @@ export const getConsola = async ({ estado }) => {
     body: JSON.stringify({ peticion: estado }),
   };
   // const response = await fetch('https://backend-jolc.herokuapp.com/interpretar', requestOps);
-  const response = await fetch('http://localhost:3000/interpretar', requestOps).catch('Error');
+  const response = await fetch('http://localhost:5000/interpretar', requestOps).catch('Error');
   const data = await response.json().catch('error');
   return data;
 };

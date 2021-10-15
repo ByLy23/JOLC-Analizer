@@ -10,6 +10,14 @@ class Return(Instruccion):
         super().__init__(TipoDato.ENTERO, linea, columna)
         self.expresion = expresion
 
+    def traducir(self, arbol, tablaSimbolo):  # pendiente
+        if self.expresion != None:
+            self.valor = self.expresion.traducir(arbol, tablaSimbolo)
+            self.tipo = self.expresion.tipo
+            self.tipoStruct = self.expresion.tipoStruct
+            self.mutable = self.expresion.mutable
+        return self
+
     def getNodo(self):
         nodo = NodoAST('RETURN')
         nodo.agregar('return')

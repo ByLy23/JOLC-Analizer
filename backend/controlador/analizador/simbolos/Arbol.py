@@ -115,6 +115,22 @@ class Arbol:
         return False
 
     # SEGUNDA FASE
+
+    def masStack(self, n):
+        return "P = P + {};\n".format(n)
+
+    def menosStack(self, n):
+        return "P = P - {};\n".format(n)
+
+    def masHeap(self, n):
+        return "H = H + {};\n".format(n)
+
+    def menosHeap(self, n):
+        return "H = H - {};\n".format(n)
+
+    def assigHeapH(self, n):
+        return "heap"
+
     def nuevoTemp(self, temp):
         resultado = {'temporal': temp, 'codigo': ""}
         return resultado

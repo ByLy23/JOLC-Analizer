@@ -86,6 +86,7 @@ class Aritmetica(Instruccion):
             self.ope = "/"
             lTrue = arbol.newLabel()
             lSalida = arbol.newLabel()
+            nuevoDer = arbol.newTemp()
             retorno = self.operador1DivisionC3D(
                 izq["temporal"], der["temporal"])
             codigo += izq["codigo"]
@@ -103,8 +104,9 @@ class Aritmetica(Instruccion):
             codigo += arbol.assigTemp1(temp["temporal"], "0")
             codigo += arbol.goto(lSalida)
             codigo += arbol.getLabel(lTrue)
+            codigo += arbol.assigTemp1(nuevoDer["temporal"], retorno["op2"])
             codigo += arbol.assigTemp2(temp["temporal"],
-                                       retorno["op1"], self.ope, retorno["op2"])
+                                       retorno["op1"], self.ope, nuevoDer["temporal"])
             codigo += arbol.getLabel(lSalida)
 
             '''

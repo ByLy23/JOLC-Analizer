@@ -50,7 +50,11 @@ def metodoPrincipal(EntradaAnalizar):
     traduccionSalida = """package main
 import (
    {} 
-)\n""".format(ast.getImports())+traduccionSalida
+)\n
+var stack [300000] float64;
+var heap [300000] float64;
+var P,H float64;
+""".format(ast.getImports())+traduccionSalida
     listaSimbolos = ast.getSimbolos()
 
     sim = interpretarSimbolos(listaSimbolos)
