@@ -122,14 +122,26 @@ class Arbol:
     def menosStack(self, n):
         return "P = P - {};\n".format(n)
 
-    def masHeap(self, n):
-        return "H = H + {};\n".format(n)
+    def masHeap(self):
+        return "H = H + 1;\n"
 
-    def menosHeap(self, n):
-        return "H = H - {};\n".format(n)
+    def menosHeap(self):
+        return "H = H - 1;\n"
 
     def assigHeapH(self, n):
-        return "heap"
+        return "heap[int(H)] = {};\n".format(n)
+
+    def assigHeap2(self, h, n):
+        return "heap[int({})] = {};\n".format(h, n)
+
+    def assigStackN(self, h, n):
+        return "stack[int({})] = {};\n".format(h, n)
+
+    def getHeap(self, temp, h):
+        return "{} = heap[int({})];\n".format(temp, h)
+
+    def getStack(self, temp, h):
+        return "{} = heap[int({})];\n".format(temp, h)
 
     def nuevoTemp(self, temp):
         resultado = {'temporal': temp, 'codigo': ""}
@@ -174,3 +186,61 @@ class Arbol:
 
     def imprimir(self, temp):
         return 'fmt.Printf({});\n'.format(temp)
+
+    def guardarStr(self, cadena):
+        codigo = ""
+        temp = self.newTemp()
+        codigo += self.assigTemp1(temp["temporal"], 'H')
+        for i in cadena:
+            codigo += self.assigHeapH(ord(i))
+            codigo += self.masHeap()
+        codigo += self.assigHeapH("-1")
+        codigo += self.masHeap()
+        return {'heap': temp["temporal"], 'codigo': codigo}
+
+    def concatenaString(self, c1, c2):
+        temp = self.newTemp()
+        codigo = ""
+        tempo = self.newTemp()
+        Ltemp = self.newTemp()
+        loop = self.newLabel()
+        lSalida = self.newLabel()
+        tempo2 = self.newTemp()
+        Ltemp2 = self.newTemp()
+        loop2 = self.newLabel()
+        lSalida2 = self.newLabel()
+        codigo += self.assigTemp1(temp["temporal"], 'H')
+        codigo += self.assigTemp1(tempo["temporal"], c1)
+        codigo += self.getLabel(loop)
+        codigo += self.getHeap(Ltemp["temporal"], tempo["temporal"])
+        codigo += self.getCond2(Ltemp["temporal"], "==", "-1.0", lSalida)
+        codigo += self.assigHeapH(Ltemp["temporal"])
+        codigo += self.masHeap()
+        codigo += self.assigTemp2(tempo["temporal"],
+                                  tempo["temporal"], "+", "1")
+        codigo += self.goto(loop)
+        codigo += self.getLabel(lSalida)
+        codigo += self.assigTemp1(tempo2["temporal"], c2)
+        codigo += self.getLabel(loop2)
+        codigo += self.getHeap(Ltemp2["temporal"], tempo2["temporal"])
+        codigo += self.getCond2(Ltemp2["temporal"], "==", "-1.0", lSalida2)
+        codigo += self.assigHeapH(Ltemp2["temporal"])
+        codigo += self.masHeap()
+        codigo += self.assigTemp2(tempo2["temporal"],
+                                  tempo2["temporal"], "+", "1")
+        codigo += self.goto(loop2)
+        codigo += self.getLabel(lSalida2)
+        codigo += self.assigHeapH("-1")
+        codigo += self.masHeap()
+        '''
+        L1
+        guardarCadenas
+        if(a==-1) goto L2
+        goto L1
+        L2
+        guardarCadena2
+        if(a==-1)goto L3
+        goto L2
+        L3:
+        '''
+        return {'heap': temp["temporal"], 'codigo': codigo}

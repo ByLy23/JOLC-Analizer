@@ -25,9 +25,11 @@ class Nativo(Instruccion):
                 self.temporal = 0.0
         elif self.tipo == TipoDato.NOTHING:
             self.temporal = -50251313792.0
-        elif self.temporal == TipoDato.ENTERO:
+        elif self.tipo == TipoDato.ENTERO:
             self.temporal = float(self.valor)
-        elif self.temporal == TipoDato.CARACTER:
+        elif self.tipo == TipoDato.CARACTER:
             self.temporal = float(ord(self.valor))
+        elif self.tipo == TipoDato.CADENA:
+            return arbol.guardarStr(self.temporal)
         return arbol.nuevoTemp(str(self.temporal))
         #resultado = {'temporal': self.temporal, 'codigo': ""}

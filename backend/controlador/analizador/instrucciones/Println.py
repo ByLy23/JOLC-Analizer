@@ -40,17 +40,14 @@ class Println(Instruccion):
 
                 codigo += arbol.imprimir(
                     '"%d", int({})'.format(variable["temporal"]))
-                codigo += arbol.imprimir('"\\n"')
                 #fmt.Printf("%d", int(expresion))
             elif valor.tipo == TipoDato.DECIMAL:
                 codigo += arbol.imprimir(
                     '"%f", {}'.format(variable["temporal"]))
-                codigo += arbol.imprimir('"\\n"')
                 # fmt.Printf("%f", 32.2)
             elif valor.tipo == TipoDato.CARACTER:
                 codigo += arbol.imprimir(
                     '"%c", {}'.format(variable["temporal"]))
-                codigo += arbol.imprimir('"\\n"')
                 # fmt.Printf("%c", 36)
             elif valor.tipo == TipoDato.BOOLEANO:
                 temp = arbol.newTemp()
@@ -67,7 +64,6 @@ class Println(Instruccion):
                 codigo += arbol.imprimir('"%c", 114')  # r
                 codigo += arbol.imprimir('"%c", 117')  # u
                 codigo += arbol.imprimir('"%c", 101')  # e
-                codigo += arbol.imprimir('"\\n"')
                 codigo += arbol.goto(lSalida)
                 codigo += arbol.getLabel(lFalse)
                 codigo += arbol.imprimir('"%c", 102')  # f
@@ -75,7 +71,6 @@ class Println(Instruccion):
                 codigo += arbol.imprimir('"%c", 108')  # l
                 codigo += arbol.imprimir('"%c", 115')  # s
                 codigo += arbol.imprimir('"%c", 101')  # e
-                codigo += arbol.imprimir('"\\n"')
                 codigo += arbol.getLabel(lSalida)
                 '''
                 t1=temporal
@@ -89,6 +84,32 @@ class Println(Instruccion):
                 salida:
                 
                 '''
+            elif valor.tipo == TipoDato.CADENA:
+                tempo = arbol.newTemp()
+                codigo += variable["codigo"]
+                indice = variable["heap"]
+                tempL = arbol.newTemp()
+                loop = arbol.newLabel()
+                lSalida = arbol.newLabel()
+                impresion = arbol.newLabel()
+                codigo += arbol.assigTemp1(tempo["temporal"], indice)
+                codigo += arbol.getHeap(tempL["temporal"], tempo["temporal"])
+                codigo += arbol.goto(loop)
+                codigo += arbol.getLabel(loop)
+                codigo += arbol.getHeap(tempL["temporal"], tempo["temporal"])
+                codigo += arbol.getCond2(tempL["temporal"],
+                                         "==", "-1.0", lSalida)
+                codigo += arbol.getCond2(tempL["temporal"],
+                                         "==", "0.0", impresion)
+                codigo += arbol.imprimir(
+                    '"%c", int({})'.format(tempL["temporal"]))
+                codigo += arbol.getLabel(impresion)
+                codigo += arbol.assigTemp2(tempo["temporal"],
+                                           tempo["temporal"], "+", "1")
+                codigo += arbol.goto(loop)
+                codigo += arbol.getLabel(lSalida)
+
+        codigo += arbol.imprimir('"\\n"')
         return {'temporal': "", 'codigo': codigo}
 
     def interpretar(self, arbol, tablaSimbolo):

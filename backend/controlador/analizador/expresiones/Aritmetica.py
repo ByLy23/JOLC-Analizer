@@ -51,11 +51,20 @@ class Aritmetica(Instruccion):
                                        retorno["op1"], self.ope, retorno["op2"])
         elif self.operador == opAritmetico.POR:  # FUNCION POR
             self.ope = "*"
-            retorno = self.operador1MultiC3D(izq["temporal"], der["temporal"])
-            codigo += izq["codigo"]
-            codigo += der["codigo"]
-            codigo += arbol.assigTemp2(temp["temporal"],
-                                       retorno["op1"], self.ope, retorno["op2"])
+            if self.op1.tipo == TipoDato.CADENA and self.op2.tipo == TipoDato.CADENA:
+                self.tipo = TipoDato.CADENA
+                retorno = arbol.concatenaString(izq["heap"], der["heap"])
+                codigo += izq["codigo"]
+                codigo += der["codigo"]
+                codigo += retorno["codigo"]
+                return {'heap': retorno["heap"], 'codigo': codigo}
+            else:
+                retorno = self.operador1MultiC3D(
+                    izq["temporal"], der["temporal"])
+                codigo += izq["codigo"]
+                codigo += der["codigo"]
+                codigo += arbol.assigTemp2(temp["temporal"],
+                                           retorno["op1"], self.ope, retorno["op2"])
         elif self.operador == opAritmetico.MODULO:  # FUNCION MODULO
             self.ope = "%"
             lTrue = arbol.newLabel()
@@ -248,12 +257,11 @@ class Aritmetica(Instruccion):
             else:
                 return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
         elif numero == 4:
-            print("PENDIENTE C3D CADENA * CADENA")
-            # if op2 == TipoDato.CADENA:
-            #     self.tipo = TipoDato.CADENA
-            #     return "{}{}".format(izq, der)
-            # else:
-            #     return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+            if op2 == TipoDato.CADENA:
+                self.tipo = TipoDato.CADENA
+                return {'op1': izq, 'op2': der}
+            else:
+                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
         else:
             return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
     # ------------------- MOD C3D -------------------------
