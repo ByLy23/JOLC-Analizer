@@ -12,7 +12,7 @@ class Arbol:
         self.listaSimbolos = []
         self.structs = []
         self.listaTemporales = []
-        self.listaImports = ["\"fmt\""]
+        self.listaImports = []
         # SEGUNDA FASE
         self.t = 0
         self.l = 0
@@ -83,6 +83,9 @@ class Arbol:
         self.errores = errores
 
     def setImports(self, impor):
+        for i in self.listaImports:
+            if i == impor:
+                return
         self.listaImports.append(impor)
 
     def getImports(self):
@@ -116,10 +119,16 @@ class Arbol:
 
     # SEGUNDA FASE
 
-    def masStack(self, n):
+    def masStack(self):
+        return "P = P + 1;\n"
+
+    def menosStack(self):
+        return "P = P - 1;\n"
+
+    def masStackV(self,n):
         return "P = P + {};\n".format(n)
 
-    def menosStack(self, n):
+    def menosStackV(self,n):
         return "P = P - {};\n".format(n)
 
     def masHeap(self):
@@ -141,7 +150,7 @@ class Arbol:
         return "{} = heap[int({})];\n".format(temp, h)
 
     def getStack(self, temp, h):
-        return "{} = heap[int({})];\n".format(temp, h)
+        return "{} = stack[int({})];\n".format(temp, h)
 
     def nuevoTemp(self, temp):
         resultado = {'temporal': temp, 'codigo': ""}

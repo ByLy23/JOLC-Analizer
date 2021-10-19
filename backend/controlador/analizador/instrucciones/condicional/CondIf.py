@@ -2,6 +2,7 @@ from controlador.analizador.abstracto.NodoAST import NodoAST
 from controlador.analizador.instrucciones.transferencia.Return import Return
 from controlador.analizador.simbolos.TablaSimbolos import TablaSimbolos
 from controlador.analizador.excepciones.Error import Error
+from controlador.analizador.simbolos.TablaSimbolosC3D import TablaSimbolosC3D
 from controlador.analizador.simbolos.Tipo import TipoDato
 from controlador.analizador.abstracto.Instruccion import Instruccion
 
@@ -49,21 +50,25 @@ class CondIf(Instruccion):
     goto Ls
     Ls
     '''
+        codigo += arbol.masStackV(tablaSimbolo.tamanio)
         codigo += val["codigo"]
         codigo += arbol.getCond2(val["temporal"], "==", "1.0", lVerdadera)
         codigo += arbol.goto(lFalsa1)
         codigo += arbol.getLabel(lVerdadera)
-        nuevaTabla = TablaSimbolos(tablaSimbolo)
+        nuevaTabla = TablaSimbolosC3D(tablaSimbolo)
         aux = ""
         for i in range(0, len(self.condIf)):
 
             self.condIf[i].eSetSalida(lSalida)
             self.condIf[i].eSetContinua(lSalida)
             a = self.condIf[i].traducir(arbol, nuevaTabla)
-            aux += a["codigo"]
+
             if isinstance(a, Error):
                 arbol.getErrores().append(a)
                 arbol.actualizaConsola(a.retornaError())
+                print(a.retornaError())
+                continue
+            aux += a["codigo"]
         codigo += aux
         codigo += arbol.goto(lSalida)
         codigo += arbol.getLabel(lFalsa1)
@@ -81,7 +86,7 @@ class CondIf(Instruccion):
                 codigo += arbol.getLabel(lNuevoVerdadero)
                 if item["expresion"].tipo != TipoDato.BOOLEANO:
                     return Error("Error Semantico", "Dato debe de ser booleano", self.linea, self.columna)
-                nuevaTabla = TablaSimbolos(tablaSimbolo)
+                nuevaTabla = TablaSimbolosC3D(tablaSimbolo)
                 nuevaTabla.setNombre('Elseif')
                 aux3 = ""
                 for i in range(0, len(item["instrucciones"])):
@@ -98,7 +103,7 @@ class CondIf(Instruccion):
                 codigo += arbol.goto(lSalida)
                 codigo += arbol.getLabel(lNuevoFalso)
             else:
-                nuevaTabla = TablaSimbolos(tablaSimbolo)
+                nuevaTabla = TablaSimbolosC3D(tablaSimbolo)
                 nuevaTabla.setNombre('Else')
                 aux2 = ""
                 for i in range(0, len(item["instrucciones"])):
@@ -114,6 +119,7 @@ class CondIf(Instruccion):
                 codigo += aux2
                 codigo += arbol.goto(lSalida)
         codigo += arbol.getLabel(lSalida)
+        codigo += arbol.menosStackV(tablaSimbolo.tamanio)
         return {'temporal': '', 'codigo': codigo}
 
     def getNodo(self):

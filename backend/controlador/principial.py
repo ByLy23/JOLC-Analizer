@@ -1,4 +1,5 @@
 from controlador.analizador.abstracto.NodoAST import NodoAST
+from controlador.analizador.simbolos.TablaSimbolosC3D import TablaSimbolosC3D
 from controlador.analizador.simbolos.Tipo import TipoDato
 from controlador.analizador.instrucciones.funciones.Funcion import Funcion
 from controlador.analizador.excepciones.Error import Error
@@ -19,6 +20,10 @@ def metodoPrincipal(EntradaAnalizar):
     tabla = TablaSimbolos()
     ast.setGlobal(tabla)
     tabla.setNombre('Global')
+    astC3D = Arbol(parse(EntradaAnalizar))  # entrada con parser
+    tablaC3D = TablaSimbolosC3D()
+    astC3D.setGlobal(tablaC3D)
+    tablaC3D.setNombre('Global')
     listaErrores = errores()
     for error in listaErrores:
         ast.getErrores().append(error)
@@ -26,22 +31,26 @@ def metodoPrincipal(EntradaAnalizar):
     for ins in ast.getInstrucciones():
         if isinstance(ins, Funcion):
             ast.getFunciones().append(ins)
-    for ins in ast.getInstrucciones():
+    for ins in astC3D.getInstrucciones():
         if isinstance(ins, Funcion):
             continue
         # resultado = ins.interpretar(ast, tabla)
         # if isinstance(resultado, Error):
         #     ast.getErrores().append(resultado)
         #     ast.actualizaConsola(resultado.retornaError())
-        traduccion = ins.traducir(ast, tabla)
+
+        traduccion = ins.traducir(astC3D, tablaC3D)
         if isinstance(traduccion, Error):
-            ast.getErrores().append(traduccion)
-            ast.actualizaConsola(traduccion.retornaError())
+            astC3D.getErrores().append(traduccion)
+            astC3D.actualizaConsola(traduccion.retornaError())
+            print(traduccion.retornaError())
+            continue
+
         traduccionSalida += traduccion["codigo"]
     traduccionSalida += "\n}"
-    if len(ast.listaTemporales) > 0:
+    if len(astC3D.listaTemporales) > 0:
         tempTraduccion = "var "
-        for item in ast.listaTemporales:
+        for item in astC3D.listaTemporales:
             tempTraduccion += item+","
         tempTraduccion = tempTraduccion[:-1]
         tempTraduccion += " float64;\n"
@@ -54,14 +63,14 @@ import (
 var stack [300000] float64;
 var heap [300000] float64;
 var P,H float64;
-""".format(ast.getImports())+traduccionSalida
-    listaSimbolos = ast.getSimbolos()
+""".format(astC3D.getImports())+traduccionSalida
+    listaSimbolos = astC3D.getSimbolos()
 
     sim = interpretarSimbolos(listaSimbolos)
     err = interpretarErrores(listaErrores)
     arbol = NodoAST('RAIZ')
     nodoIsnt = NodoAST('INSTRUCCIONES')
-    for inst in ast.getInstrucciones():
+    for inst in astC3D.getInstrucciones():
         nodoIsnt.agregarAST(inst.getNodo())
     arbol.agregarAST(nodoIsnt)
     resultado = graficar(arbol)

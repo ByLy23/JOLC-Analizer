@@ -100,6 +100,7 @@ class Print(Instruccion):
                                            tempo["temporal"], "+", "1")
                 codigo += arbol.goto(loop)
                 codigo += arbol.getLabel(lSalida)
+        arbol.setImports("\"fmt\"")
         return {'temporal': "", 'codigo': codigo}
 
     def getNodo(self):

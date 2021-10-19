@@ -1,4 +1,5 @@
 from controlador.analizador.abstracto.NodoAST import NodoAST
+from controlador.analizador.simbolos.SimboloC3D import SimboloC3D
 from controlador.reportes.ReporteTabla import ReporteTabla
 from controlador.analizador.simbolos.Simbolo import Simbolo
 from controlador.analizador.excepciones.Error import Error
@@ -12,6 +13,74 @@ class Asignacion(Instruccion):
         self.identificador = identificador
         self.tipoAsignacion = tipoAsignacion
         self.valor = valor
+
+    def traducir(self, arbol, tablaSimbolo):
+        codigo = ""
+        variable = tablaSimbolo.getVariable(self.identificador)
+        if variable == None:
+            return Error("Error Compilacion", "la variable {} no existe".format(self.identificador), self.linea, self.columna)
+        self.tipo = variable.tipo
+        self.tipoStruct = variable.tipoStruct
+        self.mutable = variable.mutable
+        # if not arbol.actualizarTabla(self.identificador, variable.valor, self.linea, tablaSimbolo.getNombre(), self.columna):
+        #     nuevoSim = ReporteTabla(self.identificador, variable.valor, 'Variable', str(
+        #         self.tipo), tablaSimbolo.getNombre(), self.linea, self.columna)
+        #     arbol.getSimbolos().append(nuevoSim)
+
+        if variable.tipo != TipoDato.CADENA and variable.tipo != TipoDato.STRUCT and variable.tipo != TipoDato.ARREGLO:
+            temp = arbol.newTemp()
+            codigo += arbol.assigTemp1(temp["temporal"],
+                                       variable.getUbicacion())
+            # t1=stack[variable.temporal]
+            # return {temporal:t1}
+            val = self.valor.traducir(arbol, tablaSimbolo)
+            if isinstance(val, Error):
+                return val
+            if self.valor.tipo != self.tipo:
+                return Error("Error Compilacion", "{} no es compatible con {} ".format(self.valor.tipo, self.tipo), self.linea, self.columna)
+            if self.valor.tipo == TipoDato.STRUCT:
+                if self.valor.tipoStruct != self.struct:
+                    return Error("Error Compilacion", "No es el mismo struct", self.linea, self.columna)
+            codigo += val["codigo"]
+            tVar = arbol.newTemp()
+            codigo += arbol.assigTemp1(tVar["temporal"],
+                                       val["temporal"])
+            codigo += arbol.assigStackN(temp["temporal"],
+                                        tVar["temporal"])
+            nuevaVal = SimboloC3D(
+                self.tipo, self.identificador, temp["temporal"], True)
+            nuevaVal.tipoStruct = self.valor.tipoStruct
+            nuevaVal.mutable = self.valor.mutable
+            tablaSimbolo.setVariable(nuevaVal)
+            return {'codigo': codigo}
+        else:
+            temp = arbol.newTemp()
+            codigo += arbol.assigTemp1(temp["temporal"],
+                                       variable.getUbicacion())
+            # t1=stack[variable.temporal]
+            # return {temporal:t1}
+            val = self.valor.traducir(arbol, tablaSimbolo)
+            if isinstance(val, Error):
+                return val
+            if self.valor.tipo != self.tipo:
+                return Error("Error Compilacion", "{} no es compatible con {} ".format(self.valor.tipo, self.tipo), self.linea, self.columna)
+            if self.valor.tipo == TipoDato.STRUCT:
+                if self.valor.tipoStruct != self.struct:
+                    return Error("Error Compilacion", "No es el mismo struct", self.linea, self.columna)
+            codigo += val["codigo"]
+            tVar = arbol.newTemp()
+            codigo += arbol.assigTemp1(tVar["temporal"],
+                                       val["heap"])
+            codigo += arbol.assigStackN(temp["temporal"],
+                                        tVar["temporal"])
+            nuevaVal = SimboloC3D(
+                self.tipo, self.identificador, temp["temporal"], False)
+            nuevaVal.tipoStruct = self.valor.tipoStruct
+            nuevaVal.mutable = self.valor.mutable
+            tablaSimbolo.setVariable(nuevaVal)
+            return {'codigo': codigo}
+            # t1=stack[variable.temporal] devuelve el apuntador del heap
+            # return {heap:t1}
 
     def getNodo(self):
         nodo = NodoAST('ASIGNACION')

@@ -110,6 +110,7 @@ class Println(Instruccion):
                 codigo += arbol.getLabel(lSalida)
 
         codigo += arbol.imprimir('"\\n"')
+        arbol.setImports("\"fmt\"")
         return {'temporal': "", 'codigo': codigo}
 
     def interpretar(self, arbol, tablaSimbolo):

@@ -2,6 +2,7 @@ from controlador.analizador.abstracto.NodoAST import NodoAST
 from controlador.analizador.instrucciones.transferencia.Return import Return
 from controlador.analizador.simbolos.TablaSimbolos import TablaSimbolos
 from controlador.analizador.excepciones.Error import Error
+from controlador.analizador.simbolos.TablaSimbolosC3D import TablaSimbolosC3D
 from controlador.analizador.simbolos.Tipo import TipoDato
 from controlador.analizador.abstracto.Instruccion import Instruccion
 
@@ -31,12 +32,13 @@ class CondWhile(Instruccion):
         cond = self.condicion.traducir(arbol, tablaSimbolo)
         if isinstance(cond, Error):
             return cond
+        codigo += arbol.masStackV(tablaSimbolo.tamanio)
         if self.condicion.tipo == TipoDato.BOOLEANO:
             codigo += cond["codigo"]
             codigo += arbol.getCond2(cond["temporal"], "==", "1.0", lVerdadero)
             codigo += arbol.goto(lFalso)
             codigo += arbol.getLabel(lVerdadero)
-            nuevaTabla = TablaSimbolos(tablaSimbolo)
+            nuevaTabla = TablaSimbolosC3D(tablaSimbolo)
             nuevaTabla.setNombre('While')
             aux = ""
             for i in self.expresion:
@@ -59,6 +61,7 @@ class CondWhile(Instruccion):
         goto LC
         LF:
         '''
+        codigo += arbol.menosStackV(tablaSimbolo.tamanio)
         return {'temporal': "", 'codigo': codigo}
 
     def interpretar(self, arbol, tablaSimbolo):

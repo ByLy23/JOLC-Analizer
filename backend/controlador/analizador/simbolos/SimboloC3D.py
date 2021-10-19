@@ -1,17 +1,9 @@
 class SimboloC3D:
-    def __init__(self, tipo, identificador, temporal, num, esConst):
+    def __init__(self, tipo, identificador, temporal, hipStack):
         self.identificador = identificador
         self.tipo = tipo
         self.ubicacion = temporal
-        self.stck = False
-        self.hip = False
-        self.esConst = False
-        if(num == 1):
-            self.stck = True
-        else:
-            self.hip = True
-        if esConst == True:
-            self.esConst = True
+        self.stck = hipStack
         self.base = []
         # self.tipoStruct = None  # Trae el nombre del Struct
         # self.mutable = False
