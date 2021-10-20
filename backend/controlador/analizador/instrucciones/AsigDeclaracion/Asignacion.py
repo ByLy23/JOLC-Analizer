@@ -16,7 +16,10 @@ class Asignacion(Instruccion):
 
     def traducir(self, arbol, tablaSimbolo):
         codigo = ""
-        variable = tablaSimbolo.getVariable(self.identificador)
+
+        var = tablaSimbolo.getVariable(self.identificador)
+        variable = var["simbolo"]
+        cont = var["entorno"]
         if variable == None:
             return Error("Error Compilacion", "la variable {} no existe".format(self.identificador), self.linea, self.columna)
         self.tipo = variable.tipo
@@ -29,8 +32,13 @@ class Asignacion(Instruccion):
 
         if variable.tipo != TipoDato.CADENA and variable.tipo != TipoDato.STRUCT and variable.tipo != TipoDato.ARREGLO:
             temp = arbol.newTemp()
+            tempAcceso = arbol.newTemp()
+            codigo += arbol.assigTemp2(tempAcceso["temporal"],
+                                       "P", "-", cont)
+            codigo += arbol.assigTemp2(tempAcceso["temporal"],
+                                       tempAcceso["temporal"], "+", variable.getUbicacion())
             codigo += arbol.assigTemp1(temp["temporal"],
-                                       variable.getUbicacion())
+                                       tempAcceso["temporal"])
             # t1=stack[variable.temporal]
             # return {temporal:t1}
             val = self.valor.traducir(arbol, tablaSimbolo)
@@ -43,20 +51,26 @@ class Asignacion(Instruccion):
                     return Error("Error Compilacion", "No es el mismo struct", self.linea, self.columna)
             codigo += val["codigo"]
             tVar = arbol.newTemp()
+
             codigo += arbol.assigTemp1(tVar["temporal"],
                                        val["temporal"])
             codigo += arbol.assigStackN(temp["temporal"],
                                         tVar["temporal"])
             nuevaVal = SimboloC3D(
-                self.tipo, self.identificador, temp["temporal"], True)
+                self.tipo, self.identificador, variable.getUbicacion(), True)
             nuevaVal.tipoStruct = self.valor.tipoStruct
             nuevaVal.mutable = self.valor.mutable
             tablaSimbolo.setVariable(nuevaVal)
             return {'codigo': codigo}
         else:
             temp = arbol.newTemp()
+            tempAcceso = arbol.newTemp()
+            codigo += arbol.assigTemp2(tempAcceso["temporal"],
+                                       "P", "-", cont)
+            codigo += arbol.assigTemp2(tempAcceso["temporal"],
+                                       tempAcceso["temporal"], "+", variable.getUbicacion())
             codigo += arbol.assigTemp1(temp["temporal"],
-                                       variable.getUbicacion())
+                                       tempAcceso["temporal"])
             # t1=stack[variable.temporal]
             # return {temporal:t1}
             val = self.valor.traducir(arbol, tablaSimbolo)
@@ -74,7 +88,7 @@ class Asignacion(Instruccion):
             codigo += arbol.assigStackN(temp["temporal"],
                                         tVar["temporal"])
             nuevaVal = SimboloC3D(
-                self.tipo, self.identificador, temp["temporal"], False)
+                self.tipo, self.identificador, variable.getUbicacion(), False)
             nuevaVal.tipoStruct = self.valor.tipoStruct
             nuevaVal.mutable = self.valor.mutable
             tablaSimbolo.setVariable(nuevaVal)

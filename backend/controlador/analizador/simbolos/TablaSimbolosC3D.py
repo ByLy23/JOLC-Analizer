@@ -36,8 +36,7 @@ class TablaSimbolosC3D:
             self.tablaActual[simbolo.getIdentificador()] = simbolo
         else:
             self.tablaActual[simbolo.getIdentificador()] = simbolo
-            if simbolo.stck:
-                self.tamanio += 1
+            self.tamanio += 1
         return 'La variable existe'
         # aux = self
         # while aux != None:
@@ -49,10 +48,12 @@ class TablaSimbolosC3D:
 
     def getVariable(self, id):
         aux = self
+        cont = 0
         while aux != None:
             if id in aux.tablaActual:
-                return aux.tablaActual[id]
+                return {'simbolo': aux.tablaActual[id], 'entorno': cont}
             else:
+                cont += aux.tablaAnterior.getTamanio()
                 aux = aux.tablaAnterior
         return None
 

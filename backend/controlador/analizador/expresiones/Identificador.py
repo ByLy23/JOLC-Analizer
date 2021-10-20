@@ -13,7 +13,9 @@ class Identificador(Instruccion):
 
     def traducir(self, arbol, tablaSimbolo):
         codigo = ""
-        variable = tablaSimbolo.getVariable(self.identificador)
+        var = tablaSimbolo.getVariable(self.identificador)
+        variable = var["simbolo"]
+        cont = var["entorno"]
         if variable == None:
             return Error("Error Compilacion", "la variable {} no existe".format(self.identificador), self.linea, self.columna)
         self.tipo = variable.tipo
@@ -26,13 +28,23 @@ class Identificador(Instruccion):
 
         if variable.tipo != TipoDato.CADENA and variable.tipo != TipoDato.STRUCT and variable.tipo != TipoDato.ARREGLO:
             temp = arbol.newTemp()
-            codigo += arbol.getStack(temp["temporal"], variable.getUbicacion())
+            tempAcceso = arbol.newTemp()
+            codigo += arbol.assigTemp2(tempAcceso["temporal"],
+                                       "P", "-", cont)
+            codigo += arbol.assigTemp2(tempAcceso["temporal"],
+                                       tempAcceso["temporal"], "+", variable.getUbicacion())
+            codigo += arbol.getStack(temp["temporal"], tempAcceso["temporal"])
             # t1=stack[variable.temporal]
             # return {temporal:t1}
             return {'temporal': temp["temporal"], 'codigo': codigo}
         else:
             temp = arbol.newTemp()
-            codigo += arbol.getStack(temp["temporal"], variable.getUbicacion())
+            tempAcceso = arbol.newTemp()
+            codigo += arbol.assigTemp2(tempAcceso["temporal"],
+                                       "P", "-", cont)
+            codigo += arbol.assigTemp2(tempAcceso["temporal"],
+                                       tempAcceso["temporal"], "+", variable.getUbicacion())
+            codigo += arbol.getStack(temp["temporal"], tempAcceso["temporal"])
             # t1=stack[variable.temporal] devuelve el apuntador del heap
             # return {heap:t1}
             return {'heap': temp["temporal"], 'codigo': codigo}

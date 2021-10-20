@@ -28,18 +28,18 @@ class CondWhile(Instruccion):
         lControl = arbol.newLabel()
         lVerdadero = arbol.newLabel()
         lFalso = arbol.newLabel()
+        nuevaTabla = TablaSimbolosC3D(tablaSimbolo)
+        nuevaTabla.setNombre('While')
+        codigo += arbol.masStackV(tablaSimbolo.tamanio)
         codigo += arbol.getLabel(lControl)
-        cond = self.condicion.traducir(arbol, tablaSimbolo)
+        cond = self.condicion.traducir(arbol, nuevaTabla)
         if isinstance(cond, Error):
             return cond
-        codigo += arbol.masStackV(tablaSimbolo.tamanio)
         if self.condicion.tipo == TipoDato.BOOLEANO:
             codigo += cond["codigo"]
             codigo += arbol.getCond2(cond["temporal"], "==", "1.0", lVerdadero)
             codigo += arbol.goto(lFalso)
             codigo += arbol.getLabel(lVerdadero)
-            nuevaTabla = TablaSimbolosC3D(tablaSimbolo)
-            nuevaTabla.setNombre('While')
             aux = ""
             for i in self.expresion:
                 i.eSetSalida(lFalso)

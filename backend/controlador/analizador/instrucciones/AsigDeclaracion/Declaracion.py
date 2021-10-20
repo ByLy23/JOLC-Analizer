@@ -21,14 +21,15 @@ class Declaracion(Instruccion):
                 tVar = arbol.newTemp()
                 tStck = arbol.newTemp()
                 codigo += arbol.assigTemp1(tVar["temporal"], "-50251313792.0")
-                codigo += arbol.assigTemp1(tStck["temporal"], "P")
+                codigo += arbol.assigTemp2(tStck["temporal"],
+                                           "P", "+", tablaSimbolo.getTamanio())
                 codigo += arbol.assigStackN(tStck["temporal"],
                                             tVar["temporal"])
-                codigo += arbol.masStack()
                 simbolo = SimboloC3D(
-                    self.tipo, self.identificador, tStck["temporal"], True)
+                    self.tipo, self.identificador, tablaSimbolo.getTamanio(), True)
                 simbolo.tipoStruct = self.struct
                 simbolo.mutable = True
+                tablaSimbolo.setVariable(simbolo)
             else:
                 return Error("Error Compilacion", "{} no es compatible con {} ".format(self.valor.tipo, self.tipo), self.linea, self.columna)
             # if getVariable(self.identificador) Crea variable
@@ -58,12 +59,12 @@ class Declaracion(Instruccion):
                     tStck = arbol.newTemp()
                     codigo += arbol.assigTemp1(tVar["temporal"],
                                                val["temporal"])
-                    codigo += arbol.assigTemp1(tStck["temporal"], "P")
+                    codigo += arbol.assigTemp2(tStck["temporal"],
+                                               "P", "+", tablaSimbolo.getTamanio())
                     codigo += arbol.assigStackN(tStck["temporal"],
                                                 tVar["temporal"])
-                    codigo += arbol.masStack()
                     nuevaVal = SimboloC3D(
-                        self.tipo, self.identificador, tStck["temporal"], True)
+                        self.tipo, self.identificador,  tablaSimbolo.getTamanio(), True)
                     nuevaVal.tipoStruct = self.valor.tipoStruct
                     nuevaVal.mutable = self.valor.mutable
                     tablaSimbolo.setVariable(nuevaVal)
@@ -71,12 +72,12 @@ class Declaracion(Instruccion):
                     tVar = arbol.newTemp()
                     tStck = arbol.newTemp()
                     codigo += arbol.assigTemp1(tVar["temporal"], val["heap"])
-                    codigo += arbol.assigTemp1(tStck["temporal"], "P")
+                    codigo += arbol.assigTemp2(tStck["temporal"],
+                                               "P", "+", tablaSimbolo.getTamanio())
                     codigo += arbol.assigStackN(tStck["temporal"],
                                                 tVar["temporal"])
-                    codigo += arbol.masStack()
                     nuevaVal = SimboloC3D(
-                        self.tipo, self.identificador, tStck["temporal"], False)
+                        self.tipo, self.identificador,  tablaSimbolo.getTamanio(), False)
                     nuevaVal.tipoStruct = self.valor.tipoStruct
                     nuevaVal.mutable = self.valor.mutable
                     tablaSimbolo.setVariable(nuevaVal)

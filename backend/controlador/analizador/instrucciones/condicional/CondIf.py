@@ -50,12 +50,13 @@ class CondIf(Instruccion):
     goto Ls
     Ls
     '''
-        codigo += arbol.masStackV(tablaSimbolo.tamanio)
+
         codigo += val["codigo"]
         codigo += arbol.getCond2(val["temporal"], "==", "1.0", lVerdadera)
         codigo += arbol.goto(lFalsa1)
         codigo += arbol.getLabel(lVerdadera)
         nuevaTabla = TablaSimbolosC3D(tablaSimbolo)
+        codigo += arbol.masStackV(tablaSimbolo.tamanio)
         aux = ""
         for i in range(0, len(self.condIf)):
 
