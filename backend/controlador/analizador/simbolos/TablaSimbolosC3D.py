@@ -15,6 +15,9 @@ class TablaSimbolosC3D:
     def getTamanio(self):
         return self.tamanio
 
+    def setTamanio(self, t):
+        self.tamanio = t
+
     def masTamanio(self):
         self.tamanio += 1
 
@@ -53,7 +56,8 @@ class TablaSimbolosC3D:
             if id in aux.tablaActual:
                 return {'simbolo': aux.tablaActual[id], 'entorno': cont}
             else:
-                cont += aux.tablaAnterior.getTamanio()
+                if aux.tablaAnterior != None:
+                    cont += aux.tablaAnterior.getTamanio()
                 aux = aux.tablaAnterior
         return None
 

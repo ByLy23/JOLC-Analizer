@@ -11,12 +11,30 @@ class Return(Instruccion):
         self.expresion = expresion
 
     def traducir(self, arbol, tablaSimbolo):  # pendiente
+        codigo = ""
         if self.expresion != None:
+            self.expresion.eSetTemporal(self.eTemporal())
             self.valor = self.expresion.traducir(arbol, tablaSimbolo)
+            codigo += self.valor["codigo"]
             self.tipo = self.expresion.tipo
             self.tipoStruct = self.expresion.tipoStruct
             self.mutable = self.expresion.mutable
-        return self
+            if self.expresion.tipo != TipoDato.CADENA and self.expresion.tipo != TipoDato.STRUCT and self.expresion.tipo != TipoDato.ARREGLO:
+                codigo += arbol.assigStackN(self.eTemporal(),
+                                            self.valor["temporal"])
+                codigo += arbol.menosStackV(arbol.tamReturn)
+
+                codigo += arbol.goto(self.eReturn())
+            else:
+                codigo += arbol.assigStackN(self.eTemporal(),
+                                            self.valor["heap"])
+                codigo += arbol.menosStackV(arbol.tamReturn)
+                codigo += arbol.goto(self.eReturn())
+        else:
+            self.tipo = TipoDato.NOTHING
+            codigo += arbol.assigStackN(self.eTemporal(), "-50251313792")
+            codigo += arbol.goto(self.eReturn())
+        return {'codigo': codigo}
 
     def getNodo(self):
         nodo = NodoAST('RETURN')

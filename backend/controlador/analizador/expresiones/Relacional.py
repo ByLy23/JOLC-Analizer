@@ -116,6 +116,7 @@ class Relacional(Instruccion):
             return valor
 
     def obtieneValorC3D(self, operando, arbol, tabla):
+        operando.eSetTemporal(self.eTemporal())
         valor = operando.traducir(arbol, tabla)
         if isinstance(valor, Error):
             return valor

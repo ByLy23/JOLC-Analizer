@@ -14,10 +14,10 @@ class Identificador(Instruccion):
     def traducir(self, arbol, tablaSimbolo):
         codigo = ""
         var = tablaSimbolo.getVariable(self.identificador)
+        if var == None:
+            return Error("Error Compilacion", "la variable {} no existe".format(self.identificador), self.linea, self.columna)
         variable = var["simbolo"]
         cont = var["entorno"]
-        if variable == None:
-            return Error("Error Compilacion", "la variable {} no existe".format(self.identificador), self.linea, self.columna)
         self.tipo = variable.tipo
         self.tipoStruct = variable.tipoStruct
         self.mutable = variable.mutable

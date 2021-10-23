@@ -25,13 +25,16 @@ class Aritmetica(Instruccion):
         temp = arbol.newTemp()
         izq = der = uno = None
         if self.operadorUnico != None:
+            self.operadorUnico.eSetTemporal(self.eTemporal())
             uno = self.operadorUnico.traducir(arbol, tablaSimbolo)
             if isinstance(uno, Error):
                 return uno
         else:
+            self.op1.eSetTemporal(self.eTemporal())
             izq = self.op1.traducir(arbol, tablaSimbolo)
             if isinstance(izq, Error):
                 return izq
+            self.op2.eSetTemporal(self.eTemporal())
             der = self.op2.traducir(arbol, tablaSimbolo)
             if isinstance(der, Error):
                 return der

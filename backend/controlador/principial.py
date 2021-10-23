@@ -14,7 +14,6 @@ def metodoPrincipal(EntradaAnalizar):
     sim = []
     listaErrores = []
     listaImports = []
-    traduccionSalida = "func main() {\n"
     # try:
     ast = Arbol(parse(EntradaAnalizar))  # entrada con parser
     tabla = TablaSimbolos()
@@ -33,6 +32,30 @@ def metodoPrincipal(EntradaAnalizar):
             ast.getFunciones().append(ins)
     for ins in astC3D.getInstrucciones():
         if isinstance(ins, Funcion):
+            astC3D.getFunciones().append(ins)
+    traduccionSalida = ""
+    for ins in astC3D.getInstrucciones():
+        # resultado = ins.interpretar(ast, tabla)
+        # if isinstance(resultado, Error):
+        #     ast.getErrores().append(resultado)
+        #     ast.actualizaConsola(resultado.retornaError())
+        if not isinstance(ins, Funcion):
+            continue
+        else:
+            tablaC3D.setTabla({})
+            tablaC3D.setTamanio(0)
+            traduccion = ins.traducir(astC3D, tablaC3D)
+            if isinstance(traduccion, Error):
+                astC3D.getErrores().append(traduccion)
+                astC3D.actualizaConsola(traduccion.retornaError())
+                continue
+
+            traduccionSalida += traduccion["codigo"]
+    tablaC3D.setTabla({})
+    tablaC3D.setTamanio(0)
+    traduccionSalida += "func main() {\n"
+    for ins in astC3D.getInstrucciones():
+        if isinstance(ins, Funcion):
             continue
         # resultado = ins.interpretar(ast, tabla)
         # if isinstance(resultado, Error):
@@ -45,8 +68,8 @@ def metodoPrincipal(EntradaAnalizar):
             astC3D.actualizaConsola(traduccion.retornaError())
             print(traduccion.retornaError())
             continue
-
         traduccionSalida += traduccion["codigo"]
+
     traduccionSalida += "\n}"
     if len(astC3D.listaTemporales) > 0:
         tempTraduccion = "var "
@@ -60,8 +83,8 @@ def metodoPrincipal(EntradaAnalizar):
 import (
    {} 
 )\n
-var stack [300000] float64;
-var heap [300000] float64;
+var stack [3000000] float64;
+var heap [3000000] float64;
 var P,H float64;
 """.format(astC3D.getImports())+traduccionSalida
     listaSimbolos = astC3D.getSimbolos()

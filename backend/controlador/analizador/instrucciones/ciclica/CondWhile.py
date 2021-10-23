@@ -30,6 +30,7 @@ class CondWhile(Instruccion):
         lFalso = arbol.newLabel()
         nuevaTabla = TablaSimbolosC3D(tablaSimbolo)
         nuevaTabla.setNombre('While')
+        arbol.tamReturn += tablaSimbolo.tamanio
         codigo += arbol.masStackV(tablaSimbolo.tamanio)
         codigo += arbol.getLabel(lControl)
         cond = self.condicion.traducir(arbol, nuevaTabla)
@@ -44,11 +45,19 @@ class CondWhile(Instruccion):
             for i in self.expresion:
                 i.eSetSalida(lFalso)
                 i.eSetContinua(lControl)
+                i.eSetReturn(self.eReturn())
+                i.eSetTemporal(self.eTemporal())
                 a = i.traducir(arbol, nuevaTabla)
-                aux += a["codigo"]
                 if isinstance(a, Error):
                     arbol.getErrores().append(a)
                     arbol.actualizaConsola(a.retornaError())
+                if isinstance(i, Return):
+                    self.tipo = i.tipo
+                    self.tipoStruct = i.tipoStruct
+                    self.mutable = i.mutable
+                aux += a["codigo"]
+
+            arbol.tamReturn -= tablaSimbolo.tamanio
             codigo += aux
             codigo += arbol.goto(lControl)
             codigo += arbol.getLabel(lFalso)

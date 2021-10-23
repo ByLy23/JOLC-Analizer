@@ -31,7 +31,7 @@ class Declaracion(Instruccion):
                 simbolo.mutable = True
                 tablaSimbolo.setVariable(simbolo)
             else:
-                return Error("Error Compilacion", "{} no es compatible con {} ".format(self.valor.tipo, self.tipo), self.linea, self.columna)
+                return Error("Error Compilacion", "Ya existe ", self.linea, self.columna)
             # if getVariable(self.identificador) Crea variable
             # t1=-50251313792.0 call me maybe xd
             #t2= P

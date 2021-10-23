@@ -101,7 +101,7 @@ class Print(Instruccion):
                 codigo += arbol.goto(loop)
                 codigo += arbol.getLabel(lSalida)
         arbol.setImports("\"fmt\"")
-        return {'temporal': "", 'codigo': codigo}
+        return {'codigo': codigo}
 
     def getNodo(self):
         nodo = NodoAST('PRINT')

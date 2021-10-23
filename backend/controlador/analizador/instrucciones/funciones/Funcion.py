@@ -1,3 +1,5 @@
+from controlador.analizador.instrucciones.AsigDeclaracion.Declaracion import Declaracion
+from controlador.analizador.simbolos.TablaSimbolosC3D import TablaSimbolosC3D
 from controlador.analizador.simbolos.Tipo import TipoDato
 from controlador.analizador.abstracto.NodoAST import NodoAST
 from controlador.reportes.ReporteTabla import ReporteTabla
@@ -13,9 +15,70 @@ from controlador.analizador.abstracto.Instruccion import Instruccion
 class Funcion(Instruccion):
     def __init__(self, tipo, linea, columna, identificador, parametros, instrucciones):
         super().__init__(tipo, linea, columna)
+        if tipo == TipoDato.NOTHING:
+            self.tipo = TipoDato.ENTERO
         self.identificador = identificador
         self.parametros = parametros
         self.instrucciones = instrucciones
+
+    def traducir(self, arbol, tablaSimbolo):
+        codigo = ""
+        aux = ""
+        lSalida = arbol.newLabel()
+        tablaSimbolo.masTamanio()
+        codigo += "func " + self.identificador+"() {\n"
+        nRetorno = arbol.newTemp()
+        codigo += arbol.assigTemp1(nRetorno["temporal"], "P")
+        for nuevoVal in self.parametros:
+            if isinstance(nuevoVal["tipato"], str):
+                # Se realiza como un struct
+                dec = Declaracion(TipoDato.STRUCT, self.linea,
+                                  self.columna, nuevoVal["identificador"], None, nuevoVal["tipato"])
+                nuevaDec = dec.traducir(arbol, tablaSimbolo)
+                if isinstance(nuevaDec, Error):
+                    return nuevaDec
+                # codigo+=nuevaDec["codigo"]
+            else:
+
+                dec = Declaracion(nuevoVal["tipato"], self.linea,
+                                  self.columna, nuevoVal["identificador"], None, self.tipoStruct)
+                nuevaDec = dec.traducir(arbol, tablaSimbolo)
+                if isinstance(nuevaDec, Error):
+                    return nuevaDec
+                # var = nuevaTabla.getVariable(
+                #     funcion.parametros[iterador]["identificador"])
+                # if var != None:
+                #     # if var.tipo != nuevoVal.tipo:
+                #     #     return Error("Semantico", "Tipo de dato diferente", self.linea, self.columna)
+                #     # else:
+                #     var.setValor(val)
+                #     var.tipoStruct = nuevoVal.tipoStruct
+                #     nuevaTabla.setNombre(funcion.identificador)
+                # else:
+                #     return Error("Error Semantico", "Variable no existe", self.linea, self.columna)
+            # if not arbol.actualizarTabla(funcion.parametros[iterador]["identificador"], 'nothing', self.linea, nuevaTabla.getNombre(), self.columna):
+            #     nuevoSim = ReporteTabla(funcion.parametros[iterador]["identificador"], 'nothing', 'Parametro', str(
+            #         var.tipo), nuevaTabla.getNombre(), self.linea, self.columna)
+            #     arbol.getSimbolos().append(nuevoSim)
+        for inst in self.instrucciones:
+            inst.eSetReturn(lSalida)
+            inst.eSetTemporal(nRetorno["temporal"])
+            valor = inst.traducir(arbol, tablaSimbolo)
+            if isinstance(valor, Error):
+                arbol.getErrores().append(valor)
+                arbol.actualizaConsola(valor.retornaError())
+                continue
+
+            aux += valor["codigo"]
+
+            self.tipo = inst.tipo
+            self.tipoStruct = inst.tipoStruct
+            self.mutable = inst.mutable
+        codigo += aux
+        codigo += arbol.getLabel(lSalida)
+        codigo += "return;\n}\n"
+        arbol.tamReturn = 0
+        return {'codigo': codigo}
 
     def getNodo(self):
         nodo = NodoAST('FUNCION')

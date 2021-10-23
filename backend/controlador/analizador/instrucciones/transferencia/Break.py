@@ -1,4 +1,5 @@
 from controlador.analizador.abstracto.NodoAST import NodoAST
+from controlador.analizador.excepciones.Error import Error
 from controlador.analizador.simbolos.Tipo import TipoDato
 from controlador.analizador.abstracto.Instruccion import Instruccion
 
@@ -14,8 +15,9 @@ class Break(Instruccion):
         return nodo
 
     def traducir(self, arbol, tablaSimbolo):
-        print(self.etiquetaSalida)
-        return {'temporal': "", 'codigo': arbol.goto(self.eSalida())}
+        if self.eSalida() != None:
+            return {'temporal': "", 'codigo': arbol.goto(self.eSalida())}
+        return Error("Error de Compilacion", "Sentencia fuera de ciclo", self.linea, self.columna)
 
     def interpretar(self, arbol, tablaSimbolo):
         return 'ByLy23'

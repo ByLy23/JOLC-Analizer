@@ -31,15 +31,18 @@ class Logica(Instruccion):
         codigo = ""
         izq = der = uno = None
         if self.condExcep != None:
+            self.condExcep.eSetTemporal(self.eTemporal())
             uno = self.condExcep.traducir(arbol, tablaSimbolo)
             if isinstance(uno, Error):
                 return uno
             if self.condExcep.tipo == TipoDato.NOTHING:
                 return Error("Error Semantico", "Variable con dato nulo no puede ser ejecutada", self.linea, self.columna)
         else:
+            self.cond1.eSetTemporal(self.eTemporal())
             izq = self.cond1.traducir(arbol, tablaSimbolo)
             if isinstance(izq, Error):
                 return izq
+            self.cond2.eSetTemporal(self.eTemporal())
             der = self.cond2.traducir(arbol, tablaSimbolo)
             if isinstance(der, Error):
                 return der

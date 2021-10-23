@@ -16,7 +16,7 @@ class Asignacion(Instruccion):
 
     def traducir(self, arbol, tablaSimbolo):
         codigo = ""
-
+        # TODO cambiar variable con if !=None
         var = tablaSimbolo.getVariable(self.identificador)
         variable = var["simbolo"]
         cont = var["entorno"]
@@ -44,8 +44,8 @@ class Asignacion(Instruccion):
             val = self.valor.traducir(arbol, tablaSimbolo)
             if isinstance(val, Error):
                 return val
-            if self.valor.tipo != self.tipo:
-                return Error("Error Compilacion", "{} no es compatible con {} ".format(self.valor.tipo, self.tipo), self.linea, self.columna)
+            # if self.valor.tipo != self.tipo:
+            #     return Error("Error Compilacion", "{} no es compatible con {} ".format(self.valor.tipo, self.tipo), self.linea, self.columna)
             if self.valor.tipo == TipoDato.STRUCT:
                 if self.valor.tipoStruct != self.struct:
                     return Error("Error Compilacion", "No es el mismo struct", self.linea, self.columna)

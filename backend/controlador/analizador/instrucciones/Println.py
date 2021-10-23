@@ -109,7 +109,7 @@ class Println(Instruccion):
                 codigo += arbol.goto(loop)
                 codigo += arbol.getLabel(lSalida)
 
-        codigo += arbol.imprimir('"\\n"')
+        codigo += arbol.imprimir('"%c", int(10)')
         arbol.setImports("\"fmt\"")
         return {'temporal': "", 'codigo': codigo}
 

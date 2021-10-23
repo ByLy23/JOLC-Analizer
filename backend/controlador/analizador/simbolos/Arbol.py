@@ -16,6 +16,7 @@ class Arbol:
         # SEGUNDA FASE
         self.t = 0
         self.l = 0
+        self.tamReturn = 0
     # gets
 
     def getStructs(self):
@@ -125,10 +126,10 @@ class Arbol:
     def menosStack(self):
         return "P = P - 1;\n"
 
-    def masStackV(self,n):
+    def masStackV(self, n):
         return "P = P + {};\n".format(n)
 
-    def menosStackV(self,n):
+    def menosStackV(self, n):
         return "P = P - {};\n".format(n)
 
     def masHeap(self):
@@ -188,10 +189,10 @@ class Arbol:
         return '{}:\n'.format(l)
 
     def getCond1(self, temp, label):
-        return 'if ('+temp+') {goto '+label+'};\n'
+        return 'if ('+temp+') {goto '+label+';}\n'
 
     def getCond2(self, c1, op, c2, label):
-        return 'if ('+c1+' '+op+' '+c2+') {goto '+label+'};\n'
+        return 'if ('+c1+' '+op+' '+c2+') {goto '+label+';}\n'
 
     def imprimir(self, temp):
         return 'fmt.Printf({});\n'.format(temp)
