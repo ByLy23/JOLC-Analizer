@@ -18,13 +18,53 @@ class Asignacion(Instruccion):
         codigo = ""
         # TODO cambiar variable con if !=None
         var = tablaSimbolo.getVariable(self.identificador)
-        variable = var["simbolo"]
-        cont = var["entorno"]
+        variable = None
+        cont = 0
+        if var != None:
+            variable = var["simbolo"]
+            cont = var["entorno"]
         if variable == None:
-            return Error("Error Compilacion", "la variable {} no existe".format(self.identificador), self.linea, self.columna)
-        self.tipo = variable.tipo
-        self.tipoStruct = variable.tipoStruct
-        self.mutable = variable.mutable
+            val = self.valor.traducir(arbol, tablaSimbolo)
+            if isinstance(val, Error):
+                return val
+            print(val)
+            if self.valor.tipo == TipoDato.STRUCT:
+                if self.valor.tipoStruct != self.struct:
+                    return Error("Error Compilacion", "No es el mismo struct", self.linea, self.columna)
+            codigo += val["codigo"]
+            if self.valor.tipo != TipoDato.CADENA and self.valor.tipo != TipoDato.STRUCT and self.valor.tipo != TipoDato.ARREGLO:
+                tVar = arbol.newTemp()
+                tStck = arbol.newTemp()
+                codigo += arbol.assigTemp1(tVar["temporal"],
+                                           val["temporal"])
+                codigo += arbol.assigTemp2(tStck["temporal"],
+                                           "P", "+", tablaSimbolo.getTamanio())
+                codigo += arbol.assigStackN(tStck["temporal"],
+                                            tVar["temporal"])
+                nuevaVal = SimboloC3D(
+                    self.valor.tipo, self.identificador,  tablaSimbolo.getTamanio(), True)
+                nuevaVal.tipoStruct = self.valor.tipoStruct
+                nuevaVal.mutable = self.valor.mutable
+                tablaSimbolo.setVariable(nuevaVal)
+            else:
+                tVar = arbol.newTemp()
+                tStck = arbol.newTemp()
+                codigo += arbol.assigTemp1(tVar["temporal"], val["heap"])
+                codigo += arbol.assigTemp2(tStck["temporal"],
+                                           "P", "+", tablaSimbolo.getTamanio())
+                codigo += arbol.assigStackN(tStck["temporal"],
+                                            tVar["temporal"])
+                nuevaVal = SimboloC3D(
+                    self.valor.tipo, self.identificador,  tablaSimbolo.getTamanio(), False)
+                nuevaVal.tipoStruct = self.valor.tipoStruct
+                nuevaVal.mutable = self.valor.mutable
+                tablaSimbolo.setVariable(nuevaVal)
+            self.tipo = self.valor.tipo
+            self.tipoStruct = self.valor.tipoStruct
+            self.mutable = self.valor.mutable
+            print(self.tipo)
+            return {'codigo': codigo}
+
         # if not arbol.actualizarTabla(self.identificador, variable.valor, self.linea, tablaSimbolo.getNombre(), self.columna):
         #     nuevoSim = ReporteTabla(self.identificador, variable.valor, 'Variable', str(
         #         self.tipo), tablaSimbolo.getNombre(), self.linea, self.columna)
@@ -92,6 +132,9 @@ class Asignacion(Instruccion):
             nuevaVal.tipoStruct = self.valor.tipoStruct
             nuevaVal.mutable = self.valor.mutable
             tablaSimbolo.setVariable(nuevaVal)
+            self.tipo = variable.tipo
+            self.tipoStruct = variable.tipoStruct
+            self.mutable = variable.mutable
             return {'codigo': codigo}
             # t1=stack[variable.temporal] devuelve el apuntador del heap
             # return {heap:t1}
@@ -147,3 +190,7 @@ class Asignacion(Instruccion):
                     nuevoSim = ReporteTabla(self.identificador, val, 'Variable', str(
                         self.tipo), tablaSimbolo.getNombre(), self.linea, self.columna)
                     arbol.getSimbolos().append(nuevoSim)
+
+
+# a=45;
+# print(a);
