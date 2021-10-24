@@ -3,7 +3,6 @@ from controlador.analizador.simbolos.TablaSimbolosC3D import TablaSimbolosC3D
 from controlador.analizador.simbolos.Tipo import TipoDato
 from controlador.analizador.abstracto.NodoAST import NodoAST
 from controlador.reportes.ReporteTabla import ReporteTabla
-from re import L
 from controlador.analizador.instrucciones.AsigDeclaracion.Asignacion import Asignacion
 from controlador.analizador.instrucciones.transferencia.Break import Break
 from controlador.analizador.simbolos.TablaSimbolos import TablaSimbolos
@@ -32,19 +31,24 @@ class Funcion(Instruccion):
         for nuevoVal in self.parametros:
             if isinstance(nuevoVal["tipato"], str):
                 # Se realiza como un struct
+                tmpsNoUsados = arbol.getTempNoUsados()
                 dec = Declaracion(TipoDato.STRUCT, self.linea,
                                   self.columna, nuevoVal["identificador"], None, nuevoVal["tipato"])
                 nuevaDec = dec.traducir(arbol, tablaSimbolo)
                 if isinstance(nuevaDec, Error):
                     return nuevaDec
-                # codigo+=nuevaDec["codigo"]
+                arbol.setTempNoUsados(tmpsNoUsados)
+                # codigo += nuevaDec["codigo"]
             else:
-
+                tmpsNoUsados = arbol.getTempNoUsados()
                 dec = Declaracion(nuevoVal["tipato"], self.linea,
                                   self.columna, nuevoVal["identificador"], None, self.tipoStruct)
                 nuevaDec = dec.traducir(arbol, tablaSimbolo)
                 if isinstance(nuevaDec, Error):
                     return nuevaDec
+                arbol.setTempNoUsados(tmpsNoUsados)
+
+                # codigo += nuevaDec["codigo"]
                 # var = nuevaTabla.getVariable(
                 #     funcion.parametros[iterador]["identificador"])
                 # if var != None:
@@ -68,16 +72,18 @@ class Funcion(Instruccion):
                 arbol.getErrores().append(valor)
                 arbol.actualizaConsola(valor.retornaError())
                 continue
-
+            if 'tipo' in valor:
+                self.tipo = valor["tipo"]
             aux += valor["codigo"]
 
-            self.tipo = inst.tipo
             self.tipoStruct = inst.tipoStruct
             self.mutable = inst.mutable
         codigo += aux
+        codigo += arbol.goto(lSalida)
         codigo += arbol.getLabel(lSalida)
         codigo += "return;\n}\n"
         arbol.tamReturn = 0
+        print(self.tipo)
         return {'codigo': codigo}
 
     def getNodo(self):

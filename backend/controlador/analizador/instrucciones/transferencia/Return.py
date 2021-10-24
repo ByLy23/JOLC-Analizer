@@ -34,7 +34,7 @@ class Return(Instruccion):
             self.tipo = TipoDato.NOTHING
             codigo += arbol.assigStackN(self.eTemporal(), "-50251313792")
             codigo += arbol.goto(self.eReturn())
-        return {'codigo': codigo}
+        return {'codigo': codigo, 'tipo': self.expresion.tipo}
 
     def getNodo(self):
         nodo = NodoAST('RETURN')

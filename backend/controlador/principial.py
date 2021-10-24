@@ -33,6 +33,7 @@ def metodoPrincipal(EntradaAnalizar):
     for ins in astC3D.getInstrucciones():
         if isinstance(ins, Funcion):
             astC3D.getFunciones().append(ins)
+
     traduccionSalida = ""
     for ins in astC3D.getInstrucciones():
         # resultado = ins.interpretar(ast, tabla)
@@ -42,9 +43,9 @@ def metodoPrincipal(EntradaAnalizar):
         if not isinstance(ins, Funcion):
             continue
         else:
-            tablaC3D.setTabla({})
-            tablaC3D.setTamanio(0)
-            traduccion = ins.traducir(astC3D, tablaC3D)
+            nuevaTablaC3D = TablaSimbolosC3D()
+            astC3D.setTempNoUsados([])
+            traduccion = ins.traducir(astC3D, nuevaTablaC3D)
             if isinstance(traduccion, Error):
                 astC3D.getErrores().append(traduccion)
                 astC3D.actualizaConsola(traduccion.retornaError())
@@ -53,6 +54,7 @@ def metodoPrincipal(EntradaAnalizar):
             traduccionSalida += traduccion["codigo"]
     tablaC3D.setTabla({})
     tablaC3D.setTamanio(0)
+    astC3D.setTempNoUsados([])
     traduccionSalida += "func main() {\n"
     for ins in astC3D.getInstrucciones():
         if isinstance(ins, Funcion):

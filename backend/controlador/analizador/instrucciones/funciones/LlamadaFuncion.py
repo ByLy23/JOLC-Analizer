@@ -23,11 +23,13 @@ class LlamadaFuncion(Instruccion):
             # return Error("Error Semantico", "No se encontro la Funcion", self.linea, self.columna)
             if len(funcion.parametros) == len(self.parametros):
                 nuevaTabla = TablaSimbolosC3D(tablaSimbolo)
-
                 codigo += arbol.masStackV(tablaSimbolo.tamanio)
                 iterador = 0
                 nuevaTabla.masTamanio()
-
+                varTemps = arbol.getTempNoUsados()
+                for t in varTemps:
+                    codigo += "stack[int({})] = {};\n".format("P", t)
+                    codigo += arbol.masStackV(1)
                 for nuevoVal in self.parametros:
                     val = nuevoVal.traducir(arbol, nuevaTabla)
                     if isinstance(val, Error):
@@ -36,10 +38,12 @@ class LlamadaFuncion(Instruccion):
                         # Se realiza como un struct
                         dec = Declaracion(TipoDato.STRUCT, funcion.linea,
                                           funcion.columna, funcion.parametros[iterador]["identificador"], nuevoVal, funcion.parametros[iterador]["tipato"])
+
                         nuevaDec = dec.traducir(arbol, nuevaTabla)
                         if isinstance(nuevaDec, Error):
                             return nuevaDec
-                        # codigo+=nuevaDec["codigo"]
+
+                        codigo += nuevaDec["codigo"]
                         var = nuevaTabla.getVariable(
                             funcion.parametros[iterador]["identificador"])
                         if var != None:
@@ -56,9 +60,11 @@ class LlamadaFuncion(Instruccion):
 
                         dec = Declaracion(nuevoVal.tipo, funcion.linea,
                                           funcion.columna, funcion.parametros[iterador]["identificador"], nuevoVal, nuevoVal.tipoStruct)
+
                         nuevaDec = dec.traducir(arbol, nuevaTabla)
                         if isinstance(nuevaDec, Error):
                             return nuevaDec
+
                         codigo += nuevaDec["codigo"]
                         # var = nuevaTabla.getVariable(
                         #     funcion.parametros[iterador]["identificador"])
@@ -76,7 +82,6 @@ class LlamadaFuncion(Instruccion):
                     #         var.tipo), nuevaTabla.getNombre(), self.linea, self.columna)
                     #     arbol.getSimbolos().append(nuevoSim)
                     iterador = iterador+1
-                nuevaTabla.setAnterior(arbol.getGlobal())
                 # nuevoMet = funcion.traducir(arbol, nuevaTabla)
 
                 # if isinstance(nuevoMet, Error):
@@ -86,13 +91,20 @@ class LlamadaFuncion(Instruccion):
                 # self.mutable = funcion.mutable
                 # codigo += nuevoMet["codigo"]
                 codigo += self.identificador+"();\n"
+                aux2 = ""
+                for t in reversed(varTemps):
+                    aux2 += arbol.menosStackV(1)
+                    aux2 += "{} = stack[int({})];\n".format(t, "P")
                 nuevoTemp = arbol.newTemp()
                 codigo += arbol.assigTemp1(nuevoTemp["temporal"], "P")
-                codigo += arbol.menosStackV(tablaSimbolo.tamanio)
-                # TODO hacer un metodo que obtenga los temporales usados antes de que llamen una funcion
-                tempRetorno = arbol.newTemp()
-                codigo += arbol.getStack(tempRetorno["temporal"], "P")
 
+                # TODO hacer un metodo que obtenga los temporales usados antes de que llamen una funcion
+                print(arbol.getTempNoUsados())
+                tempRetorno = arbol.newTemp()
+                codigo += arbol.getStack(tempRetorno["temporal"],
+                                         nuevoTemp["temporal"])
+                codigo += aux2
+                codigo += arbol.menosStackV(tablaSimbolo.tamanio)
                 # if not arbol.actualizarTabla(self.identificador, nuevoMet, self.linea, 'Funcion', self.columna):
                 #     nuevoSim = ReporteTabla(self.identificador, nuevoMet, 'Funcion', str(
                 #         self.tipo), tablaSimbolo.getNombre(), self.linea, self.columna)

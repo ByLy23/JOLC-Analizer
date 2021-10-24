@@ -60,6 +60,7 @@ class CondIf(Instruccion):
         codigo += arbol.masStackV(tablaSimbolo.tamanio)
         arbol.tamReturn += tablaSimbolo.tamanio
         aux = ""
+        tip = TipoDato.ENTERO
         for i in range(0, len(self.condIf)):
 
             self.condIf[i].eSetSalida(self.eSalida())
@@ -71,6 +72,9 @@ class CondIf(Instruccion):
                 arbol.getErrores().append(a)
                 arbol.actualizaConsola(a.retornaError())
                 continue
+            if 'tipo' in a:
+                if a["tipo"] != TipoDato.ENTERO:
+                    tip = a["tipo"]
             self.tipo = self.condIf[i].tipo
             self.tipoStruct = self.condIf[i].tipoStruct
             self.mutable = self.condIf[i].mutable
@@ -89,6 +93,9 @@ class CondIf(Instruccion):
                 item["expresion"].eSetReturn(self.eReturn())
                 item["expresion"].eSetTemporal(self.eTemporal())
                 val = item["expresion"].traducir(arbol, tablaSimbolo)
+                if 'tipo' in val:
+                    if val["tipo"] != TipoDato.ENTERO:
+                        tip = val["tipo"]
                 self.tipo = item["expresion"].tipo
                 self.tipoStruct = item["expresion"].tipoStruct
                 self.mutable = item["expresion"].mutable
@@ -111,6 +118,9 @@ class CondIf(Instruccion):
                     item["instrucciones"][i].eSetTemporal(self.eTemporal())
                     a = item["instrucciones"][i].traducir(
                         arbol, nuevaTabla)
+                    if 'tipo' in a:
+                        if a["tipo"] != TipoDato.ENTERO:
+                            tip = a["tipo"]
                     self.tipo = item["instrucciones"][i].tipo
                     self.tipoStruct = item["instrucciones"][i].tipoStruct
                     self.mutable = item["instrucciones"][i].mutable
@@ -142,6 +152,9 @@ class CondIf(Instruccion):
                         arbol.getErrores().append(a)
                         arbol.actualizaConsola(a.retornaError())
                         continue
+                    if 'tipo' in a:
+                        if a["tipo"] != TipoDato.ENTERO:
+                            tip = a["tipo"]
                     self.tipo = item["instrucciones"][i].tipo
                     self.tipoStruct = item["instrucciones"][i].tipoStruct
                     self.mutable = item["instrucciones"][i].mutable
@@ -153,7 +166,7 @@ class CondIf(Instruccion):
                 codigo += arbol.goto(lSalida)
                 arbol.tamReturn -= tablaSimbolo.tamanio
         codigo += arbol.getLabel(lSalida)
-        return {'temporal': '', 'codigo': codigo}
+        return {'temporal': '', 'codigo': codigo, 'tipo': tip}
 
     def getNodo(self):
         nodo = NodoAST('CONDICION IF')

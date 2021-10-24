@@ -42,6 +42,7 @@ class CondWhile(Instruccion):
             codigo += arbol.goto(lFalso)
             codigo += arbol.getLabel(lVerdadero)
             aux = ""
+            tip = TipoDato.ENTERO
             for i in self.expresion:
                 i.eSetSalida(lFalso)
                 i.eSetContinua(lControl)
@@ -51,8 +52,8 @@ class CondWhile(Instruccion):
                 if isinstance(a, Error):
                     arbol.getErrores().append(a)
                     arbol.actualizaConsola(a.retornaError())
-                if isinstance(i, Return):
-                    self.tipo = i.tipo
+                if 'tipo' in a:
+                    tip = a["tipo"]
                     self.tipoStruct = i.tipoStruct
                     self.mutable = i.mutable
                 aux += a["codigo"]
@@ -71,7 +72,7 @@ class CondWhile(Instruccion):
         LF:
         '''
         codigo += arbol.menosStackV(tablaSimbolo.tamanio)
-        return {'temporal': "", 'codigo': codigo}
+        return {'temporal': "", 'codigo': codigo, 'tipo': tip}
 
     def interpretar(self, arbol, tablaSimbolo):
         while True:

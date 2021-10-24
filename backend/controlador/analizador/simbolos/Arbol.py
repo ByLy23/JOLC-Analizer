@@ -13,6 +13,7 @@ class Arbol:
         self.structs = []
         self.listaTemporales = []
         self.listaImports = []
+        self.tempNoUsados = []
         # SEGUNDA FASE
         self.t = 0
         self.l = 0
@@ -21,6 +22,26 @@ class Arbol:
 
     def getStructs(self):
         return self.structs
+
+    def getTempNoUsados(self):
+        return self.tempNoUsados.copy()
+
+    def setTempNoUsados(self, temp):
+        self.tempNoUsados = temp
+
+    def agregaTemp(self, temp):
+        flag = True
+        for t in self.tempNoUsados:
+            if t == temp:
+                flag = False
+                break
+        if flag:
+            self.tempNoUsados.append(temp)
+
+    def eliminaTemp(self, temp):
+        for t in self.tempNoUsados:
+            if t == temp:
+                self.tempNoUsados.remove(temp)
 
     def getStruct(self, identificador):
         for f in self.structs:
@@ -127,9 +148,11 @@ class Arbol:
         return "P = P - 1;\n"
 
     def masStackV(self, n):
+        self.eliminaTemp(n)
         return "P = P + {};\n".format(n)
 
     def menosStackV(self, n):
+        self.eliminaTemp(n)
         return "P = P - {};\n".format(n)
 
     def masHeap(self):
@@ -139,18 +162,25 @@ class Arbol:
         return "H = H - 1;\n"
 
     def assigHeapH(self, n):
+        self.eliminaTemp(n)
         return "heap[int(H)] = {};\n".format(n)
 
     def assigHeap2(self, h, n):
+        self.eliminaTemp(n)
         return "heap[int({})] = {};\n".format(h, n)
 
     def assigStackN(self, h, n):
+        self.eliminaTemp(n)
         return "stack[int({})] = {};\n".format(h, n)
 
     def getHeap(self, temp, h):
+        self.agregaTemp(temp)
+        self.eliminaTemp(h)
         return "{} = heap[int({})];\n".format(temp, h)
 
     def getStack(self, temp, h):
+        self.agregaTemp(temp)
+        self.eliminaTemp(h)
         return "{} = stack[int({})];\n".format(temp, h)
 
     def nuevoTemp(self, temp):
@@ -169,12 +199,20 @@ class Arbol:
         return resultado
 
     def assigTemp1(self, tempAsig, tempOperacion):
+        self.eliminaTemp(tempOperacion)
+        self.agregaTemp(tempAsig)
         return '{} = {};\n'.format(tempAsig, tempOperacion)
 
     def assigTemp2(self, tempAsig, tempOperacion1, operador, tempOperacion2):
+        self.eliminaTemp(tempOperacion1)
+        self.eliminaTemp(tempOperacion2)
+        self.agregaTemp(tempAsig)
         return '{} = {} {} {};\n'.format(tempAsig, tempOperacion1, operador, tempOperacion2)
 
     def assigTempMod(self, tempAsig, tempOperacion1, tempOperacion2):
+        self.eliminaTemp(tempOperacion1)
+        self.eliminaTemp(tempOperacion2)
+        self.agregaTemp(tempAsig)
         return '{} = math.Mod({},{});\n'.format(tempAsig, tempOperacion1, tempOperacion2)
 
     def newLabel(self):
