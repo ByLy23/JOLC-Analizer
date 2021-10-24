@@ -27,10 +27,20 @@ class LlamadaFuncion(Instruccion):
                 iterador = 0
                 nuevaTabla.masTamanio()
                 varTemps = arbol.getTempNoUsados()
+                nuevoTemp = arbol.newTemp()
+                codigo += arbol.assigTemp1(nuevoTemp["temporal"], "P")
                 for t in varTemps:
-                    codigo += "stack[int({})] = {};\n".format("P", t)
                     codigo += arbol.masStackV(1)
+                    codigo += "stack[int({})] = {};\n".format(
+                        nuevoTemp["temporal"], t)
+
+                    codigo += arbol.assigTemp2(
+                        nuevoTemp["temporal"], nuevoTemp["temporal"], "+", "1")
+
+                nuevaTabla.getAnterior().setTamanio(
+                    nuevaTabla.getAnterior().getTamanio()+len(varTemps))
                 for nuevoVal in self.parametros:
+
                     val = nuevoVal.traducir(arbol, nuevaTabla)
                     if isinstance(val, Error):
                         return val
@@ -82,6 +92,7 @@ class LlamadaFuncion(Instruccion):
                     #         var.tipo), nuevaTabla.getNombre(), self.linea, self.columna)
                     #     arbol.getSimbolos().append(nuevoSim)
                     iterador = iterador+1
+
                 # nuevoMet = funcion.traducir(arbol, nuevaTabla)
 
                 # if isinstance(nuevoMet, Error):
@@ -92,6 +103,9 @@ class LlamadaFuncion(Instruccion):
                 # codigo += nuevoMet["codigo"]
                 codigo += self.identificador+"();\n"
                 aux2 = ""
+
+                nuevaTabla.getAnterior().setTamanio(
+                    nuevaTabla.getAnterior().getTamanio()-len(varTemps))
                 for t in reversed(varTemps):
                     aux2 += arbol.menosStackV(1)
                     aux2 += "{} = stack[int({})];\n".format(t, "P")
