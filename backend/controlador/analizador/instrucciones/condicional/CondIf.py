@@ -158,7 +158,7 @@ class CondIf(Instruccion):
                     self.tipo = item["instrucciones"][i].tipo
                     self.tipoStruct = item["instrucciones"][i].tipoStruct
                     self.mutable = item["instrucciones"][i].mutable
-                    aux2 = a["codigo"]
+                    aux2 += a["codigo"]
 
                     # If return, continue y break
                 codigo += aux2

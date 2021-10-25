@@ -40,6 +40,8 @@ class Funcion(Instruccion):
                 arbol.setTempNoUsados(tmpsNoUsados)
                 # codigo += nuevaDec["codigo"]
             else:
+                if nuevoVal["tipato"] == None:
+                    nuevoVal["tipato"] = TipoDato.ENTERO
                 tmpsNoUsados = arbol.getTempNoUsados()
                 dec = Declaracion(nuevoVal["tipato"], self.linea,
                                   self.columna, nuevoVal["identificador"], None, self.tipoStruct)
@@ -83,7 +85,7 @@ class Funcion(Instruccion):
         codigo += arbol.getLabel(lSalida)
         codigo += "return;\n}\n"
         arbol.tamReturn = 0
-        print(self.tipo)
+        # print(self.tipo)
         return {'codigo': codigo}
 
     def getNodo(self):

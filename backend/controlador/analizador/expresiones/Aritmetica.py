@@ -136,18 +136,30 @@ class Aritmetica(Instruccion):
             retorno = self.operador1PotenciaC3D(
                 izq["temporal"], der["temporal"])
             rAux = ""
-            if(int(retorno["op2"]) == 0):
+
+            if(retorno["op2"] == 0):
                 codigo += izq["codigo"]
                 codigo += der["codigo"]
                 codigo += arbol.assigTemp2(temp["temporal"],
                                            retorno["op1"], self.ope, "1")
-            elif(int(retorno["op2"]) == 1):
+            elif(retorno["op2"] == 1):
                 codigo += izq["codigo"]
                 codigo += der["codigo"]
                 codigo += arbol.assigTemp2(temp["temporal"],
                                            retorno["op1"], self.ope, retorno["op2"])
-            elif(int(retorno["op2"]) > 1):
-                for ins in range(0, int(retorno["op2"])-1):
+            elif(retorno["op2"] > 1):  # TODO ARREGLAR ESTO PORQUE LA POTENCIA NO ES ASI EQUIS DE
+                '''
+                L1:
+                if int(t1)==0 goto salida
+                goto sigue
+                sigue:
+                t2=t2*t2
+                int(t1)=int(t1)-1
+                goto L1
+                salida:
+                temp=t2
+                '''
+                for ins in range(0, retorno["op2"]):
                     aux = arbol.newTemp()
                     if ins == 0:
                         codigo += izq["codigo"]
@@ -216,6 +228,7 @@ class Aritmetica(Instruccion):
             elif op2 == TipoDato.DECIMAL:
                 self.tipo = TipoDato.DECIMAL
                 return {'op1': izq, 'op2': der}
+
         elif numero == 2:
             if op2 == TipoDato.ENTERO:
                 self.tipo = TipoDato.DECIMAL

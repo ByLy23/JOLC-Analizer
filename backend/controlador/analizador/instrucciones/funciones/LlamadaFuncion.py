@@ -40,22 +40,22 @@ class LlamadaFuncion(Instruccion):
                 nuevaTabla.getAnterior().setTamanio(
                     nuevaTabla.getAnterior().getTamanio()+len(varTemps))
                 for nuevoVal in self.parametros:
-
                     val = nuevoVal.traducir(arbol, nuevaTabla)
                     if isinstance(val, Error):
                         return val
                     if isinstance(funcion.parametros[iterador]["tipato"], str):
                         # Se realiza como un struct
                         dec = Declaracion(TipoDato.STRUCT, funcion.linea,
-                                          funcion.columna, funcion.parametros[iterador]["identificador"], nuevoVal, funcion.parametros[iterador]["tipato"])
+                                          funcion.columna, funcion.parametros[iterador]["identificador"]+"50251", nuevoVal, funcion.parametros[iterador]["tipato"])
 
                         nuevaDec = dec.traducir(arbol, nuevaTabla)
                         if isinstance(nuevaDec, Error):
                             return nuevaDec
 
                         codigo += nuevaDec["codigo"]
+
                         var = nuevaTabla.getVariable(
-                            funcion.parametros[iterador]["identificador"])
+                            funcion.parametros[iterador]["identificador"]+"50251")
                         if var != None:
                             # if var.tipo != nuevoVal.tipo:
                             #     return Error("Semantico", "Tipo de dato diferente", self.linea, self.columna)
@@ -69,13 +69,18 @@ class LlamadaFuncion(Instruccion):
                     else:
 
                         dec = Declaracion(nuevoVal.tipo, funcion.linea,
-                                          funcion.columna, funcion.parametros[iterador]["identificador"], nuevoVal, nuevoVal.tipoStruct)
+                                          funcion.columna, funcion.parametros[iterador]["identificador"]+"50251", nuevoVal, nuevoVal.tipoStruct)
 
                         nuevaDec = dec.traducir(arbol, nuevaTabla)
                         if isinstance(nuevaDec, Error):
                             return nuevaDec
-
+                        print(nuevaTabla.getAnterior().getTamanio())
+                        print("==========")
                         codigo += nuevaDec["codigo"]
+                        print(funcion.parametros[iterador]["identificador"])
+                        print("********")
+                        print(nuevaDec["codigo"])
+                        print("------")
                         # var = nuevaTabla.getVariable(
                         #     funcion.parametros[iterador]["identificador"])
                         # if var != None:
@@ -113,7 +118,7 @@ class LlamadaFuncion(Instruccion):
                 codigo += arbol.assigTemp1(nuevoTemp["temporal"], "P")
 
                 # TODO hacer un metodo que obtenga los temporales usados antes de que llamen una funcion
-                print(arbol.getTempNoUsados())
+                # print(arbol.getTempNoUsados())
                 tempRetorno = arbol.newTemp()
                 codigo += arbol.getStack(tempRetorno["temporal"],
                                          nuevoTemp["temporal"])

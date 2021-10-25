@@ -68,7 +68,6 @@ def metodoPrincipal(EntradaAnalizar):
         if isinstance(traduccion, Error):
             astC3D.getErrores().append(traduccion)
             astC3D.actualizaConsola(traduccion.retornaError())
-            print(traduccion.retornaError())
             continue
         traduccionSalida += traduccion["codigo"]
 

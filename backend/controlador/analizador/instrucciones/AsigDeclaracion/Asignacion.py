@@ -27,7 +27,7 @@ class Asignacion(Instruccion):
             val = self.valor.traducir(arbol, tablaSimbolo)
             if isinstance(val, Error):
                 return val
-            print(val)
+            # print(val)
             if self.valor.tipo == TipoDato.STRUCT:
                 if self.valor.tipoStruct != self.struct:
                     return Error("Error Compilacion", "No es el mismo struct", self.linea, self.columna)
@@ -62,7 +62,6 @@ class Asignacion(Instruccion):
             self.tipo = self.valor.tipo
             self.tipoStruct = self.valor.tipoStruct
             self.mutable = self.valor.mutable
-            print(self.tipo)
             return {'codigo': codigo}
 
         # if not arbol.actualizarTabla(self.identificador, variable.valor, self.linea, tablaSimbolo.getNombre(), self.columna):
