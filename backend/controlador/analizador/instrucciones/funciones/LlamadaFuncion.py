@@ -74,13 +74,7 @@ class LlamadaFuncion(Instruccion):
                         nuevaDec = dec.traducir(arbol, nuevaTabla)
                         if isinstance(nuevaDec, Error):
                             return nuevaDec
-                        print(nuevaTabla.getAnterior().getTamanio())
-                        print("==========")
                         codigo += nuevaDec["codigo"]
-                        print(funcion.parametros[iterador]["identificador"])
-                        print("********")
-                        print(nuevaDec["codigo"])
-                        print("------")
                         # var = nuevaTabla.getVariable(
                         #     funcion.parametros[iterador]["identificador"])
                         # if var != None:

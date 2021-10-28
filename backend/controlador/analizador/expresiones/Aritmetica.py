@@ -132,53 +132,83 @@ class Aritmetica(Instruccion):
             '''
         elif self.operador == opAritmetico.POTENCIA:  # PENDIENTES CON DECIMALES
             self.ope = "*"
-
+            lPotencia = arbol.newLabel()
+            lSalida = arbol.newLabel()
+            lSigue = arbol.newLabel()
+            temp = arbol.newTemp()
+            tempT2 = arbol.newTemp()
             retorno = self.operador1PotenciaC3D(
                 izq["temporal"], der["temporal"])
-            rAux = ""
+            t1 = retorno["op1"]
+            t2 = retorno["op2"]
+            # codigo += retorno["codigo"]
+            # verificar si t2 desde el principio es 0
+            # verificar si t2 es 1
+            print(t1, t2, temp)
+            codigo += arbol.assigTemp1(tempT2["temporal"], t2)
+            codigo += arbol.assigTemp1(temp["temporal"], t1)
+            codigo += arbol.getLabel(lPotencia)
+            codigo += arbol.getCond2(
+                tempT2["temporal"], " <= ", "1.0", lSalida)
+            codigo += arbol.goto(lSigue)
+            codigo += arbol.getLabel(lSigue)
+            codigo += arbol.assigTemp2(temp["temporal"],
+                                       temp["temporal"], self.ope, t1)
+            codigo += arbol.assigTemp2(tempT2["temporal"],
+                                       tempT2["temporal"], " - ", "1")
+            codigo += arbol.goto(lPotencia)
+            codigo += arbol.getLabel(lSalida)
+            '''
+                  verificaciones de arriba
+            #     L1:
+            #     if int(t1)==0 goto salida
+            #     goto sigue
+            #     sigue:
+            #     t2=t2*t2
+            #     int(t1)=int(t1)-1
+            #     goto L1
+            #     salida:
+            #     temp=t2
+            #     '''
 
-            if(retorno["op2"] == 0):
-                codigo += izq["codigo"]
-                codigo += der["codigo"]
-                codigo += arbol.assigTemp2(temp["temporal"],
-                                           retorno["op1"], self.ope, "1")
-            elif(retorno["op2"] == 1):
-                codigo += izq["codigo"]
-                codigo += der["codigo"]
-                codigo += arbol.assigTemp2(temp["temporal"],
-                                           retorno["op1"], self.ope, retorno["op2"])
-            elif(retorno["op2"] > 1):  # TODO ARREGLAR ESTO PORQUE LA POTENCIA NO ES ASI EQUIS DE
-                '''
-                L1:
-                if int(t1)==0 goto salida
-                goto sigue
-                sigue:
-                t2=t2*t2
-                int(t1)=int(t1)-1
-                goto L1
-                salida:
-                temp=t2
-                '''
-                for ins in range(0, retorno["op2"]):
-                    aux = arbol.newTemp()
-                    if ins == 0:
-                        codigo += izq["codigo"]
-                        codigo += der["codigo"]
-                        codigo += arbol.assigTemp2(aux["temporal"],
-                                                   retorno["op1"], self.ope, retorno["op1"])
-                        aux1 = aux["temporal"]
-                        rAux = aux["temporal"]
-                    else:
-                        codigo += izq["codigo"]
-                        codigo += der["codigo"]
-                        codigo += arbol.assigTemp2(aux["temporal"],
-                                                   aux1, self.ope, retorno["op1"])
-                        aux1 = aux["temporal"]
-                        rAux = aux["temporal"]
+            # self.ope = "*"
 
-                codigo += izq["codigo"]
-                codigo += der["codigo"]
-                codigo += arbol.assigTemp1(temp["temporal"], rAux)
+            # retorno = self.operador1PotenciaC3D(
+            #     izq["temporal"], der["temporal"])
+            # rAux = ""
+
+            # if(retorno["op2"] == 0):
+            #     codigo += izq["codigo"]
+            #     codigo += der["codigo"]
+            #     codigo += arbol.assigTemp2(temp["temporal"],
+            #                                retorno["op1"], self.ope, "1")
+            # elif(retorno["op2"] == 1):
+            #     codigo += izq["codigo"]
+            #     codigo += der["codigo"]
+            #     codigo += arbol.assigTemp2(temp["temporal"],
+            #                                retorno["op1"], self.ope, retorno["op2"])
+            # elif(retorno["op2"] > 1):  # TODO ARREGLAR ESTO PORQUE LA POTENCIA NO ES ASI EQUIS DE
+            #
+            #     for ins in range(0, retorno["op2"]):
+            #         aux = arbol.newTemp()
+            #         if ins == 0:
+            #             codigo += izq["codigo"]
+            #             codigo += der["codigo"]
+            #             codigo += arbol.assigTemp2(aux["temporal"],
+            #                                        retorno["op1"], self.ope, retorno["op1"])
+            #             aux1 = aux["temporal"]
+            #             rAux = aux["temporal"]
+            #         else:
+            #             codigo += izq["codigo"]
+            #             codigo += der["codigo"]
+            #             codigo += arbol.assigTemp2(aux["temporal"],
+            #                                        aux1, self.ope, retorno["op1"])
+            #             aux1 = aux["temporal"]
+            #             rAux = aux["temporal"]
+
+            #     codigo += izq["codigo"]
+            #     codigo += der["codigo"]
+            #     codigo += arbol.assigTemp1(temp["temporal"], rAux)
 
         elif self.operador == opAritmetico.UMENOS:
             self.ope = "-"

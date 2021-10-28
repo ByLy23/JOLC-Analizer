@@ -34,7 +34,7 @@ class Relacional(Instruccion):
             rel = ">="
         else:
             return 'Byron lo hizo, si aparece esto en el proyecto de alguien mas es copia sin mi permiso >:v'
-        print(izq, der)  # TODO ARREGLAR ESTO DE LOS TEMPORALES
+        # print(izq, der)  # TODO ARREGLAR ESTO DE LOS TEMPORALES
         codigo += arbol.getCond2(izq["temporal"], rel, der["temporal"], lTrue)
         codigo += arbol.assigTemp1(temp["temporal"], "0.0")
         codigo += arbol.goto(lFalse)
