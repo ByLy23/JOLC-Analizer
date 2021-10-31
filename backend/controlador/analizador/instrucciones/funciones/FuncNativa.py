@@ -12,6 +12,75 @@ class FuncNativa(Instruccion):
         self.nombre = nombre
         self.argumentos = argumentos
 
+    def traducir(self, arbol, tablaSimbolo):
+        exp = self.nombre
+        if isinstance(exp, Error):
+            return exp
+        if self.argumentos["exp2"] != None:
+            if not self.argumentos["string"]:
+                arg1 = self.argumentos["exp1"].interpretar(arbol, tablaSimbolo)
+                if isinstance(arg1, Error):
+                    return arg1
+            else:
+                arg1 = self.argumentos["exp1"]
+            arg2 = self.argumentos["exp2"].interpretar(arbol, tablaSimbolo)
+            if isinstance(arg2, Error):
+                return arg2
+            # ARGUMENTO
+            if exp == "parse":
+                if self.argumentos["exp2"].tipo == TipoDato.CADENA:
+                    if arg1 == "Int64":
+                        self.tipo = TipoDato.ENTERO
+                        return int(arg2)
+                    elif arg1 == "Float64":
+                        self.tipo = TipoDato.DECIMAL
+                        return float(arg2)
+                    else:
+                        return Error("Error Semantico", "No se puede parsear a un tipo de dato diferente", self.linea, self.columna)
+                else:
+                    return Error("Error Semantico", "El tipo de dato a parsear no es cadena", self.linea, self.columna)
+
+            return Error("Error Semantico", "Comando no valido", self.linea, self.columna)
+        else:
+            arg1 = self.argumentos["exp1"].interpretar(arbol, tablaSimbolo)
+            if isinstance(arg1, Error):
+                return arg1
+            elif exp == "float":  # ARGUMENTO
+                if self.argumentos["exp1"].tipo == TipoDato.ENTERO:
+                    self.tipo = TipoDato.DECIMAL
+                    return float(arg1)
+                else:
+                    return Error("Error Semantico", "Valor debe ser entero", self.linea, self.columna)
+            elif exp == "string":  # ARGUMENTO
+                if self.argumentos["exp1"].tipo == TipoDato.ARREGLO:
+                    self.tipo = TipoDato.ARREGLO
+                    return arg1
+                self.tipo = TipoDato.CADENA
+                return str(arg1)
+            elif exp == "lowercase":
+                if self.argumentos["exp1"].tipo == TipoDato.CADENA:
+                    self.tipo = TipoDato.CADENA
+                    return str(arg1).lower()
+                else:
+                    return Error("Error Semantico", "Debe ser un tipo de dato cadena", self.linea, self.columna)
+            elif exp == "uppercase":
+                if self.argumentos["exp1"].tipo == TipoDato.CADENA:
+                    self.tipo = TipoDato.CADENA
+                    return str(arg1).upper()
+                else:
+                    return Error("Error Semantico", "Debe ser un tipo de dato cadena", self.linea, self.columna)
+            elif exp == "trunc":
+                # print("trunc")
+                if self.argumentos["exp1"].tipo == TipoDato.DECIMAL:
+                    self.tipo = TipoDato.ENTERO
+                    return trunc(arg1)
+                else:
+                    return Error("Error Semantico", "El tipo de dato a parsear no es cadena", self.linea, self.columna)
+            elif exp == "lenght":
+                print("Escribi bien animal xd")
+            else:
+                return Error("Error Semantico", "Valor debe ser un dato numerico", self.linea, self.columna)
+
     def getNodo(self):
         nodo = NodoAST('FUNCION NATIVA')
         nodo.agregar(self.nombre)

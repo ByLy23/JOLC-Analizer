@@ -144,7 +144,7 @@ class Aritmetica(Instruccion):
             # codigo += retorno["codigo"]
             # verificar si t2 desde el principio es 0
             # verificar si t2 es 1
-            print(t1, t2, temp)
+            # print(t1, t2, temp)
             codigo += arbol.assigTemp1(tempT2["temporal"], t2)
             codigo += arbol.assigTemp1(temp["temporal"], t1)
             codigo += arbol.getLabel(lPotencia)
@@ -382,8 +382,8 @@ class Aritmetica(Instruccion):
             return self.op2PotenciaC3D(1, op2, izq, der)
         elif self.op1.tipo == TipoDato.DECIMAL:
             return self.op2PotenciaC3D(2, op2, izq, der)
-        # elif self.op1.tipo == TipoDato.CADENA: #REALIZAR CUANDO TENGA CONCATENACIONES
-        #     return self.op2Potencia(4, op2, izq, der)
+        elif self.op1.tipo == TipoDato.CADENA:  # TODO
+            return self.op2Potencia(4, op2, izq, der)
         else:
             return Error("Error Sintactico", "Operador invalido", self.linea, self.columna)
 
