@@ -34,7 +34,6 @@ class CondFor(Instruccion):
         nuevaDec = dec.traducir(arbol, nuevaTabla)
         if isinstance(nuevaDec, Error):
             return nuevaDec
-        print(nuevaDec)
         if self.tipoRango["exp2"] != None:
             val1 = self.tipoRango["exp1"].traducir(arbol, nuevaTabla)
             if isinstance(val1, Error):
@@ -50,14 +49,15 @@ class CondFor(Instruccion):
                 tempControl["temporal"], val1["temporal"])
             codigo += arbol.getLabel(lControl)
             codigo += arbol.getCond2(tempControl["temporal"],
-                                     "==", val2["temporal"], lSalida)
+                                     ">", val2["temporal"], lSalida)
+            codigo += arbol.assigStackN("P", tempControl["temporal"])
             codigo += arbol.goto(lFalso)
             codigo += arbol.getLabel(lFalso)
             # Instrucciones
             tip = TipoDato.ENTERO
             aux = ""
             for i in self.instrucciones:
-                i.eSetSalida(lFalso)
+                i.eSetSalida(lSalida)
                 i.eSetContinua(lControl)
                 i.eSetReturn(self.eReturn())
                 i.eSetTemporal(self.eTemporal())
@@ -75,7 +75,6 @@ class CondFor(Instruccion):
             codigo += aux
             codigo += arbol.assigTemp2(tempControl["temporal"],
                                        tempControl["temporal"], "+", "1.0")
-            codigo += arbol.assigStackN("P", tempControl["temporal"])
             codigo += arbol.goto(lControl)
         # codigo = ""
         # lFalso = arbol.newTemp()
