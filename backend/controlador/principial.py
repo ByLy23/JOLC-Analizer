@@ -84,8 +84,8 @@ def metodoPrincipal(EntradaAnalizar):
 import (
    {} 
 )\n
-var stack [3000000] float64;
-var heap [3000000] float64;
+var stack [30000000] float64;
+var heap [30000000] float64;
 var P,H float64;
 """.format(astC3D.getImports())+traduccionSalida
     listaSimbolos = astC3D.getSimbolos()

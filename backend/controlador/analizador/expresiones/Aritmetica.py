@@ -145,6 +145,8 @@ class Aritmetica(Instruccion):
             # verificar si t2 desde el principio es 0
             # verificar si t2 es 1
             # print(t1, t2, temp)
+            codigo += izq["codigo"]
+            codigo += der["codigo"]
             codigo += arbol.assigTemp1(tempT2["temporal"], t2)
             codigo += arbol.assigTemp1(temp["temporal"], t1)
             codigo += arbol.getLabel(lPotencia)

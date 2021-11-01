@@ -71,7 +71,6 @@ class CondFor(Instruccion):
                     self.tipoStruct = i.tipoStruct
                     self.mutable = i.mutable
                 aux += a["codigo"]
-                print(aux)
             codigo += aux
             codigo += arbol.assigTemp2(tempControl["temporal"],
                                        tempControl["temporal"], "+", "1.0")

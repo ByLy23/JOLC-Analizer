@@ -35,12 +35,24 @@ class Relacional(Instruccion):
         else:
             return 'Byron lo hizo, si aparece esto en el proyecto de alguien mas es copia sin mi permiso >:v'
         # print(izq, der)  # TODO ARREGLAR ESTO DE LOS TEMPORALES
-        codigo += arbol.getCond2(izq["temporal"], rel, der["temporal"], lTrue)
-        codigo += arbol.assigTemp1(temp["temporal"], "0.0")
-        codigo += arbol.goto(lFalse)
-        codigo += arbol.getLabel(lTrue)
-        codigo += arbol.assigTemp1(temp["temporal"], "1.0")
-        codigo += arbol.getLabel(lFalse)
+
+        if 'temporal' in izq:
+            if 'temporal' in der:
+                codigo += arbol.getCond2(izq["temporal"],
+                                         rel, der["temporal"], lTrue)
+                codigo += arbol.assigTemp1(temp["temporal"], "0.0")
+                codigo += arbol.goto(lFalse)
+                codigo += arbol.getLabel(lTrue)
+                codigo += arbol.assigTemp1(temp["temporal"], "1.0")
+                codigo += arbol.getLabel(lFalse)
+        elif 'heap' in izq:
+            if 'heap' in der:
+                codigo += arbol.getCond2(izq["heap"], rel, der["heap"], lTrue)
+                codigo += arbol.assigTemp1(temp["temporal"], "0.0")
+                codigo += arbol.goto(lFalse)
+                codigo += arbol.getLabel(lTrue)
+                codigo += arbol.assigTemp1(temp["temporal"], "1.0")
+                codigo += arbol.getLabel(lFalse)
         codigo = izq["codigo"]+der["codigo"]+codigo
 
         '''

@@ -57,8 +57,8 @@ class CondIf(Instruccion):
         codigo += arbol.goto(lFalsa1)
         codigo += arbol.getLabel(lVerdadera)
         nuevaTabla = TablaSimbolosC3D(tablaSimbolo)
-        codigo += arbol.masStackV(tablaSimbolo.tamanio)
         arbol.tamReturn += tablaSimbolo.tamanio
+        codigo += arbol.masStackV(tablaSimbolo.tamanio)
         aux = ""
         tip = TipoDato.ENTERO
         for i in range(0, len(self.condIf)):
@@ -80,10 +80,10 @@ class CondIf(Instruccion):
             self.mutable = self.condIf[i].mutable
             aux += a["codigo"]
         codigo += aux
+        arbol.tamReturn -= tablaSimbolo.tamanio
         codigo += arbol.menosStackV(tablaSimbolo.tamanio)
         codigo += arbol.goto(lSalida)
         codigo += arbol.getLabel(lFalsa1)
-        arbol.tamReturn -= tablaSimbolo.tamanio
         for item in self.listaInstruccionesElseIf:
             if item["expresion"] != None:
                 lNuevoVerdadero = arbol.newLabel()
@@ -108,8 +108,8 @@ class CondIf(Instruccion):
                     return Error("Error Semantico", "Dato debe de ser booleano", self.linea, self.columna)
                 nuevaTabla = TablaSimbolosC3D(tablaSimbolo)
                 nuevaTabla.setNombre('Elseif')
-                codigo += arbol.masStackV(tablaSimbolo.tamanio)
                 arbol.tamReturn += tablaSimbolo.tamanio
+                codigo += arbol.masStackV(tablaSimbolo.tamanio)
                 aux3 = ""
                 for i in range(0, len(item["instrucciones"])):
                     item["instrucciones"][i].eSetSalida(self.eSalida())
@@ -130,16 +130,16 @@ class CondIf(Instruccion):
                         arbol.getErrores().append(a)
                         arbol.actualizaConsola(a.retornaError())
                 codigo += aux3
+                arbol.tamReturn -= tablaSimbolo.tamanio
                 codigo += arbol.menosStackV(tablaSimbolo.tamanio)
                 codigo += arbol.goto(lSalida)
                 codigo += arbol.getLabel(lNuevoFalso)
-                arbol.tamReturn -= tablaSimbolo.tamanio
             else:
 
                 nuevaTabla = TablaSimbolosC3D(tablaSimbolo)
                 nuevaTabla.setNombre('Else')
-                codigo += arbol.masStackV(tablaSimbolo.tamanio)
                 arbol.tamReturn += tablaSimbolo.tamanio
+                codigo += arbol.masStackV(tablaSimbolo.tamanio)
                 aux2 = ""
                 for i in range(0, len(item["instrucciones"])):
                     item["instrucciones"][i].eSetSalida(self.eSalida())
@@ -162,9 +162,10 @@ class CondIf(Instruccion):
 
                     # If return, continue y break
                 codigo += aux2
+
+                arbol.tamReturn -= tablaSimbolo.tamanio
                 codigo += arbol.menosStackV(tablaSimbolo.tamanio)
                 codigo += arbol.goto(lSalida)
-                arbol.tamReturn -= tablaSimbolo.tamanio
         codigo += arbol.getLabel(lSalida)
         return {'temporal': '', 'codigo': codigo, 'tipo': tip}
 
