@@ -45,6 +45,7 @@ class CondFor(Instruccion):
                 return Error("Error Semantico", "Rango no entero", self.linea, self.columna)
             codigo += val1["codigo"]
             codigo += val2["codigo"]
+            print(val1, val2)
             codigo += arbol.assigTemp1(
                 tempControl["temporal"], val1["temporal"])
             codigo += arbol.getLabel(lControl)

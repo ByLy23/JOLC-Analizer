@@ -7,6 +7,7 @@ Segundo semestre 2021
 # librerias
 
 
+from controlador.analizador.instrucciones.Comentarios import Comentarios
 from controlador.analizador.instrucciones.arreglos.AccesoArreglo import AccesoArreglo
 from controlador.analizador.instrucciones.arreglos.AsigArreglo import AsigArreglo
 from controlador.analizador.instrucciones.arreglos.Arreglo import Arreglo
@@ -101,7 +102,8 @@ tokens = [
     'DECIMAL',
     'CARACTER',
     'CADENA',
-    'IDENTIFICADOR'
+    'IDENTIFICADOR',
+    'COMM_SIMPLE',
 ] + list(reservadas.values())
 
 # tokens
@@ -131,9 +133,11 @@ t_PARABRE = r"\("
 t_PARCIERRA = r"\)"
 t_CORABRE = r"\["
 t_CORCIERRA = r"\]"
+# t_COMMENT_SIMPLE = r'\#.*\n?'
+# t_COMMENT_MULTI = r'\#\=(.|\n)*?\=\#'
 t_ignore = ' \t'
 
-t_ignore_COMMENT_SIMPLE = r'\#.*\n?'
+# t_ignore_COMMENT_SIMPLE = r'\#.*\n?'
 
 
 t_ignore_COMMENT_MULTI = r'\#\=(.|\n)*?\=\#'
@@ -173,6 +177,12 @@ def t_ENTERO(t):
     except ValueError:
         print("Integer value too large %d", t.value)
         t.value = 0
+    return t
+
+
+def t_COMM_SIMPLE(t):
+    r'\#.*\n?'
+    t.type = reservadas.get(t.value, 'COMM_SIMPLE')
     return t
 
 
@@ -259,6 +269,7 @@ def p_instruccion(t):
                         | inst_push_pop PTCOMA
                         | inst_asig_global PTCOMA
                         | inst_asig_local PTCOMA
+                        | inst_comm_simple
     '''
     t[0] = t[1]
 
@@ -271,7 +282,8 @@ def p_error(t):
         listaErrores.append(
             Error("Sintactico", "Error de tipo sintactico: " +
                   t.type, t.lineno, t.lexpos))
-        print(listaErrores)
+        for i in listaErrores:
+            print(i.descripcion)
         parser.restart()
     # while True:
     #     tok = parser.token()
@@ -287,6 +299,12 @@ def p_error(t):
     # print(listaErrores)
     # t[0] = ""
 # RESULTANTES
+
+
+def p_inst_comm_simple(t):
+    'inst_comm_simple : COMM_SIMPLE'
+    t[0] = Comentarios(t[1], False, t.lineno(1),
+                       columnas(input, t.slice[1]))
 
 
 def p_inst_asig_global(t):

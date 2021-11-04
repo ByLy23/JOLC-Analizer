@@ -1,9 +1,7 @@
 from controlador.analizador.abstracto.NodoAST import NodoAST
 from controlador.analizador.simbolos.TablaSimbolosC3D import TablaSimbolosC3D
-from controlador.analizador.simbolos.Tipo import TipoDato
 from controlador.analizador.instrucciones.funciones.Funcion import Funcion
 from controlador.analizador.excepciones.Error import Error
-import json
 from .analizador.simbolos.Arbol import Arbol
 from .analizador.simbolos.TablaSimbolos import TablaSimbolos
 from .gramatica import errores, parse
@@ -80,7 +78,7 @@ def metodoPrincipal(EntradaAnalizar):
         tempTraduccion += " float64;\n"
         traduccionSalida = tempTraduccion+traduccionSalida
 
-    traduccionSalida = """package main
+    traduccionSalida = """package main;
 import (
    {} 
 )\n
