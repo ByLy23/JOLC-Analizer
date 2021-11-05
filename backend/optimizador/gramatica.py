@@ -37,7 +37,8 @@ reservadas = {
     '%c': 'VALCHAR',
     '%f': 'VALFLOAT',
     '%d': 'VALDIGIT',
-    'mod': 'RESMOD'
+    'mod': 'RESMOD',
+    'return': 'RESRETURN'
 }
 tokens = [
     'DOSPUNTOS',
@@ -68,6 +69,7 @@ tokens = [
     'IDENTIFICADOR',
     'COMM_SIMPLE',
     'ENTERO',
+    'DECIMAL',
     'CADENA'
 ] + list(reservadas.values())
 
@@ -117,6 +119,18 @@ def t_error(t):
     t.lexer.skip(1)
 
 
+def t_TEMPORAL(t):
+    r't\d+'
+    t.type = reservadas.get(t.value, 'TEMPORAL')
+    return t
+
+
+def t_ETIQUETA(t):
+    r'L\d+'
+    t.type = reservadas.get(t.value, 'ETIQUETA')
+    return t
+
+
 def t_DECIMAL(t):
     r'\d+\.\d+'
     try:
@@ -137,27 +151,15 @@ def t_ENTERO(t):
     return t
 
 
-def t_IDENTIFICADOR(t):
-    r'[a-zA-Z_][a-zA-Z0-9_]*'
-    t.type = reservadas.get(t.value, 'IDENTIFICADOR')
-    return t
-
-
-def t_TEMPORAL(t):
-    r't\d+'
-    t.type = reservadas.get(t.value, 'TEMPORAL')
-    return t
-
-
-def t_ETIQUETA(t):
-    r'L\d+'
-    t.type = reservadas.get(t.value, 'ETIQUETA')
-    return t
-
-
 def t_CADENA(t):
     r'(\".*?\")'
     t.value = t.value[1:-1]
+    return t
+
+
+def t_IDENTIFICADOR(t):
+    r'[a-zA-Z_][a-zA-Z0-9_]*'
+    t.type = reservadas.get(t.value, 'IDENTIFICADOR')
     return t
 
 
@@ -244,6 +246,7 @@ def p_var_heap(t):
 
 def p_teimpora(t):
     'temporals : RESVAR temporales'
+    t[0] = t[2]
 
 
 def p_temporales(t):
@@ -280,10 +283,141 @@ def p_instrucciones_instruccion(t):
 
 
 def p_instruccion(t):
-    '''instruccion      : 
+    '''instruccion      : inst_asig PTCOMA
+                        | inst_salto PTCOMA
+                        | inst_salto_condi 
+                        | inst_funcion
+                        | inst_llamada PTCOMA
+                        | inst_operacion PTCOMA
+                        | inst_return PTCOMA
+                        | inst_impresion PTCOMA
+                        | inst_tag DOSPUNTOS
     '''
     t[0] = t[1]
 
+
+def p_inst_asig(t):  # asignacion de valores de stack o heap
+    'inst_asig : termino CABRE RESINT PABRE termino PCIERRA CCIERRA IGUAL termino '
+
+
+def p_inst_asig2(t):
+    'inst_asig : termino IGUAL termino CABRE RESINT PABRE termino PCIERRA CCIERRA'
+
+
+def p_inst_asig3(t):
+    'inst_asig : termino IGUAL termino '
+
+
+def p_inst_salto(t):
+    'inst_salto : RESGOTO ETIQUETA'
+
+
+def p_inst_salto_condi(t):
+    'inst_salto_condi : RESIF PABRE termino relacional termino PCIERRA LLABRE RESGOTO ETIQUETA PTCOMA LLCIERRA'
+
+
+def p_inst_salto_condi(t):
+    'inst_salto_condi : RESIF  termino relacional termino PCIERRA LLABRE RESGOTO ETIQUETA PTCOMA LLCIERRA'
+
+
+def p_inst_funcion(t):
+    'inst_funcion : RESFUNC IDENTIFICADOR PABRE PCIERRA LLABRE instrucciones LLCIERRA'
+
+
+def p_inst_llamada(t):
+    'inst_llamada : IDENTIFICADOR PABRE PCIERRA '
+
+
+def p_inst_operacion(t):
+    'inst_operacion : termino IGUAL termino operaciones termino '
+
+
+def p_inst_return(t):
+    'inst_return : RESRETURN'
+
+
+def p_inst_impresion(t):
+    'inst_impresion : RESFMT PUNTO RESPRINT PABRE CADENA COMA RESINT PABRE ENTERO PCIERRA PCIERRA'
+
+
+def p_inst_impresion2(t):
+    'inst_impresion : RESFMT PUNTO RESPRINT PABRE CADENA COMA RESINT PABRE TEMPORAL PCIERRA PCIERRA'
+
+
+def p_operaciones(t):
+    '''
+    operaciones : MAS
+                | MENOS
+                | POR 
+                | DIVI
+                | MOD
+    '''
+
+
+def p_relacional(t):
+    '''
+    relacional : COMPARACION
+               | DIFERENTE
+               | MENOR
+               | MENRIGL
+               | MAYOR
+               | MAYRIGL
+    '''
+    # if t[2] == '+':
+    #     t[0] = Aritmetica(opAritmetico.MAS, t.lineno(
+    #         2), columnas(input, t.slice[2]), t[1], t[3])
+    # elif t[2] == '-':
+    #     t[0] = Aritmetica(opAritmetico.MENOS, t.lineno(
+    #         2), columnas(input, t.slice[2]), t[1], t[3])
+    # elif t[2] == '*':
+    #     t[0] = Aritmetica(opAritmetico.POR, t.lineno(
+    #         2), columnas(input, t.slice[2]), t[1], t[3])
+    # elif t[2] == '/':
+    #     t[0] = Aritmetica(opAritmetico.DIVI, t.lineno(
+    #         2), columnas(input, t.slice[2]), t[1], t[3])
+    # elif t[2] == '%':
+    #     t[0] = Aritmetica(opAritmetico.MODULO, t.lineno(
+    #         2), columnas(input, t.slice[2]), t[1], t[3])
+    # elif t[2] == '^':
+    #     t[0] = Aritmetica(opAritmetico.POTENCIA, t.lineno(
+    #         2), columnas(input, t.slice[2]), t[1], t[3])
+
+
+def p_termino(t):
+    'termino : TEMPORAL'
+
+
+def p_termino2(t):
+    'termino : VAR_PILA'
+
+
+def p_termino3(t):
+    'termino : VAR_HEAP'
+
+
+def p_termino4(t):
+    'termino : RESSTACK'
+
+
+def p_termino5(t):
+    'termino : RESHEAP'
+
+
+def p_termino6(t):
+    'termino : DECIMAL'
+
+
+def p_termino7(t):
+    'termino : ENTERO'
+
+
+def p_termino8(t):
+    'termino : IDENTIFICADOR'
+
+
+def p_inst_tag(t):
+    'inst_tag : ETIQUETA'
+    t[0] = t[1]
 # error
 
 
@@ -295,19 +429,6 @@ def p_error(t):
                   t.type, t.lineno, t.lexpos))
         print(listaErrores)
         parser.restart()
-    # while True:
-    #     tok = parser.token()
-    #     if not tok or tok.type == 'PTCOMA':
-    #         listaErrores.append(Error("Sintactico", "Error de tipo sintactico: " +
-    #                             str(t[1].value), t.lineno(1), columnas(input, t.slice[1])))
-    #         break
-    # parser.errok()
-    # return tok
-    # 'instruccion :      error PTCOMA'
-    # listaErrores.append(Error("Sintactico", "Error de tipo sintactico: " +
-    #                           str(t[1].value), t.lineno(1), columnas(input, t.slice[1])))
-    # print(listaErrores)
-    # t[0] = ""
 # RESULTANTES
 
 

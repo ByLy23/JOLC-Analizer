@@ -81,7 +81,7 @@ def metodoPrincipal(EntradaAnalizar):
     traduccionSalida = """package main;
 import (
    {} 
-)\n
+);\n
 var stack [30000000] float64;
 var heap [30000000] float64;
 var P,H float64;

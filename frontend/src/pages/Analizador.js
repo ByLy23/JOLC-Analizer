@@ -22,6 +22,11 @@ end;`;
   const [popUp, setpopUp] = useState(false);
   const [state = { outputCode: 'salida' }, setstate] = useState({ outputCode: localStorage.getItem('EDITOR') == null ? codigo : JSON.parse(localStorage.getItem('EDITOR')) });
   const [salida = { outputCode: 'salida' }, setSalida] = useState({ outputCode: JSON.parse(localStorage.getItem('SALIDA_CONSOLA')) });
+
+  const valor = {
+    estado: state.outputCode,
+    colocaEstado: setstate,
+  };
   const handleSubmit = () => {
     getConsola(valor).then(({ consola, simbolos, errores, ast }) => {
       localStorage.setItem('SALIDA_CONSOLA', JSON.stringify(consola));
@@ -33,11 +38,13 @@ end;`;
       setpopUp(true);
     });
   };
+  // useEffect(() => {
+  //   getPokemons('ditto').then(({ abilities }) => setpokemon(abilities));
+  //   console.log(pokemon);
+  // }, [pokemon]);
+
   const input = <input type="submit" className="analizar" onClick={handleSubmit} value="Traducir" />;
-  const valor = {
-    estado: state.outputCode,
-    colocaEstado: setstate,
-  };
+
   const label = React.createElement('h1', { className: 'con-text' }, 'Consola');
   return (
     <div className="analizer-container">

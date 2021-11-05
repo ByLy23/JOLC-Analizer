@@ -5,7 +5,7 @@ import 'codemirror/theme/cobalt.css';
 import 'codemirror/keymap/sublime';
 
 export const CodeMirrorComponent = ({ input, codeMirrorValue, codeMirrorOut, writable, clase, modo }) => {
-  const WriteO = writable === 'true' ? false : true;
+  const WriteO = writable !== 'true';
   return (
     <div className="analizer animate__animated animate__fadeInUp">
       <div className="analizer-card">
@@ -26,6 +26,7 @@ export const CodeMirrorComponent = ({ input, codeMirrorValue, codeMirrorOut, wri
                 codeMirrorValue.colocaEstado({
                   outputCode: editor.getValue(),
                 });
+              console.log('actualizo');
             }}
           />
         </div>
