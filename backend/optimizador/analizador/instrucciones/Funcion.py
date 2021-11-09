@@ -15,7 +15,7 @@ class Funcion(Instruccion):
             prueba = ins.getInstruccion(arbol)
             codigo += prueba
             # print(prueba)
-        return 'func '+self.ide+'(){\n'+codigo+'\n}'
+        return 'func '+self.ide+'(){\n'+codigo+'\n}\n'
 
     def getNormal(self):
         return 'func '+self.ide+'(){\n'+self.instrucciones+'\n}'

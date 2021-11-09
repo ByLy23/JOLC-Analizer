@@ -1,4 +1,5 @@
 from optimizador.analizador.abstracto.Arbol import Arbol
+from optimizador.analizador.instrucciones.Encabezado import Encabezado
 from .gramatica import errores, parse
 
 

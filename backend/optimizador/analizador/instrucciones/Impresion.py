@@ -8,7 +8,7 @@ class Impresion(Instruccion):
         self.terminal = terminal
 
     def getInstruccion(self, arbol):
-        return 'fmt.Printf({}, int({}));\n'.format(self.tipo, self.terminal)
+        return 'fmt.Printf("{}", int({}));\n'.format(self.tipo, self.terminal)
 
     def getNormal(self):
-        return 'fmt.Printf({}, int({}));\n'.format(self.tipo, self.terminal)
+        return 'fmt.Printf("{}", int({}));\n'.format(self.tipo, self.terminal)

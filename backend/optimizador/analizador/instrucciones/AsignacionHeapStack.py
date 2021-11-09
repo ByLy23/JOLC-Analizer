@@ -9,7 +9,7 @@ class AsignacionHeapStack(Instruccion):
         self.temp = temp
 
     def getInstruccion(self, arbol):
-        return '{}[int( {} ) = {} ];\n'.format(self.hs, self.acceso, self.temp)
+        return '{}[int( {} )] = {};\n'.format(self.hs, self.acceso, self.temp)
 
     def getNormal(self):
         return '{}[int( {} )] = {};\n'.format(self.hs, self.acceso, self.temp)

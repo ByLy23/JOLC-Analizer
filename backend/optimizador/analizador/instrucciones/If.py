@@ -17,7 +17,7 @@ class If(Instruccion):
                 aux += i
             else:
                 break
-        return 'if ({} {} {}) goto'.format(self.op1, self.rel, self.op2)+'{'+'{};'.format(aux)+'}\n'
+        return 'if ({} {} {}) {} goto '.format(self.op1, self.rel, self.op2, '{')+'{};'.format(aux)+'}\n'
 
     def getNormal(self):
-        return 'if ({} {} {}) goto'.format(self.op1, self.rel, self.op2)+'{'+'{};'.format(self.label)+'}\n'
+        return 'if ({} {} {}) {} goto '.format(self.op1, self.rel, self.op2, '{')+'{};'.format(self.label)+'}\n'

@@ -188,21 +188,19 @@ precedence = (
 
 
 def p_inicio(t):
-    'inicio         : encabezado instrucciones'
-    t[0] = t[2]
+    'inicio         :  instrucciones'
+    t[0] = t[1]
 
 
 def p_encabezado(t):
     'encabezado : RESPACKAGE IDENTIFICADOR PTCOMA enviables'
-    print(t[4])
+    # print(t[4])
     t[0] = Encabezado(t[4], t.lineno(1), columnas(input, t.slice[1]))
 
 
 def p_enviables(t):
     'enviables : RESIMPORT PABRE listaImportaciones PCIERRA PTCOMA declaraciones'
-    if t[3] != "":
-        t[6].append(t[3])
-    t[0] = t[6]
+    t[0] = {'importaciones': t[3], 'declaraciones': t[6]}
 
 # def p_importaciones(t):
 #     'importaciones : RESIMPORT PABRE listaImportaciones PCIERRA PTCOMA'
@@ -210,10 +208,10 @@ def p_enviables(t):
 
 
 def p_listaImp(t):
-    '''listaImportaciones : listaImportaciones COMA importacion
+    '''listaImportaciones : listaImportaciones  importacion
     '''
-    if t[3] != "":
-        t[1].append(t[3])
+    if t[2] != "":
+        t[1].append(t[2])
     t[0] = t[1]
 
 
@@ -317,6 +315,7 @@ def p_instruccion(t):
                         | inst_return PTCOMA
                         | inst_impresion PTCOMA
                         | inst_tag DOSPUNTOS
+                        | encabezado
     '''
     t[0] = t[1]
 
