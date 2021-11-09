@@ -7,7 +7,14 @@ class Goto(Instruccion):
         self.label = label
 
     def getInstruccion(self, arbol):
-        return 'goto {};\n'.format(self.label)
+        etiqueta = self.label.getInstruccion(arbol)
+        aux = ""
+        for i in etiqueta:
+            if i != ":":
+                aux += i
+            else:
+                break
+        return 'goto {};\n'.format(aux)
 
     def getNormal(self):
         return 'goto {};\n'.format(self.label)

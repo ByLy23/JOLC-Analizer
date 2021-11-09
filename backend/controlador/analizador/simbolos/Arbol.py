@@ -246,6 +246,50 @@ class Arbol:
         codigo += self.masHeap()
         return {'heap': temp["temporal"], 'codigo': codigo}
 
+    def potenciaCadena(self, cadena, cantidad):
+        temp = self.newTemp()
+        codigo = ""
+        tempo = self.newTemp()
+        Ltemp = self.newTemp()
+        loop = self.newLabel()
+        lSalida = self.newLabel()
+        lControl = self.newLabel()
+        lSal1 = self.newLabel()
+        tempControl = self.newTemp()
+        codigo += self.assigTemp1(temp["temporal"], 'H')
+        codigo += self.assigTemp1(tempo["temporal"], cadena)
+        codigo += self.assigTemp1(tempControl["temporal"], cantidad)
+        codigo += self.getLabel(lControl)
+        codigo += self.getCond2(tempControl["temporal"], "<=", "1.0", lSalida)
+        codigo += self.getLabel(loop)
+        codigo += self.getHeap(Ltemp["temporal"], tempo["temporal"])
+        codigo += self.getCond2(Ltemp["temporal"], "==", "-1.0", lSal1)
+        codigo += self.assigHeapH(Ltemp["temporal"])
+        codigo += self.masHeap()
+        codigo += self.assigTemp2(tempo["temporal"],
+                                  tempo["temporal"], "+", "1")
+        codigo += self.goto(loop)
+        codigo += self.getLabel(lSal1)
+        codigo += self.assigTemp2(tempControl["temporal"],
+                                  tempControl["temporal"], "-", "1.0")
+        codigo += self.goto(lControl)
+        codigo += self.getLabel(lSalida)
+        codigo += self.assigHeapH("-1")
+        codigo += self.masHeap()
+
+        '''
+        L1
+        guardarCadenas
+        if(a==-1) goto L2
+        goto L1
+        L2
+        guardarCadena2
+        if(a==-1)goto L3
+        goto L2
+        L3:
+        '''
+        return {'heap': temp["temporal"], 'codigo': codigo}
+
     def concatenaString(self, c1, c2):
         temp = self.newTemp()
         codigo = ""

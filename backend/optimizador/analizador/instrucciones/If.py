@@ -10,7 +10,14 @@ class If(Instruccion):
         self.label = label
 
     def getInstruccion(self, arbol):
-        return 'if ({} {} {}) goto'.format(self.op1, self.rel, self.op2)+'{'+'{};'.format(self.label)+'}\n'
+        etiqueta = self.label.getInstruccion(arbol)
+        aux = ""
+        for i in etiqueta:
+            if i != ":":
+                aux += i
+            else:
+                break
+        return 'if ({} {} {}) goto'.format(self.op1, self.rel, self.op2)+'{'+'{};'.format(aux)+'}\n'
 
     def getNormal(self):
         return 'if ({} {} {}) goto'.format(self.op1, self.rel, self.op2)+'{'+'{};'.format(self.label)+'}\n'

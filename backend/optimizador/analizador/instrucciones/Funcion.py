@@ -2,12 +2,20 @@ from optimizador.analizador.abstracto.Instruccion import Instruccion
 
 
 class Funcion(Instruccion):
-    def __init__(self, ide, linea, columna):
+    def __init__(self, ide, instrucciones, linea, columna):
         super().__init__(linea, columna)
         self.ide = ide
+        self.instrucciones = instrucciones
 
     def getInstruccion(self, arbol):
-        return self.ide+'();\n'
+        # print(self.instrucciones)
+        prueba = []
+        codigo = ""
+        for ins in self.instrucciones:
+            prueba = ins.getInstruccion(arbol)
+            codigo += prueba
+            # print(prueba)
+        return 'func '+self.ide+'(){\n'+codigo+'\n}'
 
     def getNormal(self):
-        return self.ide+'();\n'
+        return 'func '+self.ide+'(){\n'+self.instrucciones+'\n}'

@@ -1,3 +1,4 @@
+from optimizador.analizador.abstracto.Arbol import Arbol
 from .gramatica import errores, parse
 
 
@@ -6,25 +7,28 @@ def metodoOptimizar(EntradaAnalizar):
     sim = []
     listaErrores = []
     listaImports = []
-    try:
-        ast = parse(EntradaAnalizar)  # entrada con parser
+    # try:
+    codigo = ""
+    ast = Arbol(parse(EntradaAnalizar))  # entrada con parser
+    for ins in ast.getInstrucciones():
+        i = ins.getInstruccion(ast)
+        codigo += i
+    # print(ast.getGlobal())
+    return {
+        "consola": codigo,
+        "simbolos": sim,
+        "errores":  err,
+    }
 
-        # print(ast.getGlobal())
-        return {
-            "consola": ast,
-            "simbolos": sim,
-            "errores":  err,
-        }
-
-    except:
-        listaErrores = errores()
-        err = interpretarErrores(listaErrores)
-        return {
-            "consola": "Errores Irrecuperables Encontrados",
-            "simbolos": [],
-            "errores": err,
-            "ast": []
-        }
+    # except:
+    #     listaErrores = errores()
+    #     err = interpretarErrores(listaErrores)
+    #     return {
+    #         "consola": "Errores Irrecuperables Encontrados",
+    #         "simbolos": [],
+    #         "errores": err,
+    #         "ast": []
+    #     }
 
 
 cuerpo = ''

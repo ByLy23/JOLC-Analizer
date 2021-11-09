@@ -131,6 +131,29 @@ class Aritmetica(Instruccion):
             salida:
             '''
         elif self.operador == opAritmetico.POTENCIA:  # PENDIENTES CON DECIMALES
+            if self.op1.tipo == TipoDato.CADENA and self.op2.tipo == TipoDato.ENTERO:
+                self.tipo = TipoDato.CADENA
+                lControl = arbol.newLabel()
+                lSalida = arbol.newLabel()
+                tempControl = arbol.newTemp()
+                codigo += arbol.assigTemp1(
+                    tempControl["temporal"], der["temporal"])
+                codigo += arbol.getLabel(lControl)
+                codigo += arbol.getCond2(tempControl["temporal"],
+                                         "<=", "1.0", lSalida)
+                dato = arbol.potenciaCadena(izq["heap"],
+                                            der["temporal"])
+                codigo += arbol.assigTemp2(
+                    tempControl["temporal"], tempControl["temporal"], "-", "1.0")
+                codigo += arbol.goto(lControl)
+                codigo += arbol.getLabel(lSalida)
+                codigo += izq["codigo"]
+                codigo += der["codigo"]
+                codigo += dato["codigo"]
+                # print(dato)
+                return {'heap': dato["heap"], 'codigo': codigo}
+
+            # Esto por si no es cadena xd
             self.ope = "*"
             lPotencia = arbol.newLabel()
             lSalida = arbol.newLabel()
@@ -384,8 +407,10 @@ class Aritmetica(Instruccion):
             return self.op2PotenciaC3D(1, op2, izq, der)
         elif self.op1.tipo == TipoDato.DECIMAL:
             return self.op2PotenciaC3D(2, op2, izq, der)
-        elif self.op1.tipo == TipoDato.CADENA:  # TODO
-            return self.op2Potencia(4, op2, izq, der)
+        # elif self.op1.tipo == TipoDato.CADENA:  # TODO
+        #     self.tipo=TipoDato.CADENA
+        #     co
+            # return self.op2Potencia(4, op2, izq, der)
         else:
             return Error("Error Sintactico", "Operador invalido", self.linea, self.columna)
 
@@ -412,8 +437,7 @@ class Aritmetica(Instruccion):
         #     if op2 == TipoDato.ENTERO:
         #         self.tipo = TipoDato.CADENA
         #         cadena = ""
-        #         for i in range(0, int(der)):
-        #             cadena = cadena+str(izq)
+        #         cadena+=arb
         #         return cadena
         #     else:
         #         return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
