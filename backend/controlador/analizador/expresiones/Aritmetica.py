@@ -76,7 +76,7 @@ class Aritmetica(Instruccion):
                 izq["temporal"], der["temporal"])
             codigo += izq["codigo"]
             codigo += der["codigo"]
-            codigo += arbol.getCond2(der["temporal"], " != ", "0", lTrue)
+            codigo += arbol.getCond2(der["temporal"], " != ", "0.0", lTrue)
             codigo += arbol.imprimir('"%c", 77')  # M
             codigo += arbol.imprimir('"%c", 97')  # a
             codigo += arbol.imprimir('"%c", 116')  # t
@@ -86,7 +86,7 @@ class Aritmetica(Instruccion):
             codigo += arbol.imprimir('"%c", 114')  # r
             codigo += arbol.imprimir('"%c", 111')  # o
             codigo += arbol.imprimir('"%c", 114')  # r
-            codigo += arbol.assigTemp1(temp["temporal"], "0")
+            codigo += arbol.assigTemp1(temp["temporal"], "0.0")
             codigo += arbol.goto(lSalida)
             codigo += arbol.getLabel(lTrue)
             arbol.setImports("\"math\"")
@@ -103,7 +103,7 @@ class Aritmetica(Instruccion):
                 izq["temporal"], der["temporal"])
             codigo += izq["codigo"]
             codigo += der["codigo"]
-            codigo += arbol.getCond2(der["temporal"], " != ", "0", lTrue)
+            codigo += arbol.getCond2(der["temporal"], " != ", "0.0", lTrue)
             codigo += arbol.imprimir('"%c", 77')  # M
             codigo += arbol.imprimir('"%c", 97')  # a
             codigo += arbol.imprimir('"%c", 116')  # t
@@ -113,7 +113,7 @@ class Aritmetica(Instruccion):
             codigo += arbol.imprimir('"%c", 114')  # r
             codigo += arbol.imprimir('"%c", 111')  # o
             codigo += arbol.imprimir('"%c", 114')  # r
-            codigo += arbol.assigTemp1(temp["temporal"], "0")
+            codigo += arbol.assigTemp1(temp["temporal"], "0.0")
             codigo += arbol.goto(lSalida)
             codigo += arbol.getLabel(lTrue)
             codigo += arbol.assigTemp1(nuevoDer["temporal"], retorno["op2"])
@@ -180,7 +180,7 @@ class Aritmetica(Instruccion):
             codigo += arbol.assigTemp2(temp["temporal"],
                                        temp["temporal"], self.ope, t1)
             codigo += arbol.assigTemp2(tempT2["temporal"],
-                                       tempT2["temporal"], " - ", "1")
+                                       tempT2["temporal"], " - ", "1.0")
             codigo += arbol.goto(lPotencia)
             codigo += arbol.getLabel(lSalida)
             '''
@@ -206,7 +206,7 @@ class Aritmetica(Instruccion):
             #     codigo += izq["codigo"]
             #     codigo += der["codigo"]
             #     codigo += arbol.assigTemp2(temp["temporal"],
-            #                                retorno["op1"], self.ope, "1")
+            #                                retorno["op1"], self.ope, "1.0")
             # elif(retorno["op2"] == 1):
             #     codigo += izq["codigo"]
             #     codigo += der["codigo"]

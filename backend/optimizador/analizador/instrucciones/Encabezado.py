@@ -24,7 +24,7 @@ var stack [30000000] float64;
 var heap [30000000] float64;
 var P,H float64;\n""".format(imports)
         c += declas
-        print(c, imports)
+        # print(c, imports)
         return c
 
     def getNormal(self):
@@ -45,5 +45,5 @@ var stack [30000000] float64;
 var heap [30000000] float64;
 var P,H float64;\n""".format(imports)
         c += declas
-        print(c, imports)
+        # print(c, imports)
         return c

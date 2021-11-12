@@ -1,5 +1,6 @@
 from optimizador.analizador.abstracto.Arbol import Arbol
 from optimizador.analizador.instrucciones.Encabezado import Encabezado
+from optimizador.analizador.instrucciones.Goto import Goto
 from .gramatica import errores, parse
 
 
@@ -14,6 +15,9 @@ def metodoOptimizar(EntradaAnalizar):
     for ins in ast.getInstrucciones():
         i = ins.getInstruccion(ast)
         codigo += i
+    for i in ast.getReporte():
+        # (self, tipo, descripcion, original, optimizado, linea):
+        print('<--->', i.original, '<--->', i.optimizado)
     # print(ast.getGlobal())
     return {
         "consola": codigo,

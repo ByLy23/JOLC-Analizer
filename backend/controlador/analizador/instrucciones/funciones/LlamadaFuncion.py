@@ -35,7 +35,7 @@ class LlamadaFuncion(Instruccion):
                         nuevoTemp["temporal"], t)
 
                     codigo += arbol.assigTemp2(
-                        nuevoTemp["temporal"], nuevoTemp["temporal"], "+", "1")
+                        nuevoTemp["temporal"], nuevoTemp["temporal"], "+", "1.0")
 
                 nuevaTabla.getAnterior().setTamanio(
                     nuevaTabla.getAnterior().getTamanio()+len(varTemps))

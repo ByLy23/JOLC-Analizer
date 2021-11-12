@@ -105,7 +105,7 @@ class Println(Instruccion):
                     '"%c", int({})'.format(tempL["temporal"]))
                 codigo += arbol.getLabel(impresion)
                 codigo += arbol.assigTemp2(tempo["temporal"],
-                                           tempo["temporal"], "+", "1")
+                                           tempo["temporal"], "+", "1.0")
                 codigo += arbol.goto(loop)
                 codigo += arbol.getLabel(lSalida)
 

@@ -26,7 +26,7 @@ class CondFor(Instruccion):
         lFalso = arbol.newLabel()
         lSalida = arbol.newLabel()
         nuevaTabla = TablaSimbolosC3D(tablaSimbolo)
-        nuevaTabla.setNombre('While')
+        nuevaTabla.setNombre('For')
         arbol.tamReturn += tablaSimbolo.tamanio
         codigo += arbol.masStackV(tablaSimbolo.tamanio)
         dec = Declaracion(TipoDato.ENTERO, self.linea,

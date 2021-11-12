@@ -1,7 +1,7 @@
 class Reporte:
-    def __init__(self, tipo, descripcion, optimizacion, fila, columna):
+    def __init__(self, tipo, descripcion, original, optimizado, linea):
         self.tipo = tipo
         self.descripcion = descripcion
-        self.optimizacion = optimizacion
-        self.fila = fila
-        self.columna = columna
+        self.original = original
+        self.optimizado = optimizado
+        self.linea = linea

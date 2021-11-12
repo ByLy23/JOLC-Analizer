@@ -267,7 +267,7 @@ class Arbol:
         codigo += self.assigHeapH(Ltemp["temporal"])
         codigo += self.masHeap()
         codigo += self.assigTemp2(tempo["temporal"],
-                                  tempo["temporal"], "+", "1")
+                                  tempo["temporal"], "+", "1.0")
         codigo += self.goto(loop)
         codigo += self.getLabel(lSal1)
         codigo += self.assigTemp2(tempControl["temporal"],
@@ -309,7 +309,7 @@ class Arbol:
         codigo += self.assigHeapH(Ltemp["temporal"])
         codigo += self.masHeap()
         codigo += self.assigTemp2(tempo["temporal"],
-                                  tempo["temporal"], "+", "1")
+                                  tempo["temporal"], "+", "1.0")
         codigo += self.goto(loop)
         codigo += self.getLabel(lSalida)
         codigo += self.assigTemp1(tempo2["temporal"], c2)
@@ -319,7 +319,7 @@ class Arbol:
         codigo += self.assigHeapH(Ltemp2["temporal"])
         codigo += self.masHeap()
         codigo += self.assigTemp2(tempo2["temporal"],
-                                  tempo2["temporal"], "+", "1")
+                                  tempo2["temporal"], "+", "1.0")
         codigo += self.goto(loop2)
         codigo += self.getLabel(lSalida2)
         codigo += self.assigHeapH("-1")

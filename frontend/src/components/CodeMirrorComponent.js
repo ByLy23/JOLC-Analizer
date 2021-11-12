@@ -5,6 +5,7 @@ import 'codemirror/theme/cobalt.css';
 import 'codemirror/keymap/sublime';
 
 export const CodeMirrorComponent = ({ input, codeMirrorValue, codeMirrorOut, writable, clase, modo }) => {
+  console.log(codeMirrorValue);
   const WriteO = writable !== 'true';
   return (
     <div className="analizer animate__animated animate__fadeInUp">
