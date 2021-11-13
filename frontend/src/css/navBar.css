@@ -1,6 +1,6 @@
 .glass {
-  width: 14.25em;
-  height: 31em;
+  width: 15.3em;
+  height: 34em;
   display: flex;
   flex-flow: column nowrap;
   background: linear-gradient(180deg, rgba(239, 239, 239, 0.8) 0%, rgba(239, 239, 239, 0.4) 100%);

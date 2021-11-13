@@ -27,7 +27,7 @@
   line-height: 2em;
   width: 100%;
   table-layout: fixed;
-  text-align: justify;
+  text-align: start;
   border: solid 1px;
 }
 .table th,

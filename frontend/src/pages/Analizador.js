@@ -49,9 +49,9 @@ end;`;
   };
   const handleSumibtOpt = () => {
     localStorage.setItem('SALIDA_CONSOLA', JSON.stringify(salida.outputCode));
-    getOptimizacion(optimizar).then(({ consola, simbolos, errores, ast }) => {
+    getOptimizacion(optimizar).then(({ consola, simbolos, mirilla }) => {
       localStorage.setItem('SALIDA_OPTIMIZADA', JSON.stringify(consola));
-      localStorage.setItem('TABLA_OPTIMIZACION', JSON.stringify(simbolos));
+      localStorage.setItem('TABLA_MIRILLA', JSON.stringify(mirilla));
       setoptimizado({ outputCode: consola });
       settexto('Optimizado');
       setpopUp(true);

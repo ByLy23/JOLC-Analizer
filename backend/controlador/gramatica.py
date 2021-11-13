@@ -295,13 +295,13 @@ def p_error(t):
 
 def p_inst_asig_global(t):
     'inst_asig_global : RESGLOBAL IDENTIFICADOR'
-    t[0] = Asignacion(None, t[1], t[2], None, t.lineno(1),
+    t[0] = Asignacion(t[1], t[2], None, t.lineno(1),
                       columnas(input, t.slice[1]))
 
 
 def p_inst_asig_local(t):
     'inst_asig_local : RESLOCAL IDENTIFICADOR'
-    t[0] = Asignacion(None, t[1], t[2], None, t.lineno(1),
+    t[0] = Asignacion(t[1], t[2], None, t.lineno(1),
                       columnas(input, t.slice[1]))
 
 

@@ -5,6 +5,7 @@ import { Analizador } from '../pages/Analizador';
 import { AstPage } from '../pages/AstPage';
 import { Inicio } from '../pages/Inicio';
 import { TablaErrores } from '../pages/TablaErrores';
+import { TablaMirilla } from '../pages/TablaMirilla';
 import { TablaSimbolos } from '../pages/TablaSimbolos';
 
 export const AppRouter = () => {
@@ -17,6 +18,7 @@ export const AppRouter = () => {
           <Route path="/inicio" component={Inicio} />
           <Route path="/simbolos" component={TablaSimbolos} />
           <Route path="/errores" component={TablaErrores} />
+          <Route path="/mirilla" component={TablaMirilla} />
           <Route path="/ast" component={AstPage} />
           <Route exact path="/" component={Inicio} />
         </Switch>

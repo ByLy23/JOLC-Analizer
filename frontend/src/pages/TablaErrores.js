@@ -2,6 +2,7 @@ import React from 'react';
 import { ErrData } from '../components/ErrData';
 import '../css/tabla.css';
 export const TablaErrores = () => {
+  const err = ErrData();
   return (
     <div className="table-container animate__animated animate__fadeInUp">
       <table className="table">
@@ -14,7 +15,7 @@ export const TablaErrores = () => {
             <th>Hora</th>
           </tr>
         </thead>
-        {ErrData.map(({ No, Tipo, Descripcion, Linea, Columna }, index) => {
+        {err.map(({ No, Tipo, Descripcion, Linea, Columna }, index) => {
           return (
             <tbody key={index}>
               <tr>

@@ -96,7 +96,7 @@ class Asignacion(Instruccion):
             codigo += arbol.assigStackN(temp["temporal"],
                                         tVar["temporal"])
             nuevaVal = SimboloC3D(
-                self.tipo, self.identificador, variable.getUbicacion(), True)
+                self.valor.tipo, self.identificador, variable.getUbicacion(), True)
             nuevaVal.tipoStruct = self.valor.tipoStruct
             nuevaVal.mutable = self.valor.mutable
             tablaSimbolo.setVariable(nuevaVal)
@@ -127,7 +127,7 @@ class Asignacion(Instruccion):
             codigo += arbol.assigStackN(temp["temporal"],
                                         tVar["temporal"])
             nuevaVal = SimboloC3D(
-                self.tipo, self.identificador, variable.getUbicacion(), False)
+                self.valor.tipo, self.identificador, variable.getUbicacion(), False)
             nuevaVal.tipoStruct = self.valor.tipoStruct
             nuevaVal.mutable = self.valor.mutable
             tablaSimbolo.setVariable(nuevaVal)

@@ -28,16 +28,16 @@ class Aritmetica(Instruccion):
             self.operadorUnico.eSetTemporal(self.eTemporal())
             uno = self.operadorUnico.traducir(arbol, tablaSimbolo)
             if isinstance(uno, Error):
-                return uno
+                arbol.getErrores().append(uno)
         else:
             self.op1.eSetTemporal(self.eTemporal())
             izq = self.op1.traducir(arbol, tablaSimbolo)
             if isinstance(izq, Error):
-                return izq
+                arbol.getErrores().append(izq)
             self.op2.eSetTemporal(self.eTemporal())
             der = self.op2.traducir(arbol, tablaSimbolo)
             if isinstance(der, Error):
-                return der
+                arbol.getErrores().append(der)
         if self.operador == opAritmetico.MAS:  # FUNCION MAS
             self.ope = "+"
             retorno = self.operador1SumaC3D(izq["temporal"], der["temporal"])
@@ -158,6 +158,7 @@ class Aritmetica(Instruccion):
             lPotencia = arbol.newLabel()
             lSalida = arbol.newLabel()
             lSigue = arbol.newLabel()
+            lInicio = arbol.newLabel()
             temp = arbol.newTemp()
             tempT2 = arbol.newTemp()
             retorno = self.operador1PotenciaC3D(
@@ -171,6 +172,10 @@ class Aritmetica(Instruccion):
             codigo += izq["codigo"]
             codigo += der["codigo"]
             codigo += arbol.assigTemp1(tempT2["temporal"], t2)
+            codigo += arbol.getCond2(tempT2["temporal"], "!=", "0.0", lInicio)
+            codigo += arbol.assigTemp1(temp["temporal"], "1.0")
+            codigo += arbol.goto(lSalida)
+            codigo += arbol.getLabel(lInicio)
             codigo += arbol.assigTemp1(temp["temporal"], t1)
             codigo += arbol.getLabel(lPotencia)
             codigo += arbol.getCond2(
@@ -292,9 +297,9 @@ class Aritmetica(Instruccion):
                 self.tipo = TipoDato.DECIMAL
                 return {'op1': izq, 'op2': der}
             else:
-                return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+                return Error("Error de Compilacion", "Tipo de dato incompatible", self.linea, self.columna)
         else:
-            return Error("Error Sintactico", "Tipo de dato incompatible", self.linea, self.columna)
+            return Error("Error de Compilacion", "Tipo de dato incompatible", self.linea, self.columna)
     # ----------------------MULTIPLICACIONC3D--------------------------
 
     def operador1MultiC3D(self, izq, der):
@@ -466,6 +471,7 @@ class Aritmetica(Instruccion):
         return nodo
 
     def interpretar(self, arbol, tablaSimbolo):
+
         izq = der = uno = None
         if self.operadorUnico != None:
             uno = self.operadorUnico.interpretar(arbol, tablaSimbolo)
@@ -726,6 +732,8 @@ class Aritmetica(Instruccion):
         if numero == 1:
             if op2 == TipoDato.ENTERO:
                 self.tipo = TipoDato.DECIMAL
+                if float(der) == 0:
+                    return 0
                 return float(izq) / float(der)
             elif op2 == TipoDato.DECIMAL:
                 self.tipo = TipoDato.DECIMAL

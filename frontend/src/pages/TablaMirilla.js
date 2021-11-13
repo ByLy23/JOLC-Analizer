@@ -1,31 +1,29 @@
 import React from 'react';
-import { SimData } from '../components/SimData';
+import { MirillaData } from '../components/MirillaData';
 import '../css/tabla.css';
-export const TablaSimbolos = () => {
-  const sim = SimData();
+export const TablaMirilla = () => {
+  const mirilla = MirillaData();
   return (
     <div className="table-container animate__animated animate__fadeInUp">
       <table className="table">
         <thead>
           <tr>
-            <th>No.</th>
-            <th>Nombre</th>
-            <th>Tipo</th>
-            <th>Entorno</th>
+            <th>Descripcion</th>
+            <th>Regla</th>
+            <th>Original</th>
+            <th>Nuevo</th>
             <th className="second">Linea</th>
-            <th className="second">Columna</th>
           </tr>
         </thead>
-        {sim.map(({ No, Nombre, Tipo, Entorno, Linea, Columna }, index) => {
+        {mirilla.map(({ Tipo, Regla, Original, Optimizado, Linea }, index) => {
           return (
             <tbody key={index}>
               <tr>
-                <td>{No}</td>
-                <td>{Nombre}</td>
                 <td>{Tipo}</td>
-                <td>{Entorno}</td>
+                <td>{Regla}</td>
+                <td>{Original}</td>
+                <td>{Optimizado}</td>
                 <td>{Linea}</td>
-                <td>{Columna}</td>
               </tr>
             </tbody>
           );

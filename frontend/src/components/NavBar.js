@@ -1,7 +1,7 @@
 import React from 'react';
 import '../css/navBar.css';
 import { NavLink } from 'react-router-dom';
-import { FiHome, FiEdit, FiList, FiXSquare, FiGitBranch } from 'react-icons/fi';
+import { FiHome, FiEdit, FiList, FiXSquare, FiGitBranch, FiLayers } from 'react-icons/fi';
 import { IconContext } from 'react-icons';
 export const NavBar = () => {
   return (
@@ -25,6 +25,10 @@ export const NavBar = () => {
           <NavLink activeClassName="active" className="link-item" to="/errores">
             <FiXSquare />
             Tabla de Errores
+          </NavLink>
+          <NavLink activeClassName="active" className="link-item" to="/mirilla">
+            <FiLayers />
+            Tabla de Optimizacion
           </NavLink>
           <NavLink activeClassName="active" className="link-item" to="/ast">
             <FiGitBranch /> Arbol AST

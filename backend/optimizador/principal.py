@@ -6,7 +6,7 @@ from .gramatica import errores, parse
 
 def metodoOptimizar(EntradaAnalizar):
     err = []
-    sim = []
+    opt = []
     listaErrores = []
     listaImports = []
     try:
@@ -19,10 +19,11 @@ def metodoOptimizar(EntradaAnalizar):
             # (self, tipo, descripcion, original, optimizado, linea):
             # print('<--->', i.original, '<--->', i.optimizado)
         # print(ast.getGlobal())
+        opt = interpretarOptimizacion(ast.getReporte())
         return {
             "consola": codigo,
-            "simbolos": sim,
             "errores":  err,
+            "mirilla": opt
         }
 
     except:
@@ -38,6 +39,15 @@ def metodoOptimizar(EntradaAnalizar):
 
 cuerpo = ''
 contador = 0
+
+
+def interpretarOptimizacion(errores):
+    listaFinal = []
+    for error in errores:
+        errorTemp = {"Tipo": error.tipo, "Regla": error.descripcion, "Original":
+                     error.original, "Optimizado": error.optimizado, "Linea": error.linea}
+        listaFinal.append(errorTemp)
+    return listaFinal
 
 
 def graficar(arbol):

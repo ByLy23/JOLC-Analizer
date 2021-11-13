@@ -13,31 +13,31 @@ def metodoPrincipal(EntradaAnalizar):
     listaErrores = []
     listaImports = []
     # try:
-    # ast = Arbol(parse(EntradaAnalizar))  # entrada con parser
-    # tabla = TablaSimbolos()
-    # ast.setGlobal(tabla)
-    # tabla.setNombre('Global')
+    ast = Arbol(parse(EntradaAnalizar))  # entrada con parser
+    tabla = TablaSimbolos()
+    ast.setGlobal(tabla)
+    tabla.setNombre('Global')
     astC3D = Arbol(parse(EntradaAnalizar))  # entrada con parser
     tablaC3D = TablaSimbolosC3D()
     astC3D.setGlobal(tablaC3D)
     tablaC3D.setNombre('Global')
     listaErrores = errores()
-    # for error in listaErrores:
-    #     ast.getErrores().append(error)
-    #     ast.actualizaConsola(error.retornaError())
-    # for ins in ast.getInstrucciones():
-    #     if isinstance(ins, Funcion):
-    #         ast.getFunciones().append(ins)
+    for error in listaErrores:
+        ast.getErrores().append(error)
+        ast.actualizaConsola(error.retornaError())
+    for ins in ast.getInstrucciones():
+        if isinstance(ins, Funcion):
+            ast.getFunciones().append(ins)
     for ins in astC3D.getInstrucciones():
         if isinstance(ins, Funcion):
             astC3D.getFunciones().append(ins)
 
     traduccionSalida = ""
     for ins in astC3D.getInstrucciones():
-        # resultado = ins.interpretar(ast, tabla)
-        # if isinstance(resultado, Error):
-        #     ast.getErrores().append(resultado)
-        #     ast.actualizaConsola(resultado.retornaError())
+        resultado = ins.interpretar(ast, tabla)
+        if isinstance(resultado, Error):
+            ast.getErrores().append(resultado)
+            ast.actualizaConsola(resultado.retornaError())
         if not isinstance(ins, Funcion):
             continue
         else:
@@ -57,10 +57,10 @@ def metodoPrincipal(EntradaAnalizar):
     for ins in astC3D.getInstrucciones():
         if isinstance(ins, Funcion):
             continue
-        # resultado = ins.interpretar(ast, tabla)
-        # if isinstance(resultado, Error):
-        #     ast.getErrores().append(resultado)
-        #     ast.actualizaConsola(resultado.retornaError())
+        resultado = ins.interpretar(ast, tabla)
+        if isinstance(resultado, Error):
+            ast.getErrores().append(resultado)
+            ast.actualizaConsola(resultado.retornaError())
 
         traduccion = ins.traducir(astC3D, tablaC3D)
         if isinstance(traduccion, Error):
@@ -86,7 +86,7 @@ var stack [30000000] float64;
 var heap [30000000] float64;
 var P,H float64;
 """.format(astC3D.getImports())+traduccionSalida
-    listaSimbolos = astC3D.getSimbolos()
+    listaSimbolos = ast.getSimbolos()
 
     sim = interpretarSimbolos(listaSimbolos)
     err = interpretarErrores(listaErrores)
