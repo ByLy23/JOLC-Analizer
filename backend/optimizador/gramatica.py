@@ -45,7 +45,7 @@ reservadas = {
     'int': 'RESINT',
     'float64': 'RESFLOAT',
     'if': 'RESIF',
-    'mod': 'RESMOD',
+    'Mod': 'RESMOD',
     'return': 'RESRETURN'
 }
 tokens = [
@@ -73,7 +73,6 @@ tokens = [
     'DIFERENTE',
     'COMA',
     'IDENTIFICADOR',
-    'COMM_SIMPLE',
     'ENTERO',
     'DECIMAL',
     'CADENA'
@@ -102,8 +101,10 @@ t_CCIERRA = r"\]"
 t_LLABRE = r'{'
 t_LLCIERRA = r'}'
 t_ignore = ' \t'
-t_ignore_COMMENT_SIMPLE = r'\/\/.*\n?'
-t_ignore_COMMENT_MULTI = r'\/\*(.|\n)*?\*\/'
+t_ignore_COMMENT_SIMPLE = r'\#.*\n?'
+
+
+t_ignore_COMMENT_MULTI = r'\#\=(.|\n)*?\=\#'
 
 
 def t_nuevaLinea(t):
@@ -315,6 +316,7 @@ def p_instruccion(t):
                         | inst_return PTCOMA
                         | inst_impresion PTCOMA
                         | inst_tag DOSPUNTOS
+                        | inst_mod PTCOMA
                         | encabezado
     '''
     t[0] = t[1]
@@ -375,20 +377,24 @@ def p_inst_impresion(t):
     t[0] = Impresion(t[5], t[9], t.lineno(1), columnas(input, t.slice[1]))
 
 
+def p_inst_impresion2(t):
+    'inst_impresion : RESFMT PUNTO RESPRINT PABRE CADENA COMA  termino PCIERRA'
+    t[0] = Impresion(t[5], t[7], t.lineno(1), columnas(input, t.slice[1]))
+
+
 def p_operaciones(t):
     '''
     operaciones : MAS
                 | MENOS
                 | POR
                 | DIVI
-                | mod
     '''
     t[0] = t[1]
 
 
 def p_mod(t):
     # {} = math.Mod({},{});\n
-    'mod : termino IGUAL RESMATH PUNTO RESMOD PABRE termino COMA termino PCIERRA PTCOMA'
+    'inst_mod : termino IGUAL RESMATH PUNTO RESMOD PABRE termino COMA termino PCIERRA '
     t[0] = Mod(t[1], t[7], t[9], t.lineno(2),
                columnas(input, t.slice[2]))
 

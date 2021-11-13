@@ -103,7 +103,6 @@ tokens = [
     'CARACTER',
     'CADENA',
     'IDENTIFICADOR',
-    'COMM_SIMPLE',
 ] + list(reservadas.values())
 
 # tokens
@@ -137,7 +136,7 @@ t_CORCIERRA = r"\]"
 # t_COMMENT_MULTI = r'\#\=(.|\n)*?\=\#'
 t_ignore = ' \t'
 
-# t_ignore_COMMENT_SIMPLE = r'\#.*\n?'
+t_ignore_COMMENT_SIMPLE = r'\#.*\n?'
 
 
 t_ignore_COMMENT_MULTI = r'\#\=(.|\n)*?\=\#'
@@ -177,12 +176,6 @@ def t_ENTERO(t):
     except ValueError:
         print("Integer value too large %d", t.value)
         t.value = 0
-    return t
-
-
-def t_COMM_SIMPLE(t):
-    r'\#.*\n?'
-    t.type = reservadas.get(t.value, 'COMM_SIMPLE')
     return t
 
 
@@ -269,7 +262,6 @@ def p_instruccion(t):
                         | inst_push_pop PTCOMA
                         | inst_asig_global PTCOMA
                         | inst_asig_local PTCOMA
-                        | inst_comm_simple
     '''
     t[0] = t[1]
 
@@ -301,21 +293,15 @@ def p_error(t):
 # RESULTANTES
 
 
-def p_inst_comm_simple(t):
-    'inst_comm_simple : COMM_SIMPLE'
-    t[0] = Comentarios(t[1], False, t.lineno(1),
-                       columnas(input, t.slice[1]))
-
-
 def p_inst_asig_global(t):
     'inst_asig_global : RESGLOBAL IDENTIFICADOR'
-    t[0] = Asignacion(t[1], t[2], None, t.lineno(1),
+    t[0] = Asignacion(None, t[1], t[2], None, t.lineno(1),
                       columnas(input, t.slice[1]))
 
 
 def p_inst_asig_local(t):
     'inst_asig_local : RESLOCAL IDENTIFICADOR'
-    t[0] = Asignacion(t[1], t[2], None, t.lineno(1),
+    t[0] = Asignacion(None, t[1], t[2], None, t.lineno(1),
                       columnas(input, t.slice[1]))
 
 

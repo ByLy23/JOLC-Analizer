@@ -34,22 +34,25 @@ class Println(Instruccion):
                     "Error Semantico", "No existe ningun valor que mostrar", self.linea, self.columna)
                 arbol.getErrores().append(err)
                 arbol.actualizaConsola(err.retornaError())
-            codigo += variable["codigo"]
             # se imprime segun el tipo
             if valor.tipo == TipoDato.ENTERO:
+                codigo += variable["codigo"]
 
                 codigo += arbol.imprimir(
                     '"%d", int({})'.format(variable["temporal"]))
                 #fmt.Printf("%d", int(expresion))
             elif valor.tipo == TipoDato.DECIMAL:
+                codigo += variable["codigo"]
                 codigo += arbol.imprimir(
                     '"%f", {}'.format(variable["temporal"]))
                 # fmt.Printf("%f", 32.2)
             elif valor.tipo == TipoDato.CARACTER:
+                codigo += variable["codigo"]
                 codigo += arbol.imprimir(
                     '"%c", {}'.format(variable["temporal"]))
                 # fmt.Printf("%c", 36)
             elif valor.tipo == TipoDato.BOOLEANO:
+                codigo += variable["codigo"]
                 temp = arbol.newTemp()
                 lTrue = arbol.newLabel()
                 lFalse = arbol.newLabel()

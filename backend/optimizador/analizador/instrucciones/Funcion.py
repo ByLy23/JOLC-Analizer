@@ -18,8 +18,9 @@ class Funcion(Instruccion):
         prueba = []
         codigo = ""
         self.regla1(arbol)
-        self.regla2(arbol)
+        self.regla24(arbol)
         self.regla3(arbol)
+        self.regla5(arbol)
         for ins in self.instrucciones:
             prueba = ins.getInstruccion(arbol)
             codigo += prueba
@@ -41,12 +42,12 @@ class Funcion(Instruccion):
                         reglaDesc = '{} = {};'.format(
                             a1.t1, a1.t2)+'{} = {};'.format(a1.t2, a1.t1)
                         reporte = Reporte(
-                            'Mirilla Eliminacion de instrucciones redundantes', 'Regla 2', reglaDesc, '{} = {};'.format(a1.t1, a1.t2), instrucciones[cont].linea)
+                            'Mirilla Eliminacion de instrucciones redundantes', 'Regla 1', reglaDesc, '{} = {};'.format(a1.t1, a1.t2), instrucciones[cont].linea)
                         arbol.getReporte().append(reporte)
                         self.instrucciones.pop(cont-1)
             cont += 1
 
-    def regla2(self, arbol):
+    def regla24(self, arbol):
         instrucciones = self.instrucciones
         cont = 0
         l = ""
@@ -57,35 +58,42 @@ class Funcion(Instruccion):
                 l = lTemporal.label.getInstruccion(
                     arbol)[0:-2]  # guardamos el valor del label
                 # guardamos las instrucciones que van despues del label
-                for j in range(cont+1, len(self.instrucciones)-1):
+                for j in range(cont+1, len(self.instrucciones)):
                     nuevasInstrucciones.append(instrucciones[j])
                     # print(nuevasInstrucciones[j-1])
-                    if instrucciones[j+1] == None:  # verifica si la siguiente es nula
+                    if j+1 > len(self.instrucciones)-1:  # verifica si la siguiente es nula
                         break
                     # si la siguiente instruccion es un label hace lo siguiente
                     if isinstance(instrucciones[j], Label):
-                        # print(len(nuevasInstrucciones))
-                        # otiene el valor del label
-                        label = instrucciones[j].getInstruccion(arbol)[0:-2]
-                        if l != label:  # Si los valores son diferentes alv
-                            # print('No son iguales')
-                            nuevasInstrucciones = []
-                            break
-                        # si los valores si existen va a eliminar todas las etiquetas
-                        for k in range(cont, j+1):
-                            self.instrucciones.pop(cont)
-                        for k in nuevasInstrucciones:
-                            self.instrucciones.insert(
-                                cont, k)
-                        nuevasInstrucciones = []
+                        if not isinstance(instrucciones[j+1], Goto):
+                            # print(len(nuevasInstrucciones))
+                            # otiene el valor del label
+                            label = instrucciones[j].getInstruccion(arbol)[
+                                0:-2]
+                            if l != label:  # Si los valores son diferentes alv
+                                # print('No son iguales')
+                                nuevasInstrucciones = []
+                                break
+                            # si los valores si existen va a eliminar todas las etiquetas
+                            for k in range(cont, j):
+                                self.instrucciones.pop(cont)
 
-                        reglaDesc = 'goto {};'.format(
-                            l)+'<Instrucciones>'+'{}:'.format(l)
-                        reporte = Reporte(
-                            'Mirilla Eliminacion de codigo inalcanzable', 'Regla 2', reglaDesc, '{}:'.format(l), instrucciones[cont].linea)
-                        arbol.getReporte().append(reporte)
-                        # print('Son iguales')  # aca realizo la accion
-                        break
+                            reglaDesc = 'goto {};'.format(
+                                l)+'<Instrucciones>'+'{}:'.format(l)
+                            reporte = Reporte(
+                                'Mirilla Eliminacion de codigo inalcanzable', 'Regla 2', reglaDesc, '{}:'.format(l), instrucciones[cont].linea)
+                            arbol.getReporte().append(reporte)
+                            # print('Son iguales')  # aca realizo la accion
+                            break
+                        else:
+                            self.instrucciones[cont].label = instrucciones[j+1].label
+                            reglaDesc = 'goto {};'.format(
+                                l)+'<Instrucciones>'+'{}: goto {};'.format(l, instrucciones[j+1].label.getInstruccion(arbol)[0:-2])
+                            reglaOpt = 'goto {};'.format(
+                                instrucciones[j+1].label.getInstruccion(arbol)[0:-2])+'<Instrucciones>'+'{}: goto {};'.format(l, instrucciones[j+1].label.getInstruccion(arbol)[0:-2])
+                            reporte = Reporte(
+                                'Mirilla Optimizacion de flujo de control', 'Regla 4', reglaDesc, reglaOpt, instrucciones[cont].linea)
+                            arbol.getReporte().append(reporte)
             cont += 1
 
     def regla3(self, arbol):
@@ -117,3 +125,30 @@ class Funcion(Instruccion):
                                         arbol.getReporte().append(reporte)
                                     break
             cont += 1
+
+    def regla5(self, arbol):
+        instrucciones = self.instrucciones
+        cont = 0
+        for i in self.instrucciones:
+            if isinstance(instrucciones[cont], If):
+                if instrucciones[cont].rel == ('>', '<', ">=", '<='):
+                    l1 = instrucciones[cont].label.getInstruccion(arbol)[0:-2]
+                    for j in range(cont, len(instrucciones)):
+                        if isinstance(instrucciones[j], Label):
+                            lC = instrucciones[j].getInstruccion(arbol)[0:-2]
+                            if l1 == lC:
+                                if isinstance(instrucciones[j+1], Goto):
+                                    l2 = instrucciones[j+1].label
+                                    self.instrucciones[cont].label = l2
+                                    reglaDesc = 'if('+instrucciones[cont].op1+instrucciones[cont].rel+instrucciones[cont].op2 + \
+                                                '){goto '+l1+';} goto '+l2+'; ' + \
+                                                l1+': <Instrucciones> '+l2+':'
+                                    reporte = Reporte(
+                                        'Mirilla Optimizacion de flujo de control', 'Regla 5', reglaDesc, 'if('+instrucciones[cont].op1+instrucciones[cont].rel+instrucciones[cont].op2+'){goto '+l2+';} <Instrucciones> '+l2+':', instrucciones[cont].linea)
+                                    arbol.getReporte().append(reporte)
+            cont += 1
+
+    def if_integer(string):
+        if(string[0]) == ('-', '+'):
+            return string[1:].isDigit()
+        return string.isDigit()

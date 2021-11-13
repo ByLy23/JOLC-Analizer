@@ -9,31 +9,31 @@ def metodoOptimizar(EntradaAnalizar):
     sim = []
     listaErrores = []
     listaImports = []
-    # try:
-    codigo = ""
-    ast = Arbol(parse(EntradaAnalizar))  # entrada con parser
-    for ins in ast.getInstrucciones():
-        i = ins.getInstruccion(ast)
-        codigo += i
-    for i in ast.getReporte():
-        # (self, tipo, descripcion, original, optimizado, linea):
-        print('<--->', i.original, '<--->', i.optimizado)
-    # print(ast.getGlobal())
-    return {
-        "consola": codigo,
-        "simbolos": sim,
-        "errores":  err,
-    }
+    try:
+        codigo = ""
+        ast = Arbol(parse(EntradaAnalizar))  # entrada con parser
+        for ins in ast.getInstrucciones():
+            i = ins.getInstruccion(ast)
+            codigo += i
+        # for i in ast.getReporte():
+            # (self, tipo, descripcion, original, optimizado, linea):
+            # print('<--->', i.original, '<--->', i.optimizado)
+        # print(ast.getGlobal())
+        return {
+            "consola": codigo,
+            "simbolos": sim,
+            "errores":  err,
+        }
 
-    # except:
-    #     listaErrores = errores()
-    #     err = interpretarErrores(listaErrores)
-    #     return {
-    #         "consola": "Errores Irrecuperables Encontrados",
-    #         "simbolos": [],
-    #         "errores": err,
-    #         "ast": []
-    #     }
+    except:
+        listaErrores = errores()
+        err = interpretarErrores(listaErrores)
+        return {
+            "consola": "Errores Irrecuperables Encontrados",
+            "simbolos": [],
+            "errores": err,
+            "ast": []
+        }
 
 
 cuerpo = ''

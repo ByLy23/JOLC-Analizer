@@ -13,21 +13,21 @@ def metodoPrincipal(EntradaAnalizar):
     listaErrores = []
     listaImports = []
     # try:
-    ast = Arbol(parse(EntradaAnalizar))  # entrada con parser
-    tabla = TablaSimbolos()
-    ast.setGlobal(tabla)
-    tabla.setNombre('Global')
+    # ast = Arbol(parse(EntradaAnalizar))  # entrada con parser
+    # tabla = TablaSimbolos()
+    # ast.setGlobal(tabla)
+    # tabla.setNombre('Global')
     astC3D = Arbol(parse(EntradaAnalizar))  # entrada con parser
     tablaC3D = TablaSimbolosC3D()
     astC3D.setGlobal(tablaC3D)
     tablaC3D.setNombre('Global')
     listaErrores = errores()
-    for error in listaErrores:
-        ast.getErrores().append(error)
-        ast.actualizaConsola(error.retornaError())
-    for ins in ast.getInstrucciones():
-        if isinstance(ins, Funcion):
-            ast.getFunciones().append(ins)
+    # for error in listaErrores:
+    #     ast.getErrores().append(error)
+    #     ast.actualizaConsola(error.retornaError())
+    # for ins in ast.getInstrucciones():
+    #     if isinstance(ins, Funcion):
+    #         ast.getFunciones().append(ins)
     for ins in astC3D.getInstrucciones():
         if isinstance(ins, Funcion):
             astC3D.getFunciones().append(ins)
@@ -80,7 +80,7 @@ def metodoPrincipal(EntradaAnalizar):
 
     traduccionSalida = """package main;
 import (
-   {} 
+{} 
 );\n
 var stack [30000000] float64;
 var heap [30000000] float64;
@@ -98,7 +98,6 @@ var P,H float64;
     resultado = graficar(arbol)
     # print(ast.getGlobal())
     return {
-        "consola2": ast.getConsola(),
         "consola": traduccionSalida,
         "simbolos": sim,
         "errores":  err,

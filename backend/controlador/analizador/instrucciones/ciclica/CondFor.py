@@ -19,6 +19,7 @@ class CondFor(Instruccion):
         self.instrucciones = instrucciones
 
     def traducir(self, arbol, tablaSimbolo):
+        tip = TipoDato.ENTERO
         codigo = ""
         tempControl = arbol.newTemp()
         lControl = arbol.newLabel()
@@ -55,7 +56,6 @@ class CondFor(Instruccion):
             codigo += arbol.goto(lFalso)
             codigo += arbol.getLabel(lFalso)
             # Instrucciones
-            tip = TipoDato.ENTERO
             aux = ""
             for i in self.instrucciones:
                 i.eSetSalida(lSalida)
