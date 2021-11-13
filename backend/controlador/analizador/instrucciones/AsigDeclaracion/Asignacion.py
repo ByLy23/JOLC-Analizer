@@ -68,7 +68,7 @@ class Asignacion(Instruccion):
         #     nuevoSim = ReporteTabla(self.identificador, variable.valor, 'Variable', str(
         #         self.tipo), tablaSimbolo.getNombre(), self.linea, self.columna)
         #     arbol.getSimbolos().append(nuevoSim)
-
+        # print(variable.tipo)
         if variable.tipo != TipoDato.CADENA and variable.tipo != TipoDato.STRUCT and variable.tipo != TipoDato.ARREGLO:
             temp = arbol.newTemp()
             tempAcceso = arbol.newTemp()
@@ -102,6 +102,7 @@ class Asignacion(Instruccion):
             tablaSimbolo.setVariable(nuevaVal)
             return {'codigo': codigo}
         else:
+            # print(variable.tipo)
             temp = arbol.newTemp()
             tempAcceso = arbol.newTemp()
             codigo += arbol.assigTemp2(tempAcceso["temporal"],
@@ -115,15 +116,22 @@ class Asignacion(Instruccion):
             val = self.valor.traducir(arbol, tablaSimbolo)
             if isinstance(val, Error):
                 return val
-            if self.valor.tipo != self.tipo:
-                return Error("Error Compilacion", "{} no es compatible con {} ".format(self.valor.tipo, self.tipo), self.linea, self.columna)
+            print(self.tipo)
+            # if self.valor.tipo != self.tipo:
+            #     return Error("Error Compilacion", "{} no es compatible con {} ".format(self.valor.tipo, self.tipo), self.linea, self.columna)
             if self.valor.tipo == TipoDato.STRUCT:
                 if self.valor.tipoStruct != self.struct:
                     return Error("Error Compilacion", "No es el mismo struct", self.linea, self.columna)
             codigo += val["codigo"]
             tVar = arbol.newTemp()
+            # codigo += arbol.assigTemp1(tVar["temporal"], val["heap"])
+            #         codigo += arbol.assigTemp2(tStck["temporal"],
+            #                                    "P", "+", tablaSimbolo.getTamanio())
+            #         codigo += arbol.assigStackN(tStck["temporal"],
+            #                                     tVar["temporal"])
             codigo += arbol.assigTemp1(tVar["temporal"],
                                        val["heap"])
+            # print(val, "asdasd")
             codigo += arbol.assigStackN(temp["temporal"],
                                         tVar["temporal"])
             nuevaVal = SimboloC3D(
