@@ -16,7 +16,10 @@ class Break(Instruccion):
 
     def traducir(self, arbol, tablaSimbolo):
         if self.eSalida() != None:
-            return {'temporal': "", 'codigo': arbol.goto(self.eSalida())}
+            codigo = ""
+            codigo += arbol.menosStackV(tablaSimbolo.tamanio)
+            codigo += arbol.goto(self.eSalida())
+            return {'temporal': "", 'codigo': codigo}
         return Error("Error de Compilacion", "Sentencia fuera de ciclo", self.linea, self.columna)
 
     def interpretar(self, arbol, tablaSimbolo):
