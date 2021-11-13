@@ -17,7 +17,11 @@ class Continue(Instruccion):
 
     def traducir(self, arbol, tablaSimbolo):
         if self.eContinua() != None:
-            return {'temporal': "", 'codigo': arbol.goto(self.eContinua())}
+            codigo = ""
+            codigo += arbol.menosStackV(tablaSimbolo.tamanio)
+            codigo += arbol.goto(self.eContinua())
+
+            return {'temporal': "", 'codigo': codigo}
         return Error("Error de Compilacion", "Sentencia fuera de ciclo", self.linea, self.columna)
 
     def interpretar(self, arbol, tablaSimbolo):
